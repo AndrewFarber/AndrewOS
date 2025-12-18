@@ -1,0 +1,7 @@
+{ ... }:
+
+{
+  imports = [
+    ./vbox-drivers.nix
+  ];
+}
