@@ -13,7 +13,6 @@ in
     isNormalUser = true;
     extraGroups = [
       "docker"
-      "networkmanager"
       "scanner"
       "wheel"
     ];
