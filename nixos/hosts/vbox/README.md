@@ -13,8 +13,8 @@
    Create Virtual Hard Disk Memory: >50 GB
    ```
 3. Using the graphical installer, setup NixOS then shutdown VM.
-4. Withn VirtualBox Manager -> select NixOS VM -> Settings -> Storage -> Remove CD.
-5. Within VirtualBox Manager -> slect NixOS VM -> Start.
+4. Within VirtualBox Manager -> select NixOS VM -> Settings -> Storage -> Remove CD.
+5. Within VirtualBox Manager -> select NixOS VM -> Start.
 7. Open default terminal and perform the below actions:
    ```
    > cd ~

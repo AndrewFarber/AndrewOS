@@ -33,7 +33,7 @@ home-manager rollback
 
 ### NixOS within Oracle VirtualBox
 
-See instllation instructions [here](./nixos/hosts/vbox).
+See installation instructions [here](./nixos/hosts/vbox).
 
 ### Home-Manager (Standalone)
 
