@@ -3,27 +3,27 @@
 local lspconfig = require('lspconfig')
 local navic = require('nvim-navic')
 local navbuddy = require('nvim-navbuddy')
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+local on_attach = function(client, bufnr)
+  navic.attach(client, bufnr)
+  navbuddy.attach(client, bufnr)
+end
 
 -- LSP configurations
 lspconfig.pyright.setup({
-  on_attach = function(client, bufnr)
-    navic.attach(client, bufnr)
-    navbuddy.attach(client, bufnr)
-  end
+  capabilities = capabilities,
+  on_attach = on_attach,
 })
 
 lspconfig.nil_ls.setup({
-  on_attach = function(client, bufnr)
-    navic.attach(client, bufnr)
-    navbuddy.attach(client, bufnr)
-  end
+  capabilities = capabilities,
+  on_attach = on_attach,
 })
 
 lspconfig.lua_ls.setup({
-  on_attach = function(client, bufnr)
-    navic.attach(client, bufnr)
-    navbuddy.attach(client, bufnr)
-  end,
+  capabilities = capabilities,
+  on_attach = on_attach,
   settings = {
     Lua = {
       diagnostics = {

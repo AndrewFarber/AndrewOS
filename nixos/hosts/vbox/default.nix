@@ -1,4 +1,4 @@
-{ host, desktop, inputs, username, ... }:
+{ host, desktop, inputs, ... }:
 
 {
   imports = [
