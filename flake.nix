@@ -36,7 +36,6 @@
         };
       };
 
-
       # Home-Manager Stand Alone
       # home-manager switch --flake .
       homeConfigurations.${userConfig.username} = inputs.home-manager.lib.homeManagerConfiguration {

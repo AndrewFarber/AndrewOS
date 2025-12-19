@@ -1,10 +1,10 @@
 { desktop, ... }:
 
 let
-  desktop_configuration = if desktop == "gnome" then ./gnome
-                          else if desktop == "plasma6" then ./plasma6
-                          else if desktop == "disabled" then ./disabled
-                          else ./gnome;
+  desktops = {
+    gnome = ./gnome;
+    plasma6 = ./plasma6;
+  };
 in {
-  imports = [ desktop_configuration ];
+  imports = if desktops ? ${desktop} then [ desktops.${desktop} ] else [];
 }

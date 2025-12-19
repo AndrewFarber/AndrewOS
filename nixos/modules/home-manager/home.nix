@@ -12,12 +12,13 @@ in
   programs.home-manager.enable = true;
 
   imports = [
-    ./alacritty.nix
     ./git.nix
     ./neovim.nix
     ./tmux.nix
     ./zsh.nix
   ];
+
+  programs.alacritty.enable = true;
 
   home.packages = with pkgs; [
     
