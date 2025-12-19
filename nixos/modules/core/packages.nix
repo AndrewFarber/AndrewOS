@@ -3,10 +3,16 @@
 {
   nixpkgs.config.allowUnfree = true;
   programs = {
-    firefox.enable = true;
+    chromium = {
+      enable = true;
+      extensions = [
+        "dbepggeogbaibhgnhhndojpepiihcmeb"
+      ];
+    };
     zsh.enable = true;
   };
-  environment.systemPackages = with pkgs; [ 
+  environment.systemPackages = with pkgs; [
+    chromium
     claude-code
   ];
 }
