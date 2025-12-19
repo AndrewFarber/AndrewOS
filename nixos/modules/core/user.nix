@@ -19,7 +19,7 @@ in
     ];
     shell = pkgs.zsh;
   };
-  nix.settings.allowed-users = [ "${username}" ];
+  nix.settings.allowed-users = [ username ];
 
   home-manager = {
     useUserPackages = true;
