@@ -23,13 +23,11 @@
       };
     in {
       nixosConfigurations = {
-        # NixOS on Oracle VirtualBox
-        # sudo nixos-rebuild switch --flake .#vbox
         vbox = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
             host = "vbox";
-            desktop = "plasma6";
+            desktop = "sway";
             inherit inputs userConfig;
           };
           modules = [ ./nixos/hosts/vbox ];

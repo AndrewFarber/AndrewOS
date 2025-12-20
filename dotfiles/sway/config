@@ -1,0 +1,228 @@
+# =============================================================================
+# AndrewOS Sway Configuration
+# =============================================================================
+# Sway is a tiling Wayland compositor and a drop-in replacement for i3.
+# This config uses TokyoNight color scheme to match alacritty terminal.
+#
+# Key concepts:
+#   - $mod (Super/Windows key) is the main modifier for all shortcuts
+#   - hjkl keys for vim-style navigation
+#   - Workspaces 1-10 for organizing windows
+#
+# Documentation: man 5 sway
+# =============================================================================
+
+### Variables
+# Mod4 = Super/Windows key (use Mod1 for Alt)
+set $mod Mod4
+
+# Vim-style directional keys
+set $left h
+set $down j
+set $up k
+set $right l
+
+# Default applications
+set $term alacritty
+set $menu fuzzel
+
+# =============================================================================
+# Output Configuration
+# =============================================================================
+# Configure displays: resolution, position, scale, wallpaper
+# List outputs with: swaymsg -t get_outputs
+#
+# Examples:
+#   output HDMI-A-1 resolution 1920x1080 position 0,0
+#   output * bg /path/to/wallpaper.png fill
+#
+# Using TokyoNight background color as default
+output * bg #222436 solid_color
+
+# =============================================================================
+# Idle Configuration
+# =============================================================================
+# Automatic screen locking and power management
+#   - Lock screen after 5 minutes (300s) of inactivity
+#   - Turn off displays after 10 minutes (600s)
+#   - Lock before system sleep
+exec swayidle -w \
+    timeout 300 'swaylock -f -c 222436' \
+    timeout 600 'swaymsg "output * power off"' resume 'swaymsg "output * power on"' \
+    before-sleep 'swaylock -f -c 222436'
+
+# =============================================================================
+# Input Configuration
+# =============================================================================
+# Configure keyboards, touchpads, mice
+# List inputs with: swaymsg -t get_inputs
+
+# Keyboard: Remap Caps Lock to Ctrl (matching NixOS xkb.options)
+input type:keyboard {
+    xkb_options ctrl:nocaps
+}
+
+# Touchpad: Enable tap-to-click and natural scrolling (like macOS)
+input type:touchpad {
+    tap enabled
+    natural_scroll enabled
+}
+
+# =============================================================================
+# Key Bindings - Essential
+# =============================================================================
+
+# Launch terminal
+bindsym $mod+Return exec $term
+
+# Kill focused window (like Alt+F4)
+bindsym $mod+Shift+q kill
+
+# Launch application launcher
+bindsym $mod+d exec $menu
+
+# Reload sway config (apply changes without restart)
+bindsym $mod+Shift+c reload
+
+# Exit sway and return to login screen
+bindsym $mod+Shift+e exec swaymsg exit
+
+# =============================================================================
+# Key Bindings - Screenshots
+# =============================================================================
+# grim: screenshot tool, slurp: region selector, wl-copy: clipboard
+
+# Selected region to clipboard
+bindsym $mod+Shift+s exec grim -g "$(slurp)" - | wl-copy
+
+# =============================================================================
+# Key Bindings - Navigation
+# =============================================================================
+# Move focus between windows (vim-style hjkl)
+
+bindsym $mod+$left focus left
+bindsym $mod+$down focus down
+bindsym $mod+$up focus up
+bindsym $mod+$right focus right
+
+# Move focused window (Shift + direction)
+bindsym $mod+Shift+$left move left
+bindsym $mod+Shift+$down move down
+bindsym $mod+Shift+$up move up
+bindsym $mod+Shift+$right move right
+
+# =============================================================================
+# Key Bindings - Workspaces
+# =============================================================================
+# Switch to workspace
+bindsym $mod+1 workspace number 1
+bindsym $mod+2 workspace number 2
+bindsym $mod+3 workspace number 3
+bindsym $mod+4 workspace number 4
+bindsym $mod+5 workspace number 5
+bindsym $mod+6 workspace number 6
+bindsym $mod+7 workspace number 7
+bindsym $mod+8 workspace number 8
+bindsym $mod+9 workspace number 9
+bindsym $mod+0 workspace number 10
+
+# Move focused window to workspace
+bindsym $mod+Shift+1 move container to workspace number 1
+bindsym $mod+Shift+2 move container to workspace number 2
+bindsym $mod+Shift+3 move container to workspace number 3
+bindsym $mod+Shift+4 move container to workspace number 4
+bindsym $mod+Shift+5 move container to workspace number 5
+bindsym $mod+Shift+6 move container to workspace number 6
+bindsym $mod+Shift+7 move container to workspace number 7
+bindsym $mod+Shift+8 move container to workspace number 8
+bindsym $mod+Shift+9 move container to workspace number 9
+bindsym $mod+Shift+0 move container to workspace number 10
+
+# =============================================================================
+# Key Bindings - Layout
+# =============================================================================
+# Sway supports multiple layout modes: tiling, stacking, tabbed
+
+# Split direction for next window
+bindsym $mod+b splith
+bindsym $mod+v splitv
+
+# Toggle floating mode (window floats above tiled windows)
+bindsym $mod+Shift+space floating toggle
+
+# Switch focus between tiling and floating windows
+bindsym $mod+space focus mode_toggle
+
+# =============================================================================
+# Key Bindings - Scratchpad
+# =============================================================================
+# Scratchpad: hidden workspace for temporary windows
+
+# Move window to scratchpad (hide it)
+bindsym $mod+Shift+minus move scratchpad
+
+# Show/cycle through scratchpad windows
+bindsym $mod+minus scratchpad show
+
+# =============================================================================
+# Resize Mode
+# =============================================================================
+# Enter resize mode with $mod+r, then use hjkl/arrows to resize
+# Press Escape or Enter to exit resize mode
+
+mode "resize" {
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "resize"
+
+# =============================================================================
+# Appearance - TokyoNight Theme
+# =============================================================================
+# Colors matched to alacritty TokyoNight theme for consistency
+
+# TokyoNight colors
+set $bg #222436
+set $fg #c8d3f5
+set $inactive #1b1d2b
+set $urgent #ff757f
+set $accent #82aaff
+
+# Window borders: thin pixel borders instead of title bars
+default_border pixel 2
+default_floating_border pixel 2
+
+# Gaps between windows (inner) and screen edges (outer)
+gaps inner 8
+gaps outer 4
+
+# Window border colors
+#                       border    background text  indicator child_border
+client.focused          $accent   $accent    $bg   $accent   $accent
+client.focused_inactive $bg       $bg        $fg   $bg       $bg
+client.unfocused        $inactive $inactive  $fg   $inactive $inactive
+client.urgent           $urgent   $urgent    $bg   $urgent   $urgent
+
+# =============================================================================
+# Autostart Applications
+# =============================================================================
+# Start essential services when sway launches
+
+# Notification daemon (for system notifications)
+exec mako
+
+# Status bar
+exec waybar
+
+# Include any additional config from /etc/sway/config.d/
+include /etc/sway/config.d/*

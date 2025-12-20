@@ -1,0 +1,122 @@
+{
+    // =========================================================================
+    // Waybar Configuration for Sway
+    // =========================================================================
+    // Waybar is a highly customizable status bar for Wayland compositors.
+    // This config provides system monitoring, workspace switching, and a tray.
+    //
+    // Documentation: https://github.com/Alexays/Waybar/wiki
+    // =========================================================================
+
+    // Position the bar at the top of the screen
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+
+    // Spacing between modules (in pixels)
+    "spacing": 8,
+
+    // =========================================================================
+    // Module Layout
+    // =========================================================================
+    // Left:   Workspaces and current mode (resize, etc.)
+    // Center: Active window title
+    // Right:  System info, clock, and system tray
+
+    "modules-left": ["sway/workspaces", "sway/mode"],
+    "modules-center": ["sway/window"],
+    "modules-right": ["pulseaudio", "network", "cpu", "memory", "battery", "clock", "tray"],
+
+    // =========================================================================
+    // Sway Modules
+    // =========================================================================
+
+    // Workspace buttons - click to switch workspaces
+    "sway/workspaces": {
+        "disable-scroll": true,      // Don't scroll through workspaces with mouse wheel
+        "all-outputs": true,         // Show workspaces from all monitors
+        "format": "{name}"           // Just show the workspace number/name
+    },
+
+    // Shows current mode (e.g., "resize" when in resize mode)
+    "sway/mode": {
+        "format": "<span style=\"italic\">{}</span>"
+    },
+
+    // Active window title (truncated to 50 chars)
+    "sway/window": {
+        "max-length": 50
+    },
+
+    // =========================================================================
+    // System Tray
+    // =========================================================================
+    // Shows application icons (e.g., network manager, bluetooth)
+    "tray": {
+        "spacing": 10
+    },
+
+    // =========================================================================
+    // Clock
+    // =========================================================================
+    // Click to toggle between time-only and full date+time format
+    "clock": {
+        "format": "{:%H:%M}",                    // Default: just time
+        "format-alt": "{:%Y-%m-%d %H:%M}",       // Alt (on click): full date
+        "tooltip-format": "<tt>{calendar}</tt>"  // Tooltip: calendar view
+    },
+
+    // =========================================================================
+    // System Monitoring
+    // =========================================================================
+
+    // CPU usage percentage
+    "cpu": {
+        "format": " {usage}%",  //  = CPU icon (Font Awesome)
+        "tooltip": true
+    },
+
+    // Memory (RAM) usage percentage
+    "memory": {
+        "format": " {}%"  //  = memory icon
+    },
+
+    // =========================================================================
+    // Battery (for laptops)
+    // =========================================================================
+    // Shows different icons based on charge level and charging state
+    "battery": {
+        "states": {
+            "warning": 30,   // Yellow warning below 30%
+            "critical": 15   // Red critical below 15%
+        },
+        "format": "{icon} {capacity}%",
+        "format-charging": " {capacity}%",   //  = charging bolt
+        "format-plugged": " {capacity}%",    //  = plugged in
+        "format-icons": ["", "", "", "", ""]  // Empty to full battery icons
+    },
+
+    // =========================================================================
+    // Network Status
+    // =========================================================================
+    // Shows WiFi signal strength or Ethernet IP
+    "network": {
+        "format-wifi": " {signalStrength}%",      //  = WiFi icon
+        "format-ethernet": " {ipaddr}",           //  = Ethernet icon
+        "format-disconnected": "⚠ Disconnected",
+        "tooltip-format": "{ifname}: {ipaddr}"     // Tooltip: interface and IP
+    },
+
+    // =========================================================================
+    // Audio (PipeWire/PulseAudio)
+    // =========================================================================
+    // Click to open pavucontrol for advanced audio settings
+    "pulseaudio": {
+        "format": "{icon} {volume}%",
+        "format-muted": " muted",   //  = muted speaker
+        "format-icons": {
+            "default": ["", "", ""]  // Volume icons: low, medium, high
+        },
+        "on-click": "pavucontrol"    // Left-click opens audio mixer
+    }
+}

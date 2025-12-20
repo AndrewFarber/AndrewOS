@@ -1,4 +1,4 @@
-{ pkgs, inputs, userConfig, ... }:
+{ pkgs, inputs, userConfig, desktop ? "", ... }:
 
 let
   username = userConfig.username;
@@ -24,7 +24,7 @@ in
     useUserPackages = true;
     useGlobalPkgs = false;
     backupFileExtension = "backup";
-    extraSpecialArgs = { inherit userConfig; };
+    extraSpecialArgs = { inherit userConfig desktop; };
     users.${username} = {
       imports = [ ./../home-manager/home.nix ];
     };
