@@ -4,6 +4,7 @@
   programs.zsh = {
     enable = true;
     shellAliases = {
+      rebuild = "cd ~/AndrewOS && source .env && sudo -E nixos-rebuild switch --flake .#vbox --impure";
       ld = "lazydocker";
       lg = "lazygit";
       ll = "eza --header --long --icons";

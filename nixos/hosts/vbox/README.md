@@ -34,6 +34,6 @@
    ```
 9. Rebuild NixOS then reboot.
    ```
-   > source .env && sudo nixos-rebuild switch --flake .#vbox --impure
+   > source .env && sudo -E nixos-rebuild switch --flake .#vbox --impure
    > reboot
    ```

@@ -34,14 +34,6 @@
         };
       };
 
-      # Home-Manager Stand Alone
-      # home-manager switch --flake .
-      homeConfigurations.${userConfig.username} = inputs.home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        extraSpecialArgs = { inherit userConfig; };
-        modules = [ ./nixos/modules/home-manager/home.nix ];
-      };
-
       # Nix Shells
       # nix develop .#python
       devShells.${system} = {
