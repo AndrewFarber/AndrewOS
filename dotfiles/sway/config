@@ -147,11 +147,9 @@ bindsym $mod+Shift+0 move container to workspace number 10
 bindsym $mod+b splith
 bindsym $mod+v splitv
 
-# Toggle floating mode (window floats above tiled windows)
-bindsym $mod+Shift+space floating toggle
-
-# Switch focus between tiling and floating windows
-bindsym $mod+space focus mode_toggle
+# Toggle floating terminal (scratchpad style)
+bindsym $mod+space exec swaymsg '[app_id="floating_term"]' scratchpad show || alacritty --class floating_term
+for_window [app_id="floating_term"] floating enable, move to scratchpad, scratchpad show
 
 # =============================================================================
 # Key Bindings - Scratchpad

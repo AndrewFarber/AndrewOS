@@ -25,7 +25,7 @@
 
     "modules-left": ["sway/workspaces", "sway/mode"],
     "modules-center": ["sway/window"],
-    "modules-right": ["pulseaudio", "network", "cpu", "memory", "battery", "clock", "tray"],
+    "modules-right": ["cpu", "memory", "clock", "tray"],
 
     // =========================================================================
     // Sway Modules
@@ -81,42 +81,4 @@
         "format": " {}%"  //  = memory icon
     },
 
-    // =========================================================================
-    // Battery (for laptops)
-    // =========================================================================
-    // Shows different icons based on charge level and charging state
-    "battery": {
-        "states": {
-            "warning": 30,   // Yellow warning below 30%
-            "critical": 15   // Red critical below 15%
-        },
-        "format": "{icon} {capacity}%",
-        "format-charging": " {capacity}%",   //  = charging bolt
-        "format-plugged": " {capacity}%",    //  = plugged in
-        "format-icons": ["", "", "", "", ""]  // Empty to full battery icons
-    },
-
-    // =========================================================================
-    // Network Status
-    // =========================================================================
-    // Shows WiFi signal strength or Ethernet IP
-    "network": {
-        "format-wifi": " {signalStrength}%",      //  = WiFi icon
-        "format-ethernet": " {ipaddr}",           //  = Ethernet icon
-        "format-disconnected": "⚠ Disconnected",
-        "tooltip-format": "{ifname}: {ipaddr}"     // Tooltip: interface and IP
-    },
-
-    // =========================================================================
-    // Audio (PipeWire/PulseAudio)
-    // =========================================================================
-    // Click to open pavucontrol for advanced audio settings
-    "pulseaudio": {
-        "format": "{icon} {volume}%",
-        "format-muted": " muted",   //  = muted speaker
-        "format-icons": {
-            "default": ["", "", ""]  // Volume icons: low, medium, high
-        },
-        "on-click": "pavucontrol"    // Left-click opens audio mixer
-    }
 }

@@ -20,9 +20,22 @@ in
 
   programs.alacritty.enable = true;
 
+  # Hide apps from Fuzzel launcher
+  xdg.desktopEntries = {
+    nvim = {
+      name = "Neovim wrapper";
+      noDisplay = true;
+    };
+    yazi = {
+      name = "Yazi";
+      noDisplay = true;
+    };
+  };
+
   home.packages = with pkgs; [
-    
+
     # Command line
+    bat                       # Cat with syntax highlighting
     eza                       # Replacement for ls
     fzf                       # Fuzzy finder
     lazydocker                # Simple terminal UI for docker
@@ -31,7 +44,6 @@ in
     starship                  # Prompt
     tldr                      # Community-maintained help pages
     yazi                      # TUI File System Manager
-    xclip                     # Clipboard
 
     # Language Server Protocols (LSPs)
     lua-language-server       # Lua

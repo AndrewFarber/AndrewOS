@@ -9,12 +9,10 @@
     ../../modules/core
   ];
 
-  # Boot Loaders
-  bootloaders.grub.enable = false;
+  # Boot Loader
   bootloaders.systemd.enable = true;
 
-  # GPU Drivers
+  # GPU Driver
   drivers.vbox.enable = true;
-  drivers.nvidia.enable = false;
 
 }

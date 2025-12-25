@@ -25,6 +25,7 @@
 
       # Core
       comment-nvim
+      gitsigns-nvim
       harpoon2
       lualine-nvim
       noice-nvim

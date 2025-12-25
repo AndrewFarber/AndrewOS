@@ -7,6 +7,7 @@
       rebuild = "cd ~/AndrewOS && source .env && sudo -E nixos-rebuild switch --flake .#vbox --impure";
       ld = "lazydocker";
       lg = "lazygit";
+      y = "yazi";
       ll = "eza --header --long --icons";
       lt = "eza --tree --icons";
       ta = "tmux attach-session";
