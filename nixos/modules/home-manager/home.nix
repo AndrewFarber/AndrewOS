@@ -20,6 +20,11 @@ in
 
   programs.alacritty.enable = true;
 
+  programs.direnv = {
+    enable = true;
+    nix-direnv.enable = true;
+  };
+
   # Hide apps from Fuzzel launcher
   xdg.desktopEntries = {
     nvim = {
