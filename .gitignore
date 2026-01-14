@@ -1,5 +1,2 @@
 # Environment variables
 .env
-
-# Host files
-hardware.nix
