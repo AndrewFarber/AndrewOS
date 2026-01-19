@@ -129,7 +129,7 @@
         "waybar"
         "mako"
         "hypridle"
-        "systemctl --user start hyprpolkitagent"
+        "hyprpolkitagent"
       ];
     };
   };
