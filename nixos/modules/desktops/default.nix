@@ -3,6 +3,7 @@
 let
   desktops = {
     gnome = ./gnome;
+    hyprland = ./hyprland;
     plasma6 = ./plasma6;
     sway = ./sway;
   };

@@ -27,6 +27,10 @@ in
     ./fuzzel.nix
     ./sway.nix
     ./waybar.nix
+  ] else if desktop == "hyprland" then [
+    ./fuzzel.nix
+    ./hyprland.nix
+    ./waybar.nix
   ] else []);
 
   # Dotfiles that are always loaded
@@ -42,6 +46,12 @@ in
     ".config/sway/theme".source = theme.sway;
     ".config/waybar/style.css".source = theme.waybar;
     ".config/fuzzel/theme.ini".source = theme.fuzzel;
+  } else {})
+  # Hyprland theme files (reuses waybar and fuzzel themes)
+  // (if desktop == "hyprland" then {
+    ".config/waybar/style.css".source = theme.waybar;
+    ".config/fuzzel/theme.ini".source = theme.fuzzel;
+    ".config/hypr/wallpaper".source = theme.wallpaper;
   } else {});
 
 }

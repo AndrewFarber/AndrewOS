@@ -17,4 +17,7 @@ in
   sway = ./${theme}/sway;
   fuzzel = ./${theme}/fuzzel.ini;
   waybar = ./${theme}/waybar.css;
+
+  # Wallpaper
+  wallpaper = ./${theme}/backgrounds/2-Pawel-Czerwinski-Abstract-Purple-Blue.jpg;
 }
