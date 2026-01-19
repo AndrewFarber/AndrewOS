@@ -2,7 +2,7 @@
 
 let
   username = userConfig.username;
-  theme = import ./../themes/default.nix { inherit pkgs; };
+  theme = import ../themes/default.nix { inherit pkgs; };
 in
 
 {
@@ -64,8 +64,8 @@ in
 
   # Dotfiles that are always loaded
   home.file = {
-    ".config/nvim/init.lua".source = ./../dotfiles/neovim/init.lua;
-    ".config/nvim/lua".source = ./../dotfiles/neovim/lua;
+    ".config/nvim/init.lua".source = ../neovim/init.lua;
+    ".config/nvim/lua".source = ../neovim/lua;
     # Theme configs
     ".config/nvim/theme.lua".source = theme.neovimLua;
     ".config/alacritty/theme.toml".source = theme.alacritty;

@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ ... }:
 
 {
   programs.alacritty = {
@@ -9,8 +9,8 @@
       window = {
         opacity = 0.9;
         padding = {
-          x = 10;
-          y = 10;
+          x = 5;
+          y = 5;
         };
       };
 
