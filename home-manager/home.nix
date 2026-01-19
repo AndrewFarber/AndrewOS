@@ -74,7 +74,7 @@ in
     ".config/sway/config".source = ./../dotfiles/sway/config;
     ".config/sway/theme".source = theme.sway;
     ".config/waybar/config".source = ./../dotfiles/waybar/config;
-    ".config/waybar/style.css".source = ./../dotfiles/waybar/style.css;
+    ".config/waybar/style.css".source = theme.waybar;
     ".config/fuzzel/fuzzel.ini".source = ./../dotfiles/fuzzel/fuzzel.ini;
     ".config/fuzzel/theme.ini".source = theme.fuzzel;
   } else {});

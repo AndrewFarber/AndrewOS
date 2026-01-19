@@ -16,4 +16,5 @@ in
   # Desktop (sway)
   sway = ./${theme}/sway;
   fuzzel = ./${theme}/fuzzel.ini;
+  waybar = ./${theme}/waybar.css;
 }
