@@ -1,4 +1,4 @@
-# AndrewOS
+# HydraOS
 
 Personal [NixOS](https://nixos.org/) and [Home Manager](https://nix-community.github.io/home-manager/) configurations for a reproducible Linux development environment.
 
@@ -13,22 +13,34 @@ Personal [NixOS](https://nixos.org/) and [Home Manager](https://nix-community.gi
 ## Directory Structure
 
 ```
-AndrewOS/
+HydraOS/
+├── home-manager/            # User environment modules
+│   ├── alacritty.nix        # Terminal emulator
+│   ├── cli-tools.nix        # CLI tools (bat, eza, fzf, etc.)
+│   ├── direnv.nix           # Direnv configuration
+│   ├── fuzzel.nix           # Application launcher
+│   ├── git.nix              # Git configuration
+│   ├── home.nix             # Main home-manager entry
+│   ├── lsps.nix             # Language servers
+│   ├── neovim.nix           # Editor configuration
+│   ├── starship.nix         # Shell prompt
+│   ├── sway.nix             # Window manager
+│   ├── tmux.nix             # Terminal multiplexer
+│   ├── waybar.nix           # Status bar
+│   └── zsh.nix              # Shell configuration
+├── neovim/                  # Neovim Lua configuration
+│   ├── init.lua
+│   └── lua/
 ├── nixos/
-│   ├── hosts/vbox/          # VirtualBox VM configuration
+│   ├── hosts/
+│   │   ├── vbox-laptop/     # VirtualBox laptop config
+│   │   └── vbox-desktop/    # VirtualBox desktop config
 │   └── modules/
 │       ├── bootloaders/     # Systemd boot configuration
 │       ├── core/            # Network, users, packages, fonts
 │       ├── desktops/        # Sway, GNOME, Plasma 6 configs
-│       ├── drivers/         # VirtualBox graphics drivers
-│       └── home-manager/    # User environment (git, zsh, tmux, neovim)
-├── dotfiles/
-│   ├── alacritty/           # Terminal emulator
-│   ├── fuzzel/              # Application launcher
-│   ├── neovim/              # Editor with plugins
-│   ├── sway/                # Window manager
-│   ├── starship/            # Shell prompt
-│   └── waybar/              # Status bar
+│       └── drivers/         # VirtualBox graphics drivers
+├── themes/                  # Theme configurations
 ├── shells/
 │   └── jupyter.nix          # Jupyter Lab dev environment
 ├── assets/
