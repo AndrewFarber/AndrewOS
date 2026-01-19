@@ -13,14 +13,13 @@ in
   programs.home-manager.enable = true;
 
   imports = [
+    ./alacritty.nix
     ./git.nix
     ./neovim.nix
     ./tmux.nix
     ./zsh.nix
     theme.neovimModule
   ];
-
-  programs.alacritty.enable = true;
 
   programs.direnv = {
     enable = true;
@@ -64,7 +63,6 @@ in
     ".config/starship.toml".source = ./../dotfiles/starship/starship.toml;
     ".config/nvim/init.lua".source = ./../dotfiles/neovim/init.lua;
     ".config/nvim/lua".source = ./../dotfiles/neovim/lua;
-    ".config/alacritty/alacritty.toml".source = ./../dotfiles/alacritty/alacritty.toml;
     # Theme configs
     ".config/nvim/theme.lua".source = theme.neovimLua;
     ".config/alacritty/theme.toml".source = theme.alacritty;
