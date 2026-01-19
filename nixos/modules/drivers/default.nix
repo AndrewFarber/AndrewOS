@@ -1,7 +1,0 @@
-{ ... }:
-
-{
-  imports = [
-    ./vbox-drivers.nix
-  ];
-}
