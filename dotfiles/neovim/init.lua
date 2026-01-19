@@ -17,3 +17,6 @@ require 'plugins.oil'
 require 'plugins.telescope'
 require 'plugins.which-key'
 
+-- Theme (loaded from ~/.config/nvim/theme.lua, managed by NixOS)
+dofile(vim.fn.stdpath('config') .. '/theme.lua')
+

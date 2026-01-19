@@ -2,6 +2,7 @@
 
 let
   username = userConfig.username;
+  theme = import ./../themes/default.nix { inherit pkgs; };
 in
 
 {
@@ -16,6 +17,7 @@ in
     ./neovim.nix
     ./tmux.nix
     ./zsh.nix
+    theme.neovimModule
   ];
 
   programs.alacritty.enable = true;
@@ -62,13 +64,19 @@ in
     ".config/starship.toml".source = ./../dotfiles/starship/starship.toml;
     ".config/nvim/init.lua".source = ./../dotfiles/neovim/init.lua;
     ".config/nvim/lua".source = ./../dotfiles/neovim/lua;
+    ".config/alacritty/alacritty.toml".source = ./../dotfiles/alacritty/alacritty.toml;
+    # Theme configs
+    ".config/nvim/theme.lua".source = theme.neovimLua;
+    ".config/alacritty/theme.toml".source = theme.alacritty;
   }
   # Sway-specific dotfiles (only loaded when desktop = "sway")
   // (if desktop == "sway" then {
     ".config/sway/config".source = ./../dotfiles/sway/config;
+    ".config/sway/theme".source = theme.sway;
     ".config/waybar/config".source = ./../dotfiles/waybar/config;
     ".config/waybar/style.css".source = ./../dotfiles/waybar/style.css;
     ".config/fuzzel/fuzzel.ini".source = ./../dotfiles/fuzzel/fuzzel.ini;
+    ".config/fuzzel/theme.ini".source = theme.fuzzel;
   } else {});
 
 }

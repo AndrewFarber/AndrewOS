@@ -1,8 +1,5 @@
 { ... }:
 
-let
-  theme = import ./../../../themes/default.nix;
-in
 {
   imports = [
     ./fonts.nix
@@ -12,6 +9,5 @@ in
     ./system.nix
     ./user.nix
     ./virtualization.nix
-    theme.stylixModule
   ];
 }
