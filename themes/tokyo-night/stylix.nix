@@ -10,8 +10,8 @@
     base16Scheme = "${pkgs.base16-schemes}/share/themes/tokyo-night-storm.yaml";
 
     # Wallpaper (required by stylix, can use a solid color image)
-    image = pkgs.runCommand "wallpaper.png" {} ''
-      ${pkgs.imagemagick}/bin/magick -size 1920x1080 xc:#222436 PNG:$out
+    image = pkgs.runCommand "wallpaper" {} ''
+      ${pkgs.imagemagick}/bin/magick -size 1920x1080 xc:#222436 $out
     '';
 
     # Fonts
