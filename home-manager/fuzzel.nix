@@ -25,4 +25,17 @@
       };
     };
   };
+
+  # Hide apps from Fuzzel launcher
+  xdg.desktopEntries = {
+    nvim = {
+      name = "Neovim wrapper";
+      noDisplay = true;
+    };
+    yazi = {
+      name = "Yazi";
+      noDisplay = true;
+    };
+  };
+
 }

@@ -1,4 +1,6 @@
-# Oracle VirtualBox Setup
+# Host Setups
+
+## Oracle VirtualBox
 
 1. Download graphical [NixOS](https://nixos.org/download/#nixos-virtualbox) ISO image.
 2. Create a new virtual machine within VirtualBox.

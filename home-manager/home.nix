@@ -14,7 +14,10 @@ in
 
   imports = [
     ./alacritty.nix
+    ./cli-tools.nix
+    ./direnv.nix
     ./git.nix
+    ./lsps.nix
     ./neovim.nix
     ./starship.nix
     ./tmux.nix
@@ -25,42 +28,6 @@ in
     ./sway.nix
     ./waybar.nix
   ] else []);
-
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
-
-  # Hide apps from Fuzzel launcher
-  xdg.desktopEntries = {
-    nvim = {
-      name = "Neovim wrapper";
-      noDisplay = true;
-    };
-    yazi = {
-      name = "Yazi";
-      noDisplay = true;
-    };
-  };
-
-  home.packages = with pkgs; [
-
-    # Command line
-    bat                       # Cat with syntax highlighting
-    eza                       # Replacement for ls
-    fzf                       # Fuzzy finder
-    lazydocker                # Simple terminal UI for docker
-    lazygit                   # Simple terminal UI for git
-    ripgrep                   # Faster grep
-    tldr                      # Community-maintained help pages
-    yazi                      # TUI File System Manager
-
-    # Language Server Protocols (LSPs)
-    lua-language-server       # Lua
-    nil                       # Nix
-    pyright                   # Python
-
-  ];
 
   # Dotfiles that are always loaded
   home.file = {
