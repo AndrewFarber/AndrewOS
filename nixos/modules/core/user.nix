@@ -26,7 +26,7 @@ in
     backupFileExtension = "backup";
     extraSpecialArgs = { inherit userConfig desktop; };
     users.${username} = {
-      imports = [ ./../home-manager/home.nix ];
+      imports = [ ./../../../home-manager/home.nix ];
     };
   };
 }
