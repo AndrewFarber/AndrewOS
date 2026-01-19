@@ -1,10 +1,10 @@
-{ ... }:
+{ userConfig, ... }:
 
 {
   programs.zsh = {
     enable = true;
     shellAliases = {
-      rebuild = "cd ~/AndrewOS && source .env && sudo -E nixos-rebuild switch --flake .#vbox --impure";
+      rebuild = "cd ~/AndrewOS && source .env && sudo -E nixos-rebuild switch --flake .#${userConfig.host} --impure";
       gc = "nix-collect-garbage -d";
       update = "cd ~/AndrewOS && nix flake update";
       ld = "lazydocker";

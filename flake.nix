@@ -16,6 +16,8 @@
         username = builtins.getEnv "USERNAME";
         fullName = builtins.getEnv "NAME";
         email = builtins.getEnv "EMAIL";
+        host = builtins.getEnv "HOST";
+        desktop = builtins.getEnv "DESKTOP";
       };
       pkgs = import nixpkgs {
         inherit system;
@@ -23,15 +25,27 @@
       };
     in {
       nixosConfigurations = {
+
         vbox = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
-            host = "vbox";
-            desktop = "sway";
+            host = userConfig.host;
+            desktop = userConfig.desktop;
             inherit inputs userConfig;
           };
           modules = [ ./nixos/hosts/vbox ];
         };
+
+        vbox-desktop = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            host = userConfig.host;
+            desktop = userConfig.desktop;
+            inherit inputs userConfig;
+          };
+          modules = [ ./nixos/hosts/vbox-desktop ];
+        };
+
       };
 
       devShells.${system} = {
