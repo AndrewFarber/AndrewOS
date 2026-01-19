@@ -1,5 +1,5 @@
 {
-  description = "AndrewOS";
+  description = "HydraOS";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -26,14 +26,14 @@
     in {
       nixosConfigurations = {
 
-        vbox = nixpkgs.lib.nixosSystem {
+        vbox-laptop = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
             host = userConfig.host;
             desktop = userConfig.desktop;
             inherit inputs userConfig;
           };
-          modules = [ ./nixos/hosts/vbox ];
+          modules = [ ./nixos/hosts/vbox-laptop ];
         };
 
         vbox-desktop = nixpkgs.lib.nixosSystem {
