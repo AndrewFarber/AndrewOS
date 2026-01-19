@@ -2,6 +2,7 @@
 
 let
   username = userConfig.username;
+  theme = import ./../../../themes/default.nix { inherit pkgs; };
 in
 
 {
@@ -16,6 +17,7 @@ in
     ./neovim.nix
     ./tmux.nix
     ./zsh.nix
+    theme.neovimModule
   ];
 
   programs.alacritty.enable = true;
@@ -63,6 +65,8 @@ in
     ".config/nvim/init.lua".source = ./../../../dotfiles/neovim/init.lua;
     ".config/nvim/lua".source = ./../../../dotfiles/neovim/lua;
     ".config/alacritty/alacritty.toml".source = ./../../../dotfiles/alacritty/alacritty.toml;
+    # Theme lua config is loaded separately into nvim runtime
+    ".config/nvim/theme.lua".source = theme.neovimLua;
   }
   # Sway-specific dotfiles (only loaded when desktop = "sway")
   // (if desktop == "sway" then {

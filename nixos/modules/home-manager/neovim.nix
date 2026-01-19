@@ -48,7 +48,6 @@
       ]))
       oil-nvim
       telescope-nvim
-      tokyonight-nvim
       vim-fugitive
       vim-sleuth
       vim-surround
