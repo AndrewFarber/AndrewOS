@@ -45,5 +45,8 @@
       name = "Adwaita";
       size = 24;
     };
+
+    # Disable neovim theming (we manage init.lua ourselves)
+    targets.neovim.enable = false;
   };
 }
