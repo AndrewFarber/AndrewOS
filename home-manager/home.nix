@@ -60,6 +60,7 @@ in
   # Dotfiles that are always loaded
   home.file = {
     ".config/starship.toml".source = ./../dotfiles/starship/starship.toml;
+    ".config/nvim/init.lua".source = ./../dotfiles/neovim/init.lua;
     ".config/nvim/lua".source = ./../dotfiles/neovim/lua;
   }
   # Sway-specific dotfiles (only loaded when desktop = "sway")
