@@ -46,9 +46,4 @@
       size = 24;
     };
   };
-
-  # Disable neovim theming in home-manager (we manage init.lua ourselves)
-  home-manager.sharedModules = [{
-    stylix.targets.neovim.enable = false;
-  }];
 }

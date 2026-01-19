@@ -5,6 +5,29 @@
     enable = true;
     defaultEditor = true;
     extraPackages = [ pkgs.gcc pkgs.nodejs ];
+
+    # Load custom config (stylix handles colorscheme)
+    extraLuaConfig = ''
+      -- Core settings
+      require 'core.options'
+      require 'core.keymaps'
+
+      -- Plugins (downloaded using Nix Home-Manager)
+      require 'plugins.comment'
+      require 'plugins.dap'
+      require 'plugins.gitsigns'
+      require 'plugins.harpoon'
+      require 'plugins.lualine'
+      require 'plugins.noice'
+      require 'plugins.nvim-autopairs'
+      require 'plugins.nvim-cmp'
+      require 'plugins.nvim-lspconfig'
+      require 'plugins.nvim-treesitter'
+      require 'plugins.oil'
+      require 'plugins.telescope'
+      require 'plugins.which-key'
+    '';
+
     plugins = with pkgs.vimPlugins; [
 
       # Dependencies
