@@ -16,10 +16,15 @@ in
     ./alacritty.nix
     ./git.nix
     ./neovim.nix
+    ./starship.nix
     ./tmux.nix
     ./zsh.nix
     theme.neovimModule
-  ];
+  ] ++ (if desktop == "sway" then [
+    ./fuzzel.nix
+    ./sway.nix
+    ./waybar.nix
+  ] else []);
 
   programs.direnv = {
     enable = true;
@@ -47,7 +52,6 @@ in
     lazydocker                # Simple terminal UI for docker
     lazygit                   # Simple terminal UI for git
     ripgrep                   # Faster grep
-    starship                  # Prompt
     tldr                      # Community-maintained help pages
     yazi                      # TUI File System Manager
 
@@ -60,20 +64,16 @@ in
 
   # Dotfiles that are always loaded
   home.file = {
-    ".config/starship.toml".source = ./../dotfiles/starship/starship.toml;
     ".config/nvim/init.lua".source = ./../dotfiles/neovim/init.lua;
     ".config/nvim/lua".source = ./../dotfiles/neovim/lua;
     # Theme configs
     ".config/nvim/theme.lua".source = theme.neovimLua;
     ".config/alacritty/theme.toml".source = theme.alacritty;
   }
-  # Sway-specific dotfiles (only loaded when desktop = "sway")
+  # Sway-specific theme files (only loaded when desktop = "sway")
   // (if desktop == "sway" then {
-    ".config/sway/config".source = ./../dotfiles/sway/config;
     ".config/sway/theme".source = theme.sway;
-    ".config/waybar/config".source = ./../dotfiles/waybar/config;
     ".config/waybar/style.css".source = theme.waybar;
-    ".config/fuzzel/fuzzel.ini".source = ./../dotfiles/fuzzel/fuzzel.ini;
     ".config/fuzzel/theme.ini".source = theme.fuzzel;
   } else {});
 
