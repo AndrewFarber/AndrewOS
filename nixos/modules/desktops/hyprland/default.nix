@@ -82,5 +82,6 @@
     noto-fonts-cjk-sans
     noto-fonts-color-emoji
     font-awesome
+    nerd-fonts.meslo-lg
   ];
 }
