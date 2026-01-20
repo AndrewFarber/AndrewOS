@@ -19,5 +19,5 @@ in
   waybar = ./${theme}/waybar.css;
 
   # Wallpaper
-  wallpaper = ./${theme}/backgrounds/2-Pawel-Czerwinski-Abstract-Purple-Blue.jpg;
+  wallpaper = ./${theme}/backgrounds/default.png;
 }

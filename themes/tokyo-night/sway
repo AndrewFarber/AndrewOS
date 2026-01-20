@@ -5,8 +5,8 @@ set $inactive #1b1d2b
 set $urgent #ff757f
 set $accent #82aaff
 
-# Background color
-output * bg $bg solid_color
+# Background wallpaper
+output * bg ~/.config/sway/wallpaper fill
 
 # Swaylock colors
 set $lock_color 222436

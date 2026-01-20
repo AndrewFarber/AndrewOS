@@ -44,6 +44,7 @@ in
   # Sway-specific theme files (only loaded when desktop = "sway")
   // (if desktop == "sway" then {
     ".config/sway/theme".source = theme.sway;
+    ".config/sway/wallpaper".source = theme.wallpaper;
     ".config/waybar/style.css".source = theme.waybar;
     ".config/fuzzel/theme.ini".source = theme.fuzzel;
   } else {})
