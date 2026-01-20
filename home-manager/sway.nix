@@ -91,6 +91,7 @@
       };
 
       window = {
+        titlebar = false;
         border = 2;
       };
 
