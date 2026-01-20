@@ -21,9 +21,6 @@
 
         # Security
         HttpsOnlyMode = "force_enabled";
-
-        # Startup
-        # RestoreOnStartup = 1;
       };
     };
     zsh.enable = true;
