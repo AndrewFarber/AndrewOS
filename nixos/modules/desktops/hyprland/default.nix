@@ -8,12 +8,25 @@
 
   services.greetd = {
     enable = true;
+    vt = 1;
     settings = {
       default_session = {
         command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --sessions ${config.services.displayManager.sessionData.desktops}/share/wayland-sessions";
         user = "greeter";
       };
     };
+  };
+
+  # Prevent kernel messages from overwriting tuigreet
+  boot.kernelParams = [ "console=tty1" ];
+  systemd.services.greetd.serviceConfig = {
+    Type = "idle";
+    StandardInput = "tty";
+    StandardOutput = "tty";
+    StandardError = "journal";
+    TTYReset = true;
+    TTYVHangup = true;
+    TTYVTDisallocate = true;
   };
 
   security.rtkit.enable = true;
