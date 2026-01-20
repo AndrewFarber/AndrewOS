@@ -49,11 +49,7 @@
 
   xdg.portal = {
     enable = true;
-    configPackages = [ pkgs.hyprland ];
-    extraPortals = [
-      pkgs.xdg-desktop-portal-hyprland
-      pkgs.xdg-desktop-portal-gtk
-    ];
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];  # GTK fallback for file pickers
   };
 
   environment.systemPackages = with pkgs; [
@@ -70,6 +66,7 @@
     pavucontrol
     qt6.qtwayland
     swaybg
+    kitty
   ];
 
   environment.sessionVariables = {
