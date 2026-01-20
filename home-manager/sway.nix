@@ -115,6 +115,7 @@
       for_window [app_id="floating_term"] floating enable, move to scratchpad, scratchpad show
       include ~/.config/sway/theme
       include /etc/sway/config.d/*
+      workspace 1
     '';
   };
 }
