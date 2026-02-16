@@ -9,19 +9,6 @@
         "dbepggeogbaibhgnhhndojpepiihcmeb"  # Vimium
         "ghmbeldphafepmbegfdlkpapadhbakde"  # Proton PW Manager
       ];
-      extraOpts = {
-        # Privacy
-        BrowserSignin = 0;
-        SyncDisabled = true;
-        MetricsReportingEnabled = false;
-        SpellCheckServiceEnabled = false;
-        PasswordManagerEnabled = false;
-        AutofillAddressEnabled = false;
-        AutofillCreditCardEnabled = false;
-
-        # Security
-        HttpsOnlyMode = "force_enabled";
-      };
     };
     zsh.enable = true;
   };

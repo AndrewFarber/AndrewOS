@@ -1,6 +1,5 @@
 -- GitHub Repository: https://github.com/neovim/nvim-lspconfig
 -- Description: "Data only" repository providing basic Neovim LSP defaults
-local lspconfig = require('lspconfig')
 local navic = require('nvim-navic')
 local navbuddy = require('nvim-navbuddy')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -10,18 +9,18 @@ local on_attach = function(client, bufnr)
   navbuddy.attach(client, bufnr)
 end
 
--- LSP configurations
-lspconfig.pyright.setup({
+-- LSP configurations using vim.lsp.config (Neovim 0.11+)
+vim.lsp.config('pyright', {
   capabilities = capabilities,
   on_attach = on_attach,
 })
 
-lspconfig.nil_ls.setup({
+vim.lsp.config('nil_ls', {
   capabilities = capabilities,
   on_attach = on_attach,
 })
 
-lspconfig.lua_ls.setup({
+vim.lsp.config('lua_ls', {
   capabilities = capabilities,
   on_attach = on_attach,
   settings = {
@@ -32,6 +31,8 @@ lspconfig.lua_ls.setup({
     }
   }
 })
+
+vim.lsp.enable({ 'pyright', 'nil_ls', 'lua_ls' })
 
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('lsp-attach', { clear = true }),
