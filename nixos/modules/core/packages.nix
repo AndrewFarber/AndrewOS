@@ -16,5 +16,6 @@
     chromium
     claude-code
     obsidian
+    wlr-randr
   ];
 }
