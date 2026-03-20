@@ -1,8 +1,5 @@
-#!/usr/bin/env bash
-BIN_DIR="$(dirname "$(readlink -f "$0")")"
-
 declare -A icons=(
-  [launch-terminal]="󰆍 Open Terminal"
+  [launch-terminal]="  Open Terminal"
   [launch-browser]="󰖟 Open Browser"
   [launch-editor]="󰅪 Open Editor"
   [launch-files]="󰉋 Open File Manager"
@@ -29,11 +26,8 @@ declare -A icons=(
 )
 
 entries=""
-for script in "$BIN_DIR"/*; do
-  name=$(basename "$script")
-  [ "$name" = "menu" ] && continue
-  label="${icons[$name]:-$name}"
-  entries+="$label"$'\n'
+for key in "${!icons[@]}"; do
+  entries+="${icons[$key]}"$'\n'
 done
 
 choice=$(printf '%s' "$entries" | fuzzel --dmenu --prompt "> ")
@@ -47,5 +41,5 @@ for key in "${!icons[@]}"; do
     break
   fi
 done
-[ -z "$script" ] && script="$choice"
-exec "$BIN_DIR/$script"
+[ -z "$script" ] && exit 0
+exec "$script"

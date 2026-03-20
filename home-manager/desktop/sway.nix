@@ -28,7 +28,7 @@
       in {
         "${mod}+Return" = "exec alacritty";
         "${mod}+Shift+q" = "kill";
-        "${mod}+d" = "exec ~/AndrewOS/bin/menu";
+        "${mod}+d" = "exec menu";
         "${mod}+Shift+c" = "reload";
         "${mod}+Shift+e" = "exec swaymsg exit";
         "${mod}+Shift+s" = ''exec grim -g "$(slurp)" - | wl-copy'';
@@ -70,7 +70,7 @@
 
         "${mod}+space" = "exec fuzzel";
         "${mod}+Alt+v" = ''exec cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'';
-        "${mod}+Alt+w" = "exec ~/AndrewOS/bin/wallpaper";
+        "${mod}+Alt+w" = "exec wallpaper";
         "${mod}+Shift+minus" = "move scratchpad";
         "${mod}+minus" = "scratchpad show";
 

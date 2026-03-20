@@ -2,10 +2,10 @@
 
 with lib;
 let
-  cfg = config.bootloaders.systemd;
+  cfg = config.andrewos.bootloader.systemd;
 in {
 
-  options.bootloaders.systemd = {
+  options.andrewos.bootloader.systemd = {
     enable = mkEnableOption "systemd-boot";
   };
 

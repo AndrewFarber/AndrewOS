@@ -12,13 +12,7 @@
   outputs = { nixpkgs, ... } @ inputs:
     let
       system = "x86_64-linux";
-      userConfig = {
-        username = builtins.getEnv "USERNAME";
-        fullName = builtins.getEnv "NAME";
-        email = builtins.getEnv "EMAIL";
-        host = builtins.getEnv "HOST";
-        desktop = builtins.getEnv "DESKTOP";
-      };
+      userConfig = import ./user.nix;
       pkgs = import nixpkgs {
         inherit system;
         config.allowUnfree = true;
@@ -29,8 +23,8 @@
         vbox-desktop = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
-            host = userConfig.host;
-            desktop = userConfig.desktop;
+            host = "vbox-desktop";
+            desktop = "sway";
             inherit inputs userConfig;
           };
           modules = [ ./nixos/hosts/vbox-desktop ];
@@ -39,8 +33,8 @@
         thinkpad-x1 = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {
-            host = userConfig.host;
-            desktop = userConfig.desktop;
+            host = "thinkpad-x1";
+            desktop = "sway";
             inherit inputs userConfig;
           };
           modules = [ ./nixos/hosts/thinkpad-x1 ];

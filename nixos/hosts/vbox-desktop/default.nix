@@ -11,6 +11,6 @@
   ];
 
   # Boot Loader
-  bootloaders.systemd.enable = true;
+  andrewos.bootloader.systemd.enable = true;
 
 }

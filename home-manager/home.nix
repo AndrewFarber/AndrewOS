@@ -10,28 +10,28 @@ in
   home.username = username;
   home.homeDirectory = "/home/${username}";
   home.stateVersion = "24.11";
-  home.sessionPath = [ "$HOME/AndrewOS/bin" ];
   programs.home-manager.enable = true;
 
   imports = [
-    ./alacritty.nix
-    ./cli-tools.nix
-    ./direnv.nix
-    ./git.nix
-    ./lsps.nix
-    ./neovim.nix
-    ./starship.nix
-    ./tmux.nix
-    ./zsh.nix
+    ./scripts.nix
+    ./terminal/alacritty.nix
+    ./dev/cli-tools.nix
+    ./shell/direnv.nix
+    ./dev/git.nix
+    ./editor/lsps.nix
+    ./editor/neovim.nix
+    ./shell/starship.nix
+    ./terminal/tmux.nix
+    ./shell/zsh.nix
     theme.neovimModule
   ] ++ (if desktop == "sway" then [
-    ./fuzzel.nix
-    ./sway.nix
-    ./waybar.nix
+    ./desktop/fuzzel.nix
+    ./desktop/sway.nix
+    ./desktop/waybar.nix
   ] else if desktop == "hyprland" then [
-    ./fuzzel.nix
-    ./hyprland.nix
-    ./waybar.nix
+    ./desktop/fuzzel.nix
+    ./desktop/hyprland.nix
+    ./desktop/waybar.nix
   ] else []);
 
   # Dotfiles that are always loaded

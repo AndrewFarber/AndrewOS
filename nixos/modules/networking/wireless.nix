@@ -2,9 +2,9 @@
 
 with lib;
 let
-  cfg = config.networking-modules.wireless;
+  cfg = config.andrewos.networking.wireless;
 in {
-  options.networking-modules.wireless = {
+  options.andrewos.networking.wireless = {
     enable = mkEnableOption "IWD wireless networking";
   };
 

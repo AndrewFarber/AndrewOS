@@ -75,7 +75,7 @@
 
       bind = [
         "$mod, Return, exec, $terminal"
-        "$mod, D, exec, ~/AndrewOS/bin/menu"
+        "$mod, D, exec, menu"
         "$mod, Q, killactive"
         "$mod, M, exit"
         "$mod, V, togglefloating"
@@ -127,7 +127,7 @@
         "$mod ALT, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
 
         # Wallpaper picker
-        "$mod ALT, W, exec, ~/AndrewOS/bin/wallpaper"
+        "$mod ALT, W, exec, wallpaper"
 
         # Lock screen
         "$mod, Escape, exec, hyprlock"

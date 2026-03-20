@@ -10,9 +10,9 @@
   ];
 
   # Boot Loader
-  bootloaders.systemd.enable = true;
+  andrewos.bootloader.systemd.enable = true;
 
   # Wireless
-  networking-modules.wireless.enable = true;
+  andrewos.networking.wireless.enable = true;
 
 }
