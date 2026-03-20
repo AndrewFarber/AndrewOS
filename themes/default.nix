@@ -1,7 +1,7 @@
-{ pkgs }:
+{ pkgs, userConfig }:
 
 let
-  theme = "gruvbox";  # Change this one line to switch themes
+  theme = userConfig.theme or "tokyo-night";
 
   # Auto-pick the first background (0-*) from the theme's backgrounds directory
   backgroundsDir = ./${theme}/backgrounds;

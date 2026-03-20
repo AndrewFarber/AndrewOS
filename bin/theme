@@ -1,5 +1,10 @@
 THEMES_DIR="$HOME/AndrewOS/themes"
-DEFAULT_NIX="$THEMES_DIR/default.nix"
+USER_NIX="$HOME/AndrewOS/user.nix"
+
+if [ ! -f "$USER_NIX" ]; then
+  echo "Error: $USER_NIX not found. Copy user.nix.example to user.nix and configure it."
+  exit 1
+fi
 
 # List theme directories
 themes=()
@@ -14,19 +19,19 @@ chosen=$(printf '%s\n' "${themes[@]}" | fuzzel --dmenu --prompt "Theme > ")
 [ -z "$chosen" ] && exit 0
 
 # Read current theme
-current=$(sed -n 's/.*theme = "\(.*\)".*/\1/p' "$DEFAULT_NIX")
+current=$(sed -n 's/.*theme = "\(.*\)".*/\1/p' "$USER_NIX")
 
 if [ "$chosen" = "$current" ]; then
   exit 0
 fi
 
-# Update themes/default.nix
-sed -i "s/theme = \".*\"/theme = \"$chosen\"/" "$DEFAULT_NIX"
+# Update user.nix
+sed -i "s/theme = \".*\"/theme = \"$chosen\"/" "$USER_NIX"
 
 # Rebuild in a floating terminal (so sudo prompt is visible)
 # shellcheck disable=SC2016
 if ! alacritty --class floating-term -e bash -c 'sudo nixos-rebuild switch --flake ~/AndrewOS; s=$?; echo "Press enter to close..."; read; exit $s'; then
-  sed -i "s/theme = \".*\"/theme = \"$current\"/" "$DEFAULT_NIX"
+  sed -i "s/theme = \".*\"/theme = \"$current\"/" "$USER_NIX"
   echo "Rebuild failed — reverted to $current"
   exit 1
 fi

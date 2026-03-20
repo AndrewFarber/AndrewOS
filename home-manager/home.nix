@@ -2,7 +2,7 @@
 
 let
   username = userConfig.username;
-  theme = import ../themes/default.nix { inherit pkgs; };
+  theme = import ../themes/default.nix { inherit pkgs userConfig; };
 in
 
 {
