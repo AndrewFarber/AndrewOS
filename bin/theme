@@ -31,8 +31,7 @@ if ! alacritty --class floating-term -e bash -c 'sudo nixos-rebuild switch --fla
   exit 1
 fi
 
-# After rebuild, binaries and config symlinks point to new Nix store
-# paths, so running processes need a full restart (not just signal reload)
+# Reload WM and restart services with new theme
 refresh-wm
 
 if [ "$XDG_CURRENT_DESKTOP" = "Hyprland" ]; then
@@ -41,10 +40,7 @@ if [ "$XDG_CURRENT_DESKTOP" = "Hyprland" ]; then
   disown
 fi
 
-pkill -x waybar || true
-while pgrep -x waybar > /dev/null; do sleep 0.1; done
-waybar &
-disown
+systemctl --user restart waybar
 
 pkill -x mako || true
 while pgrep -x mako > /dev/null; do sleep 0.1; done

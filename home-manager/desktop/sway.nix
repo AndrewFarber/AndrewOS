@@ -114,7 +114,6 @@
       startup = [
         { command = "wl-paste --watch cliphist store"; }
         { command = "mako"; }
-        { command = "waybar"; }
       ];
     };
 

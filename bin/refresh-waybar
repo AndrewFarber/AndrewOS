@@ -1,1 +1,1 @@
-killall -SIGUSR2 waybar
+systemctl --user restart waybar

@@ -155,7 +155,6 @@
       exec-once = [
         "wl-paste --watch cliphist store"
         "swaybg -i ~/.config/hypr/wallpaper -m fill"
-        "waybar"
         "mako"
         "hypridle"
         "hyprpolkitagent"
