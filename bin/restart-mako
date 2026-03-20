@@ -1,2 +1,0 @@
-killall mako 2>/dev/null
-mako & disown

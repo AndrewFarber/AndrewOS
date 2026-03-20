@@ -31,23 +31,18 @@ if ! alacritty --class floating-term -e bash -c 'sudo nixos-rebuild switch --fla
   exit 1
 fi
 
-# Refresh window manager
+# Refresh everything for new theme
+refresh-wm
+
 if [ "$XDG_CURRENT_DESKTOP" = "Hyprland" ]; then
-  hyprctl reload
   # Restart swaybg for new wallpaper (exec-once doesn't re-run on reload)
   pkill swaybg || true
   swaybg -i ~/.config/hypr/wallpaper -m fill &
   disown
-else
-  swaymsg reload
 fi
 
-# Restart waybar for CSS changes (kill all instances first, since
-# WM reload may have spawned one with the new Nix store path)
-sleep 1
-killall waybar || true
-sleep 0.5
-waybar &
-disown
+refresh-waybar
+refresh-mako
+refresh-tmux
 
 echo "Switched to $chosen"
