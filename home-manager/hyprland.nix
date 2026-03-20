@@ -120,6 +120,9 @@
         # Screenshot
         "$mod SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy"
 
+        # Menu
+        "$mod, space, exec, ~/AndrewOS/bin/menu"
+
         # Lock screen
         "$mod, Escape, exec, hyprlock"
       ];

@@ -68,7 +68,7 @@
         "${mod}+b" = "splith";
         "${mod}+v" = "splitv";
 
-        "${mod}+space" = ''exec swaymsg '[app_id="floating_term"]' scratchpad show || alacritty --class floating_term'';
+        "${mod}+space" = "exec ~/AndrewOS/bin/menu";
         "${mod}+Shift+minus" = "move scratchpad";
         "${mod}+minus" = "scratchpad show";
 
@@ -93,6 +93,9 @@
       window = {
         titlebar = false;
         border = 2;
+        commands = [
+          { command = "floating enable, resize set 80 ppt 70 ppt"; criteria = { app_id = "floating-term"; }; }
+        ];
       };
 
       floating = {
@@ -113,7 +116,6 @@
     };
 
     extraConfig = ''
-      for_window [app_id="floating_term"] floating enable, move to scratchpad, scratchpad show
       include ~/.config/sway/theme
       include /etc/sway/config.d/*
       workspace 1

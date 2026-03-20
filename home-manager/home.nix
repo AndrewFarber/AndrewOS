@@ -10,6 +10,7 @@ in
   home.username = username;
   home.homeDirectory = "/home/${username}";
   home.stateVersion = "24.11";
+  home.sessionPath = [ "$HOME/AndrewOS/bin" ];
   programs.home-manager.enable = true;
 
   imports = [

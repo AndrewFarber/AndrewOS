@@ -20,6 +20,7 @@
         radius = 8;
       };
       key-bindings = {
+        delete-line-forward = "none";
         prev = "Up Control+k";
         next = "Down Control+j";
       };

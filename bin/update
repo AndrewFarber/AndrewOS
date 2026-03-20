@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+cd ~/AndrewOS || exit 1
+exec alacritty --class floating-term -e bash -c 'source .env && nix flake update && sudo -E nixos-rebuild switch --flake ".#$HOST" --impure; echo "Press enter to close..."; read'

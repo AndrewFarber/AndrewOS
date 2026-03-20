@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+BIN_DIR="$(dirname "$(readlink -f "$0")")"
+
+declare -A icons=(
+  [launch-terminal]="󰆍 Open Terminal"
+  [launch-browser]="󰖟 Open Browser"
+  [launch-editor]="󰅪 Open Editor"
+  [launch-files]="󰉋 Open File Manager"
+  [launch-git]="󰊢 Open Lazygit"
+  [launch-docker]="󰡨 Open Lazydocker"
+  [launch-audio]="󰕾 Audio Settings"
+  [refresh-wm]="󰑓 Refresh Window Manager"
+  [refresh-waybar]="󰑓 Refresh Waybar Config"
+  [refresh-mako]="󰑓 Refresh Mako Config"
+  [refresh-tmux]="󰑓 Refresh Tmux Config"
+  [restart-waybar]="󰜉 Restart Waybar"
+  [restart-mako]="󰜉 Restart Mako"
+  [restart-pipewire]="󰜉 Restart Pipewire"
+  [restart-wifi]="󰜉 Restart Wifi"
+  [screenshot-area]="󰄀 Screenshot Area"
+  [screenshot-screen]="󰄀 Screenshot Screen"
+  [screenshot-save]="󰄀 Screenshot Save to File"
+  [rebuild]="󱁤 Rebuild NixOS"
+  [update]="󰇚 Update Flake & Rebuild"
+  [gc]="󰩺 Garbage Collect"
+  [lock]="󰌾 Lock Screen"
+)
+
+entries=""
+for script in "$BIN_DIR"/*; do
+  name=$(basename "$script")
+  [ "$name" = "menu" ] && continue
+  label="${icons[$name]:-$name}"
+  entries+="$label"$'\n'
+done
+
+choice=$(printf '%s' "$entries" | fuzzel --dmenu --prompt "> ")
+[ -z "$choice" ] && exit 0
+
+# Reverse-lookup: find the script name from the display label
+script=""
+for key in "${!icons[@]}"; do
+  if [ "${icons[$key]}" = "$choice" ]; then
+    script="$key"
+    break
+  fi
+done
+[ -z "$script" ] && script="$choice"
+exec "$BIN_DIR/$script"

@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+killall mako 2>/dev/null
+mako &disown

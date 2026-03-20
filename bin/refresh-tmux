@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+tmux source-file ~/.config/tmux/tmux.conf
