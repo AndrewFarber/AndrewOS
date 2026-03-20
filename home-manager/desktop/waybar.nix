@@ -46,12 +46,12 @@ in
         cpu = {
           format = "󰍛 {usage}%";
           tooltip = true;
-          on-click = "launch-monitor";
+          on-click = "andrewos-launch-monitor";
         };
 
         memory = {
           format = "󰘚 {}%";
-          on-click = "launch-monitor";
+          on-click = "andrewos-launch-monitor";
         };
 
         disk = {
@@ -59,7 +59,7 @@ in
           path = "/";
           interval = 30;
           tooltip-format = "{used} / {total} used on {path}";
-          on-click = "launch-monitor";
+          on-click = "andrewos-launch-monitor";
         };
 
         battery = {
@@ -81,7 +81,7 @@ in
           tooltip-format-wifi = "{essid} ({signalStrength}%)";
           tooltip-format-ethernet = "{ifname}: {ipaddr}";
           tooltip-format-disconnected = "Disconnected";
-          on-click = "launch-network";
+          on-click = "andrewos-launch-network";
         };
 
         bluetooth = {
@@ -91,7 +91,7 @@ in
           tooltip-format = "{controller_alias}\n{num_connections} connected";
           tooltip-format-connected = "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}";
           tooltip-format-enumerate-connected = "{device_alias}";
-          on-click = "launch-bluetooth";
+          on-click = "andrewos-launch-bluetooth";
         };
 
         "custom/notification" = {
@@ -118,7 +118,7 @@ in
             headphone = "󰋋";
           };
           tooltip-format = "{desc} — {volume}%";
-          on-click = "launch-audio";
+          on-click = "andrewos-launch-audio";
         };
       };
     };

@@ -37,13 +37,13 @@ if ! alacritty --class floating-term -e bash -c 'sudo nixos-rebuild switch --fla
 fi
 
 # Reload WM and restart services with new theme
-refresh-wm
+andrewos-refresh-wm
 
 systemctl --user restart waybar
 
 swaync-client --reload-config
 swaync-client --reload-css
 
-refresh-tmux
+andrewos-refresh-tmux
 
 echo "Switched to $chosen"

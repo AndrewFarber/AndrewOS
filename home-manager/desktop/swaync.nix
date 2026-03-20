@@ -54,22 +54,22 @@ let
             label = "󰤨";
             type = "toggle";
             active = true;
-            command = "toggle-wifi";
-            update-command = "toggle-wifi check";
+            command = "andrewos-toggle-wifi";
+            update-command = "andrewos-toggle-wifi check";
           }
           {
             label = "󰂯";
             type = "toggle";
             active = true;
-            command = "toggle-bluetooth";
-            update-command = "toggle-bluetooth check";
+            command = "andrewos-toggle-bluetooth";
+            update-command = "andrewos-toggle-bluetooth check";
           }
           {
             label = "󰌶";
             type = "toggle";
             active = false;
-            command = "toggle-nightlight";
-            update-command = "toggle-nightlight check";
+            command = "andrewos-toggle-nightlight";
+            update-command = "andrewos-toggle-nightlight check";
           }
         ];
       };
@@ -92,10 +92,10 @@ let
           animation-type = "slide_down";
           animation-duration = 250;
           actions = [
-            { label = "󰍹 System Monitor"; command = "launch-monitor"; }
-            { label = "󰋊 Disk Usage"; command = "launch-disk"; }
-            { label = " Audio Settings"; command = "launch-audio"; }
-            { label = "󰂯 Bluetooth"; command = "launch-bluetooth"; }
+            { label = "󰍹 System Monitor"; command = "andrewos-launch-monitor"; }
+            { label = "󰋊 Disk Usage"; command = "andrewos-launch-disk"; }
+            { label = " Audio Settings"; command = "andrewos-launch-audio"; }
+            { label = "󰂯 Bluetooth"; command = "andrewos-launch-bluetooth"; }
           ];
         };
       };

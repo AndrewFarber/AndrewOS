@@ -7,37 +7,37 @@ folders=(
 
 declare -A items
 items["󰮫 Launch"]="
-󰆍 Open Terminal|launch-terminal
-󰖟 Open Browser|launch-browser
-󰅪 Open Editor|launch-editor
-󰉋 Open File Manager|launch-files
-󰊢 Open Lazygit|launch-git
-󰡨 Open Lazydocker|launch-docker
-󰕾 Audio Settings|launch-audio
+󰆍 Open Terminal|andrewos-launch-terminal
+󰖟 Open Browser|andrewos-launch-browser
+󰅪 Open Editor|andrewos-launch-editor
+󰉋 Open File Manager|andrewos-launch-files
+󰊢 Open Lazygit|andrewos-launch-git
+󰡨 Open Lazydocker|andrewos-launch-docker
+󰕾 Audio Settings|andrewos-launch-audio
 "
 
 items["󰄀 Screenshot"]="
-󰄀 Screenshot Area|screenshot-area
-󰄀 Screenshot Screen|screenshot-screen
-󰄀 Screenshot Save to File|screenshot-save
+󰄀 Screenshot Area|andrewos-screenshot-area
+󰄀 Screenshot Screen|andrewos-screenshot-screen
+󰄀 Screenshot Save to File|andrewos-screenshot-save
 "
 
 items["󰑓 Refresh"]="
-󰑓 Refresh Window Manager|refresh-wm
-󰑓 Refresh Waybar|refresh-waybar
-󰑓 Refresh Notifications|refresh-swaync
-󰑓 Refresh Tmux|refresh-tmux
-󰜉 Restart Pipewire|restart-pipewire
-󰜉 Restart Wifi|restart-wifi
+󰑓 Refresh Window Manager|andrewos-refresh-wm
+󰑓 Refresh Waybar|andrewos-refresh-waybar
+󰑓 Refresh Notifications|andrewos-refresh-swaync
+󰑓 Refresh Tmux|andrewos-refresh-tmux
+󰜉 Restart Pipewire|andrewos-restart-pipewire
+󰜉 Restart Wifi|andrewos-restart-wifi
 "
 
 items["󰒓 System"]="
-󱁤 Rebuild NixOS|rebuild
-󰇚 Update Flake & Rebuild|update
-󰩺 Garbage Collect (User)|gc
-󰩺 Garbage Collect (System)|gc-system
-󰔎 Change Theme|theme
-󰸉 Change Wallpaper|wallpaper
+󱁤 Rebuild NixOS|andrewos-rebuild
+󰇚 Update Flake & Rebuild|andrewos-update
+󰩺 Garbage Collect (User)|andrewos-gc
+󰩺 Garbage Collect (System)|andrewos-gc-system
+󰔎 Change Theme|andrewos-theme
+󰸉 Change Wallpaper|andrewos-wallpaper
 󰌾 Lock Screen|lock
 "
 

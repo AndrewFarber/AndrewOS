@@ -28,7 +28,7 @@
       in {
         "${mod}+Return" = "exec alacritty";
         "${mod}+Shift+q" = "kill";
-        "${mod}+d" = "exec menu";
+        "${mod}+d" = "exec andrewos-menu";
         "${mod}+Shift+c" = "reload";
         "${mod}+Escape" = "exec swaylock -f -c ${theme.lockColor}";
         "${mod}+Shift+s" = ''exec grim -g "$(slurp)" - | wl-copy'';
@@ -70,11 +70,11 @@
 
         "${mod}+space" = "exec fuzzel";
         "${mod}+Alt+v" = ''exec cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'';
-        "${mod}+Alt+w" = "exec wallpaper";
+        "${mod}+Alt+w" = "exec andrewos-wallpaper";
         "${mod}+Shift+minus" = "move scratchpad";
         "${mod}+minus" = "scratchpad show";
 
-        "${mod}+Shift+slash" = "exec shortcuts";
+        "${mod}+Shift+slash" = "exec andrewos-shortcuts";
         "${mod}+Shift+e" = "exec wlogout";
 
         # Volume (pamixer)
