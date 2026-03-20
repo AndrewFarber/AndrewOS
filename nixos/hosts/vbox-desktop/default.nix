@@ -6,6 +6,7 @@
     ./vbox.nix
     ../../modules/bootloaders
     ../../modules/desktops
+    ../../modules/networking
     ../../modules/core
   ];
 

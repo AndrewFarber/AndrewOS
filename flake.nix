@@ -26,16 +26,6 @@
     in {
       nixosConfigurations = {
 
-        vbox-laptop = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = {
-            host = userConfig.host;
-            desktop = userConfig.desktop;
-            inherit inputs userConfig;
-          };
-          modules = [ ./nixos/hosts/vbox-laptop ];
-        };
-
         vbox-desktop = nixpkgs.lib.nixosSystem {
           inherit system;
           specialArgs = {

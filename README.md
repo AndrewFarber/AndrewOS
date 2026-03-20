@@ -33,7 +33,6 @@ HydraOS/
 │   └── lua/
 ├── nixos/
 │   ├── hosts/
-│   │   ├── vbox-laptop/     # VirtualBox laptop config
 │   │   └── vbox-desktop/    # VirtualBox desktop config
 │   └── modules/
 │       ├── bootloaders/     # Systemd boot configuration
