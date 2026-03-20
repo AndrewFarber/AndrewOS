@@ -25,10 +25,16 @@ shortcuts="
 󰛐 System
   Super + Shift + S      Screenshot Area
   Super + Shift + C      Reload Config
+  Super + Shift + E      Power Menu
   Super + Escape         Lock Screen
+
+󰐊 Media
+  Volume Keys            Volume Up / Down / Mute
+  Brightness Keys        Brightness Up / Down
+  Play / Next / Prev     Media Controls
 
 󰌌 Help
   Super + ?              This Cheatsheet
 "
 
-printf '%s' "$shortcuts" | fuzzel --dmenu --prompt "Shortcuts: " --width 70 --lines 33
+printf '%s' "$shortcuts" | fuzzel --dmenu --prompt "Shortcuts: " --width 70 --lines 25
