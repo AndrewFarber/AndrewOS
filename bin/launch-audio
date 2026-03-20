@@ -1,1 +1,1 @@
-exec pavucontrol
+exec alacritty --class floating-term -e pulsemixer

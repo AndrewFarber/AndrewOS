@@ -149,6 +149,157 @@
     border-radius: 50%;
 }
 
+/* Buttons grid widget */
+.widget-buttons-grid {
+    padding: 4px 8px;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button {
+    background: #504945;
+    color: #d4be98;
+    border-radius: 8px;
+    padding: 8px;
+    margin: 4px;
+    border: none;
+    min-width: 48px;
+    min-height: 48px;
+    font-size: 18px;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button:hover {
+    background: #665c54;
+}
+
+.widget-buttons-grid > flowbox > flowboxchild > button.active {
+    background: #7daea3;
+    color: #282828;
+}
+
+/* Menubar widget */
+.widget-menubar {
+    padding: 4px 8px;
+}
+
+.widget-menubar > box > .menu-button-bar > button {
+    background: #504945;
+    color: #d4be98;
+    border-radius: 8px;
+    padding: 6px 12px;
+    margin: 4px;
+    border: none;
+    font-size: 13px;
+}
+
+.widget-menubar > box > .menu-button-bar > button:hover {
+    background: #665c54;
+}
+
+.widget-menubar > box > revealer > box > button {
+    background: #3c3836;
+    color: #d4be98;
+    border-radius: 6px;
+    padding: 6px 12px;
+    margin: 2px 4px;
+    border: none;
+}
+
+.widget-menubar > box > revealer > box > button:hover {
+    background: #7daea3;
+    color: #282828;
+}
+
+/* MPRIS media widget */
+.widget-mpris {
+    padding: 4px 8px;
+}
+
+.widget-mpris-player {
+    background: #3c3836;
+    border-radius: 10px;
+    padding: 8px;
+    margin: 4px 0;
+    border: 1px solid #504945;
+}
+
+.widget-mpris-player > box > button {
+    background: transparent;
+    color: #d4be98;
+    border: none;
+    border-radius: 6px;
+    padding: 4px;
+    min-width: 32px;
+    min-height: 32px;
+}
+
+.widget-mpris-player > box > button:hover {
+    background: #504945;
+}
+
+.widget-mpris-title {
+    color: #d4be98;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.widget-mpris-subtitle {
+    color: #928374;
+    font-size: 12px;
+}
+
+/* Volume widget */
+.widget-volume {
+    padding: 4px 8px;
+    color: #d4be98;
+}
+
+.widget-volume > box > button {
+    background: transparent;
+    color: #d4be98;
+    border: none;
+}
+
+.widget-volume scale trough {
+    background: #504945;
+    border-radius: 4px;
+    min-height: 8px;
+}
+
+.widget-volume scale trough highlight {
+    background: #7daea3;
+    border-radius: 4px;
+}
+
+.widget-volume scale slider {
+    background: #d4be98;
+    border-radius: 50%;
+    min-width: 16px;
+    min-height: 16px;
+}
+
+/* Backlight widget */
+.widget-backlight {
+    padding: 4px 8px;
+    color: #d4be98;
+}
+
+.widget-backlight scale trough {
+    background: #504945;
+    border-radius: 4px;
+    min-height: 8px;
+}
+
+.widget-backlight scale trough highlight {
+    background: #d8a657;
+    border-radius: 4px;
+}
+
+.widget-backlight scale slider {
+    background: #d4be98;
+    border-radius: 50%;
+    min-width: 16px;
+    min-height: 16px;
+}
+
 /* Floating notifications */
 .floating-notifications {
     background: transparent;

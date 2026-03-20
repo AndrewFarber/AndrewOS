@@ -1,0 +1,12 @@
+case "${1:-toggle}" in
+  check)
+    if rfkill list wifi | grep -q "Soft blocked: no"; then echo true; else echo false; fi
+    ;;
+  *)
+    if [[ "${SWAYNC_TOGGLE_STATE:-}" == "true" ]]; then
+      rfkill unblock wifi
+    else
+      rfkill block wifi
+    fi
+    ;;
+esac

@@ -49,6 +49,34 @@ show_folders() {
   printf '%s' "$list" | fuzzel --dmenu --prompt "Menu > "
 }
 
+search_items() {
+  local query="$1"
+  local matches=""
+  for f in "${folders[@]}"; do
+    while IFS= read -r line; do
+      [ -z "$line" ] && continue
+      local label="${line%%|*}"
+      if echo "$label" | grep -qiF "$query"; then
+        matches+="$label"$'\n'
+      fi
+    done <<< "${items[$f]}"
+  done
+  [ -z "$matches" ] && return 1
+  printf '%s' "$matches" | fuzzel --dmenu --prompt "Search > "
+}
+
+find_script_any() {
+  for f in "${folders[@]}"; do
+    while IFS= read -r line; do
+      [ -z "$line" ] && continue
+      if [ "${line%%|*}" = "$1" ]; then
+        echo "${line##*|}"
+        return
+      fi
+    done <<< "${items[$f]}"
+  done
+}
+
 show_items() {
   local sub="${items[$1]}"
   local display=""
@@ -74,34 +102,41 @@ find_script() {
 
 # Main loop
 while true; do
-  # Show folder list (|| true prevents set -e from killing the script)
+  rc=0
   choice=$(show_folders) || rc=$?
-  rc=${rc:-0}
 
   # Exit on Escape (1) or Ctrl+H at top level (11)
   [ "$rc" -eq 1 ] && exit 0
   [ "$rc" -eq 11 ] && exit 0
   [ -z "$choice" ] && exit 0
 
-  # Enter: select folder, Ctrl+L: also select folder
-  [ -z "${items[$choice]}" ] && exit 0
+  # If it's a folder, enter sub-menu
+  if [ -n "${items[$choice]+x}" ]; then
+    while true; do
+      rc=0
+      pick=$(show_items "$choice") || rc=$?
 
-  # Sub-menu loop
-  while true; do
+      # Escape or Ctrl+H: go back to main
+      [ "$rc" -eq 1 ] && break
+      [ "$rc" -eq 11 ] && break
+
+      # Enter or Ctrl+L: run the selected item
+      if [ "$rc" -eq 0 ] || [ "$rc" -eq 10 ]; then
+        [ -z "$pick" ] && break
+        script=$(find_script "$choice" "$pick")
+        [ -n "$script" ] && exec "$script"
+      fi
+
+      break
+    done
+  else
+    # Typed text didn't match a folder — search all items
     rc=0
-    pick=$(show_items "$choice") || rc=$?
-
-    # Escape or Ctrl+H: go back to folders
-    [ "$rc" -eq 1 ] && break
-    [ "$rc" -eq 11 ] && break
-
-    # Enter or Ctrl+L: run the selected item
-    if [ "$rc" -eq 0 ] || [ "$rc" -eq 10 ]; then
-      [ -z "$pick" ] && break
-      script=$(find_script "$choice" "$pick")
-      [ -n "$script" ] && exec "$script"
-    fi
-
-    break
-  done
+    pick=$(search_items "$choice") || rc=$?
+    [ "$rc" -eq 1 ] && continue
+    [ "$rc" -eq 11 ] && continue
+    [ -z "$pick" ] && continue
+    script=$(find_script_any "$pick")
+    [ -n "$script" ] && exec "$script"
+  fi
 done

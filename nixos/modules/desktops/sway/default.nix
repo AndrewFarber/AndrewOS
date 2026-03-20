@@ -18,6 +18,7 @@
       slurp
       sway-audio-idle-inhibit
       swaybg
+      wlsunset
       swayidle
       swaylock
       swaynotificationcenter

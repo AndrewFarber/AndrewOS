@@ -1,0 +1,12 @@
+case "${1:-toggle}" in
+  check)
+    if bluetoothctl show | grep -q "Powered: yes"; then echo true; else echo false; fi
+    ;;
+  *)
+    if [[ "${SWAYNC_TOGGLE_STATE:-}" == "true" ]]; then
+      bluetoothctl power on
+    else
+      bluetoothctl power off
+    fi
+    ;;
+esac

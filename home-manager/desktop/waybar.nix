@@ -2,10 +2,6 @@
 
 let
   wmPrefix = "sway";
-  alacritty = "${pkgs.alacritty}/bin/alacritty";
-  btop = "${pkgs.btop}/bin/btop";
-  pulsemixer = "${pkgs.pulsemixer}/bin/pulsemixer";
-  impala = "${pkgs.impala}/bin/impala";
 in
 
 {
@@ -50,12 +46,12 @@ in
         cpu = {
           format = "󰍛 {usage}%";
           tooltip = true;
-          on-click = "${alacritty} -e ${btop}";
+          on-click = "launch-monitor";
         };
 
         memory = {
           format = "󰘚 {}%";
-          on-click = "${alacritty} -e ${btop}";
+          on-click = "launch-monitor";
         };
 
         disk = {
@@ -63,7 +59,7 @@ in
           path = "/";
           interval = 30;
           tooltip-format = "{used} / {total} used on {path}";
-          on-click = "${alacritty} -e ${btop}";
+          on-click = "launch-monitor";
         };
 
         battery = {
@@ -85,7 +81,7 @@ in
           tooltip-format-wifi = "{essid} ({signalStrength}%)";
           tooltip-format-ethernet = "{ifname}: {ipaddr}";
           tooltip-format-disconnected = "Disconnected";
-          on-click = "${alacritty} -e ${impala}";
+          on-click = "launch-network";
         };
 
         bluetooth = {
@@ -95,7 +91,7 @@ in
           tooltip-format = "{controller_alias}\n{num_connections} connected";
           tooltip-format-connected = "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}";
           tooltip-format-enumerate-connected = "{device_alias}";
-          on-click = "${alacritty} -e ${pkgs.bluez}/bin/bluetoothctl";
+          on-click = "launch-bluetooth";
         };
 
         "custom/notification" = {
@@ -122,7 +118,7 @@ in
             headphone = "󰋋";
           };
           tooltip-format = "{desc} — {volume}%";
-          on-click = "${alacritty} -e ${pulsemixer}";
+          on-click = "launch-audio";
         };
       };
     };

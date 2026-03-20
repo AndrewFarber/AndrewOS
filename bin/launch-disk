@@ -1,0 +1,1 @@
+exec alacritty --class floating-term -e bash -c 'df -h; echo; echo "Press Enter to close..."; read -r'

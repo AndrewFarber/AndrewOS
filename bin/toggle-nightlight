@@ -1,0 +1,12 @@
+case "${1:-toggle}" in
+  check)
+    if pgrep wlsunset > /dev/null; then echo true; else echo false; fi
+    ;;
+  *)
+    if [[ "${SWAYNC_TOGGLE_STATE:-}" == "true" ]]; then
+      wlsunset -T 4500 -t 3500 &
+    else
+      pkill wlsunset || true
+    fi
+    ;;
+esac
