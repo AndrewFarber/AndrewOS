@@ -22,7 +22,6 @@ pkgs.mkShell {
     pkgs.python313Packages.statsmodels
     pkgs.python313Packages.sympy
   ];
-  shell = pkgs.zsh;
   shellHook = ''
     jupyter lab
   '';

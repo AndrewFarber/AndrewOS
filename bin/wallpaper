@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-WALLPAPER_DIR="$HOME/AndrewOS/themes/tokyo-night/backgrounds"
+THEME=$(grep 'theme = "' "$HOME/AndrewOS/themes/default.nix" | sed 's/.*theme = "\(.*\)".*/\1/')
+WALLPAPER_DIR="$HOME/AndrewOS/themes/$THEME/backgrounds"
 
 # List image files and pick one via fuzzel
 chosen=$(ls "$WALLPAPER_DIR"/*.{png,jpg,jpeg,webp} 2>/dev/null | xargs -n1 basename | fuzzel --dmenu --prompt "Wallpaper > ")

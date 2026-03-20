@@ -1,5 +1,5 @@
 {
-  description = "HydraOS";
+  description = "AndrewOS";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";

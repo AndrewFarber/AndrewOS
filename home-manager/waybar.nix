@@ -1,4 +1,8 @@
-{ pkgs, ... }:
+{ desktop ? "", ... }:
+
+let
+  wmPrefix = if desktop == "hyprland" then "hyprland" else "sway";
+in
 
 {
   programs.waybar = {
@@ -10,21 +14,21 @@
         height = 30;
         spacing = 8;
 
-        modules-left = [ "sway/workspaces" "sway/mode" ];
-        modules-center = [ "sway/window" ];
+        modules-left = [ "${wmPrefix}/workspaces" "${wmPrefix}/mode" ];
+        modules-center = [ "${wmPrefix}/window" ];
         modules-right = [ "cpu" "memory" "clock" "tray" ];
 
-        "sway/workspaces" = {
+        "${wmPrefix}/workspaces" = {
           disable-scroll = true;
           all-outputs = true;
           format = "{name}";
         };
 
-        "sway/mode" = {
+        "${wmPrefix}/mode" = {
           format = "<span style=\"italic\">{}</span>";
         };
 
-        "sway/window" = {
+        "${wmPrefix}/window" = {
           max-length = 50;
         };
 

@@ -35,7 +35,6 @@
       nvim-lspconfig
       nvim-navbuddy
       nvim-navic
-      nvim-treesitter
       nvim-treesitter-textobjects
       (nvim-treesitter.withPlugins (p: [
         p.python

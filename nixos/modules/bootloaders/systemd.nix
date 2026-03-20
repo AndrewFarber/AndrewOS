@@ -6,7 +6,7 @@ let
 in {
 
   options.bootloaders.systemd = {
-    enable = mkEnableOption "Enable Systemd";
+    enable = mkEnableOption "systemd-boot";
   };
 
   config = mkIf cfg.enable {
