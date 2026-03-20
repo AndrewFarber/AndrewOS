@@ -15,11 +15,9 @@
   systemd.user.services.virtualboxClientVmsvga.enable = false;
 
   # VirtualBox environment variables for Wayland compositors.
-  # Sway supports pixman software rendering, but Hyprland requires OpenGL.
-  # For Hyprland, enable 3D Acceleration in VirtualBox VM settings.
+  # Sway uses pixman software rendering (no GPU acceleration needed).
   environment.sessionVariables = {
     WLR_NO_HARDWARE_CURSORS = "1";
-  } // (if desktop == "sway" then {
     WLR_RENDERER = "pixman";
-  } else {});
+  };
 }

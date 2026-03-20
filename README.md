@@ -1,11 +1,12 @@
-# HydraOS
+# AndrewOS
 
 Personal [NixOS](https://nixos.org/) and [Home Manager](https://nix-community.github.io/home-manager/) configurations for a reproducible Linux development environment.
 
 ## Features
 
 - **Declarative System Configuration** - Entire system defined in Nix, easily reproducible
-- **Multiple Desktop Environments** - Sway (Wayland) or Hyprland
+- **Sway Desktop** - Wayland tiling window manager with waybar, fuzzel, and mako
+- **Theme System** - Switchable themes (tokyo-night, gruvbox) affecting terminal, editor, desktop
 - **Comprehensive Development Setup** - Neovim with LSP, Git integration, and debugging support
 - **Modular Architecture** - Pluggable modules for bootloaders, drivers, desktops, and user config
 - **Headless Support** - SSH access for running in VirtualBox without GUI
@@ -29,45 +30,40 @@ Personal [NixOS](https://nixos.org/) and [Home Manager](https://nix-community.gi
    ```
 4. Generate hardware configuration:
    ```bash
+   cd nixos/hosts/vbox-desktop
+   rm hardware.nix
    nixos-generate-config --dir .
+   mv hardware-configuration.nix hardware.nix
+   rm configuration.nix
+   cd ~/AndrewOS
    ```
-5. Copy and configure environment:
-   ```bash
-   cp .env.example .env
-   # Edit .env with your USERNAME, NAME, and EMAIL
+5. Edit `user.nix` with your settings:
+   ```nix
+   {
+     username = "yourname";
+     fullName = "Your Name";
+     email = "you@example.com";
+     theme = "gruvbox";
+   }
    ```
 6. Build and switch:
    ```bash
-   source .env && sudo -E nixos-rebuild switch --flake .#vbox --impure
+   sudo nixos-rebuild switch --flake .#vbox-desktop
    ```
 7. Reboot
 
-See detailed instructions in [nixos/hosts/vbox/README.md](./nixos/hosts/vbox/README.md).
+See detailed instructions in [nixos/hosts/README.md](./nixos/hosts/README.md).
 
 ## Configuration
 
-Copy `.env.example` to `.env` and set your personal information:
+Edit `user.nix` at the repository root to set your personal information:
 
-```bash
-cp .env.example .env
-```
-
-| Variable   | Description          |
-|------------|----------------------|
-| `USERNAME` | System username      |
-| `NAME`     | Full name (for Git)  |
-| `EMAIL`    | Email (for Git)      |
-
-This file is gitignored to keep personal data out of version control.
-
-## Desktop Environments
-
-Two desktop options are available:
-
-| Desktop  | Type    | Description                     |
-|----------|---------|---------------------------------|
-| Sway     | Wayland | Tiling WM, primary config       |
-| Hyprland | Wayland | Dynamic tiling WM               |
+| Field      | Description                          |
+|------------|--------------------------------------|
+| `username` | System username                      |
+| `fullName` | Full name (for Git)                  |
+| `email`    | Email (for Git)                      |
+| `theme`    | Active theme (`tokyo-night`, `gruvbox`) |
 
 ## Development Environments
 
@@ -76,27 +72,22 @@ Two desktop options are available:
 Scientific Python environment with NumPy, Pandas, Matplotlib, scikit-learn, and more:
 
 ```bash
-jupyter  # alias to enter Jupyter shell
+jupyter  # alias to enter Jupyter dev shell
 ```
 
 ## Common Commands
 
-After installation, these aliases are available:
+After installation, these shell aliases are available:
 
 | Command   | Description                              |
 |-----------|------------------------------------------|
 | `rebuild` | Rebuild NixOS configuration              |
-| `gc`      | Run garbage collection                   |
 | `update`  | Update flake inputs                      |
+| `gc`      | Run garbage collection                   |
 | `jupyter` | Enter Jupyter development shell          |
 | `lg`      | Launch Lazygit                           |
 | `ld`      | Launch Lazydocker                        |
-
-Manual rebuild command:
-
-```bash
-source .env && sudo -E nixos-rebuild switch --flake .#vbox --impure
-```
+| `y`       | Launch Yazi file manager                 |
 
 ## Headless Operation
 

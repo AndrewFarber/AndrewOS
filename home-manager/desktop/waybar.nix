@@ -1,7 +1,11 @@
-{ desktop ? "", ... }:
+{ desktop ? "", pkgs, ... }:
 
 let
-  wmPrefix = if desktop == "hyprland" then "hyprland" else "sway";
+  wmPrefix = "sway";
+  alacritty = "${pkgs.alacritty}/bin/alacritty";
+  btop = "${pkgs.btop}/bin/btop";
+  pulsemixer = "${pkgs.pulsemixer}/bin/pulsemixer";
+  impala = "${pkgs.impala}/bin/impala";
 in
 
 {
@@ -17,7 +21,7 @@ in
 
         modules-left = [ "${wmPrefix}/workspaces" "${wmPrefix}/mode" ];
         modules-center = [ "${wmPrefix}/window" ];
-        modules-right = [ "cpu" "memory" "clock" "tray" ];
+        modules-right = [ "network" "bluetooth" "pulseaudio" "cpu" "memory" "disk" "battery" "clock" "tray" ];
 
         "${wmPrefix}/workspaces" = {
           disable-scroll = true;
@@ -38,18 +42,71 @@ in
         };
 
         clock = {
-          format = "{:%H:%M}";
-          format-alt = "{:%Y-%m-%d %H:%M}";
+          format = "󰥔 {:%H:%M}";
+          format-alt = "󰥔 {:%Y-%m-%d %H:%M}";
           tooltip-format = "<tt>{calendar}</tt>";
         };
 
         cpu = {
-          format = " {usage}%";
+          format = "󰍛 {usage}%";
           tooltip = true;
+          on-click = "${alacritty} -e ${btop}";
         };
 
         memory = {
-          format = " {}%";
+          format = "󰘚 {}%";
+          on-click = "${alacritty} -e ${btop}";
+        };
+
+        disk = {
+          format = "󰋊 {percentage_used}%";
+          path = "/";
+          interval = 30;
+          tooltip-format = "{used} / {total} used on {path}";
+          on-click = "${alacritty} -e ${btop}";
+        };
+
+        battery = {
+          format = "{icon} {capacity}%";
+          format-charging = "󰂄 {capacity}%";
+          format-plugged = "󰚥 {capacity}%";
+          format-icons = [ "󰁺" "󰁻" "󰁼" "󰁽" "󰁾" "󰁿" "󰂀" "󰂁" "󰂂" "󰁹" ];
+          states = {
+            warning = 30;
+            critical = 15;
+          };
+          tooltip-format = "{timeTo} — {capacity}%";
+        };
+
+        network = {
+          format-wifi = "󰤨 {signalStrength}%";
+          format-ethernet = "󰈀";
+          format-disconnected = "󰤭";
+          tooltip-format-wifi = "{essid} ({signalStrength}%)";
+          tooltip-format-ethernet = "{ifname}: {ipaddr}";
+          tooltip-format-disconnected = "Disconnected";
+          on-click = "${alacritty} -e ${impala}";
+        };
+
+        bluetooth = {
+          format = "󰂯";
+          format-connected = "󰂱 {num_connections}";
+          format-disabled = "󰂲";
+          tooltip-format = "{controller_alias}\n{num_connections} connected";
+          tooltip-format-connected = "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}";
+          tooltip-format-enumerate-connected = "{device_alias}";
+          on-click = "${alacritty} -e ${pkgs.bluez}/bin/bluetoothctl";
+        };
+
+        pulseaudio = {
+          format = "{icon} {volume}%";
+          format-muted = "󰝟";
+          format-icons = {
+            default = [ "󰕿" "󰖀" "󰕾" ];
+            headphone = "󰋋";
+          };
+          tooltip-format = "{desc} — {volume}%";
+          on-click = "${alacritty} -e ${pulsemixer}";
         };
       };
     };

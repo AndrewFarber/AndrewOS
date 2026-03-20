@@ -2,7 +2,6 @@
 
 let
   desktops = {
-    hyprland = ./hyprland;
     sway = ./sway;
   };
 in {

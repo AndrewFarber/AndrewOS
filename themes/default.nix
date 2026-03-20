@@ -9,21 +9,6 @@ let
     (builtins.attrNames (builtins.readDir backgroundsDir));
   wallpaper = backgroundsDir + "/${builtins.head backgroundFiles}";
 
-  # Hyprlock colors per theme (RGB values without # prefix)
-  hyprlockColors = {
-    "tokyo-night" = {
-      background = "rgb(24, 25, 38)";
-      accent = "rgb(122, 162, 247)";
-      inner = "rgb(36, 40, 59)";
-      font = "rgb(192, 202, 245)";
-    };
-    "gruvbox" = {
-      background = "rgb(40, 40, 40)";
-      accent = "rgb(125, 174, 163)";
-      inner = "rgb(60, 56, 54)";
-      font = "rgb(212, 190, 152)";
-    };
-  };
 in
 {
   name = theme;
@@ -43,6 +28,9 @@ in
   # Wallpaper
   inherit wallpaper;
 
-  # Hyprlock
-  hyprlock = hyprlockColors.${theme};
+  # btop
+  btopTheme = {
+    "tokyo-night" = "tokyo-night";
+    "gruvbox" = "gruvbox_material_dark";
+  }.${theme};
 }

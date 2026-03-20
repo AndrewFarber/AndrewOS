@@ -1,5 +1,1 @@
-if [ "$XDG_CURRENT_DESKTOP" = "Hyprland" ]; then
-  hyprctl reload
-else
-  swaymsg reload
-fi
+exec swaymsg reload

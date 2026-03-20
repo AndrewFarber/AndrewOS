@@ -14,6 +14,7 @@ in
 
   imports = [
     ./scripts.nix
+    { imports = [ ./terminal/btop.nix ]; _module.args.theme = theme; }
     ./terminal/alacritty.nix
     ./dev/cli-tools.nix
     ./shell/direnv.nix
@@ -27,10 +28,6 @@ in
   ] ++ (if desktop == "sway" then [
     ./desktop/fuzzel.nix
     ./desktop/sway.nix
-    ./desktop/waybar.nix
-  ] else if desktop == "hyprland" then [
-    ./desktop/fuzzel.nix
-    { imports = [ ./desktop/hyprland.nix ]; _module.args.theme = theme; }
     ./desktop/waybar.nix
   ] else []);
 
@@ -48,12 +45,6 @@ in
     ".config/sway/wallpaper".source = theme.wallpaper;
     ".config/waybar/style.css".source = theme.waybar;
     ".config/fuzzel/theme.ini".source = theme.fuzzel;
-  } else {})
-  # Hyprland theme files (reuses waybar and fuzzel themes)
-  // (if desktop == "hyprland" then {
-    ".config/waybar/style.css".source = theme.waybar;
-    ".config/fuzzel/theme.ini".source = theme.fuzzel;
-    ".config/hypr/wallpaper".source = theme.wallpaper;
   } else {});
 
 }

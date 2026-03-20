@@ -39,12 +39,6 @@ fi
 # Reload WM and restart services with new theme
 refresh-wm
 
-if [ "$XDG_CURRENT_DESKTOP" = "Hyprland" ]; then
-  pkill swaybg || true
-  swaybg -i ~/.config/hypr/wallpaper -m fill &
-  disown
-fi
-
 systemctl --user restart waybar
 
 pkill -x mako || true

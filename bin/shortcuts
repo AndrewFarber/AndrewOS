@@ -1,0 +1,26 @@
+shortcuts="
+󰘳 Apps
+  Super + Return         Terminal
+  Super + D              Menu
+  Super + Space          App Launcher
+  Super + Alt + V        Clipboard History
+  Super + Alt + W        Wallpaper Picker
+
+󰌌 Navigation
+  Super + H / J / K / L  Focus Left / Down / Up / Right
+  Super + 1-0            Switch to Workspace 1-10
+
+󰁌 Layout
+  Super + Shift + H/J/K/L  Move Window
+  Super + Shift + 1-0      Move to Workspace 1-10
+
+󰛐 System
+  Super + Shift + S      Screenshot Area
+  Super + Shift + C      Reload Config
+  Super + Shift + E      Exit
+
+󰌌 Help
+  Super + ?              This Cheatsheet
+"
+
+printf '%s' "$shortcuts" | fuzzel --dmenu --prompt "Shortcuts: " --width 70 --lines 25

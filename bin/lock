@@ -1,5 +1,1 @@
-if [ "$XDG_CURRENT_DESKTOP" = "Hyprland" ]; then
-  exec hyprlock
-else
-  exec swaylock
-fi
+exec swaylock

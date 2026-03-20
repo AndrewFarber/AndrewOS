@@ -17,26 +17,26 @@
 3. Using the graphical installer, setup NixOS then shutdown VM.
 4. Within VirtualBox Manager -> select NixOS VM -> Settings -> Storage -> Remove CD.
 5. Within VirtualBox Manager -> select NixOS VM -> Start.
-7. Open default terminal and perform the below actions:
+6. Open default terminal and perform the below actions:
    ```
    > cd ~
    > nix-shell -p git
    > git clone https://github.com/AndrewFarber/AndrewOS
-   > cd ~/AndrewOS/nixos/hosts/vbox
+   > cd ~/AndrewOS/nixos/hosts/vbox-desktop
    > rm hardware.nix
    > nixos-generate-config --dir .
-   > rm configuration.nix
    > mv hardware-configuration.nix hardware.nix
+   > rm configuration.nix
    ```
-8. Copy `.env.example` to `.env` and update with your user settings:
+7. Edit `user.nix` with your settings:
    ```
    > cd ~/AndrewOS
-   > cp .env.example .env
-   > nano .env
+   > nano user.nix
    ```
-9. Rebuild NixOS then reboot.
+   Set your `username`, `fullName`, `email`, and `theme`.
+8. Rebuild NixOS then reboot.
    ```
-   > source .env && sudo -E nixos-rebuild switch --flake .#vbox --impure
+   > sudo nixos-rebuild switch --flake .#vbox-desktop
    > reboot
    ```
 

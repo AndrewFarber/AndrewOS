@@ -8,10 +8,4 @@ chosen=$(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -name '*.png' -o -name '*.
 wallpaper="$WALLPAPER_DIR/$chosen"
 [ ! -f "$wallpaper" ] && exit 1
 
-if [ "$XDG_CURRENT_DESKTOP" = "sway" ]; then
-  swaymsg output '*' bg "$wallpaper" fill
-else
-  pkill swaybg 2>/dev/null
-  swaybg -i "$wallpaper" -m fill &
-  disown
-fi
+swaymsg output '*' bg "$wallpaper" fill
