@@ -62,8 +62,6 @@
 
   security.polkit.enable = true;
 
-  programs.dconf.enable = true;
-
   xdg.portal = {
     enable = true;
     wlr.enable = true;  # wlroots-specific portal (screen sharing for Sway)

@@ -30,7 +30,7 @@
         "${mod}+Shift+q" = "kill";
         "${mod}+d" = "exec menu";
         "${mod}+Shift+c" = "reload";
-        "${mod}+Shift+e" = "exec swaymsg exit";
+        "${mod}+Escape" = "exec lock";
         "${mod}+Shift+s" = ''exec grim -g "$(slurp)" - | wl-copy'';
 
         "${mod}+h" = "focus left";
@@ -116,6 +116,7 @@
       startup = [
         { command = "wl-paste --watch cliphist store"; }
         { command = "mako"; }
+        { command = "swayidle -w timeout 300 'swaylock -f' timeout 600 'systemctl suspend' before-sleep 'swaylock -f'"; }
       ];
     };
 
