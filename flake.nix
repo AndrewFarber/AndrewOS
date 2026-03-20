@@ -46,6 +46,16 @@
           modules = [ ./nixos/hosts/vbox-desktop ];
         };
 
+        thinkpad-x1 = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = {
+            host = userConfig.host;
+            desktop = userConfig.desktop;
+            inherit inputs userConfig;
+          };
+          modules = [ ./nixos/hosts/thinkpad-x1 ];
+        };
+
       };
 
       devShells.${system} = {
