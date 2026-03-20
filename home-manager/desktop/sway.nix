@@ -114,6 +114,7 @@
         border = 2;
         commands = [
           { command = "floating enable, resize set 80 ppt 70 ppt"; criteria = { app_id = "floating-term"; }; }
+          { command = "floating enable, resize set 80 ppt 70 ppt"; criteria = { title = "File Manager"; }; }
         ];
       };
 

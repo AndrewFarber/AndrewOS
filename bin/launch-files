@@ -1,1 +1,1 @@
-exec alacritty -e yazi "$@"
+exec alacritty --title "File Manager" -e yazi "$@"

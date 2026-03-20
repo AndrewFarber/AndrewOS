@@ -21,6 +21,7 @@
       };
       key-bindings = {
         delete-line-forward = "none";
+        delete-prev = "BackSpace";
         prev = "Up Control+k";
         next = "Down Control+j";
         custom-1 = "Control+l";

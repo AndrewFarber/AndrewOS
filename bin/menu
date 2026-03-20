@@ -1,13 +1,13 @@
 folders=(
-  "  Launch"
+  "󰮫 Launch"
   "󰄀 Screenshot"
   "󰑓 Refresh"
   "󰒓 System"
 )
 
 declare -A items
-items["  Launch"]="
-  Open Terminal|launch-terminal
+items["󰮫 Launch"]="
+󰆍 Open Terminal|launch-terminal
 󰖟 Open Browser|launch-browser
 󰅪 Open Editor|launch-editor
 󰉋 Open File Manager|launch-files
@@ -74,13 +74,13 @@ find_script() {
 
 # Main loop
 while true; do
-  # Show folder list
-  choice=$(show_folders)
-  rc=$?
+  # Show folder list (|| true prevents set -e from killing the script)
+  choice=$(show_folders) || rc=$?
+  rc=${rc:-0}
 
   # Exit on Escape (1) or Ctrl+H at top level (11)
-  [ $rc -eq 1 ] && exit 0
-  [ $rc -eq 11 ] && exit 0
+  [ "$rc" -eq 1 ] && exit 0
+  [ "$rc" -eq 11 ] && exit 0
   [ -z "$choice" ] && exit 0
 
   # Enter: select folder, Ctrl+L: also select folder
@@ -88,15 +88,15 @@ while true; do
 
   # Sub-menu loop
   while true; do
-    pick=$(show_items "$choice")
-    rc=$?
+    rc=0
+    pick=$(show_items "$choice") || rc=$?
 
     # Escape or Ctrl+H: go back to folders
-    [ $rc -eq 1 ] && break
-    [ $rc -eq 11 ] && break
+    [ "$rc" -eq 1 ] && break
+    [ "$rc" -eq 11 ] && break
 
     # Enter or Ctrl+L: run the selected item
-    if [ $rc -eq 0 ] || [ $rc -eq 10 ]; then
+    if [ "$rc" -eq 0 ] || [ "$rc" -eq 10 ]; then
       [ -z "$pick" ] && break
       script=$(find_script "$choice" "$pick")
       [ -n "$script" ] && exec "$script"
