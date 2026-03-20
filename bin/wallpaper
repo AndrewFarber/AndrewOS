@@ -1,4 +1,4 @@
-THEME=$(grep 'theme = "' "$HOME/AndrewOS/themes/default.nix" | sed 's/.*theme = "\(.*\)".*/\1/')
+THEME=$(sed -n 's/.*theme = "\(.*\)".*/\1/p' "$HOME/AndrewOS/user.nix")
 WALLPAPER_DIR="$HOME/AndrewOS/themes/$THEME/backgrounds"
 
 # List image files and pick one via fuzzel

@@ -18,4 +18,10 @@
   # Bluetooth
   andrewos.networking.bluetooth.enable = true;
 
+  # Suspend on lid close
+  services.logind = {
+    lidSwitch = "suspend";
+    lidSwitchExternalPower = "suspend";
+  };
+
 }
