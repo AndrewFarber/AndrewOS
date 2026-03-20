@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+exec alacritty --class floating-term -e bash -c 'sudo nix-collect-garbage -d; echo "Press enter to close..."; read'

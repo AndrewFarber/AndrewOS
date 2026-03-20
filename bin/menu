@@ -22,7 +22,8 @@ declare -A icons=(
   [screenshot-save]="󰄀 Screenshot Save to File"
   [rebuild]="󱁤 Rebuild NixOS"
   [update]="󰇚 Update Flake & Rebuild"
-  [gc]="󰩺 Garbage Collect"
+  [gc]="󰩺 Garbage Collect (User)"
+  [gc-system]="󰩺 Garbage Collect (System)"
   [lock]="󰌾 Lock Screen"
 )
 
