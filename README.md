@@ -5,7 +5,7 @@ Personal [NixOS](https://nixos.org/) and [Home Manager](https://nix-community.gi
 ## Features
 
 - **Declarative System Configuration** - Entire system defined in Nix, easily reproducible
-- **Multiple Desktop Environments** - Sway (Wayland), GNOME, or Plasma 6
+- **Multiple Desktop Environments** - Sway (Wayland) or Hyprland
 - **Comprehensive Development Setup** - Neovim with LSP, Git integration, and debugging support
 - **Modular Architecture** - Pluggable modules for bootloaders, drivers, desktops, and user config
 - **Headless Support** - SSH access for running in VirtualBox without GUI
@@ -37,7 +37,7 @@ HydraOS/
 │   └── modules/
 │       ├── bootloaders/     # Systemd boot configuration
 │       ├── core/            # Network, users, packages, fonts
-│       ├── desktops/        # Sway, GNOME, Plasma 6 configs
+│       ├── desktops/        # Sway, Hyprland configs
 │       └── drivers/         # VirtualBox graphics drivers
 ├── themes/                  # Theme configurations
 ├── shells/
@@ -128,13 +128,12 @@ This file is gitignored to keep personal data out of version control.
 
 ## Desktop Environments
 
-Three desktop options are available:
+Two desktop options are available:
 
 | Desktop  | Type    | Description                     |
 |----------|---------|---------------------------------|
 | Sway     | Wayland | Tiling WM, primary config       |
-| GNOME    | Wayland | Full desktop environment        |
-| Plasma 6 | Wayland | KDE desktop environment         |
+| Hyprland | Wayland | Dynamic tiling WM               |
 
 ## Development Environments
 
