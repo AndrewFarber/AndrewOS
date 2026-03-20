@@ -75,6 +75,21 @@
         "${mod}+minus" = "scratchpad show";
 
         "${mod}+Shift+slash" = "exec shortcuts";
+        "${mod}+Shift+e" = "exec wlogout";
+
+        # Volume (pamixer)
+        "XF86AudioRaiseVolume" = "exec pamixer -i 5";
+        "XF86AudioLowerVolume" = "exec pamixer -d 5";
+        "XF86AudioMute" = "exec pamixer -t";
+
+        # Brightness (brightnessctl)
+        "XF86MonBrightnessUp" = "exec brightnessctl set +5%";
+        "XF86MonBrightnessDown" = "exec brightnessctl set 5%-";
+
+        # Media (playerctl)
+        "XF86AudioPlay" = "exec playerctl play-pause";
+        "XF86AudioNext" = "exec playerctl next";
+        "XF86AudioPrev" = "exec playerctl previous";
 
         "${mod}+r" = "mode resize";
       };
@@ -115,7 +130,8 @@
 
       startup = [
         { command = "wl-paste --watch cliphist store"; }
-        { command = "mako"; }
+        { command = "swaync"; }
+        { command = "sway-audio-idle-inhibit"; }
         { command = "swayidle -w timeout 300 'swaylock -f -c ${theme.lockColor}' timeout 600 'systemctl suspend' before-sleep 'swaylock -f -c ${theme.lockColor}'"; }
       ];
     };

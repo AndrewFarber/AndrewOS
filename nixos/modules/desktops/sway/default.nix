@@ -7,17 +7,25 @@
     wrapperFeatures.gtk = true;
 
     extraPackages = with pkgs; [
-      waybar
-      fuzzel
-      mako
-      libnotify
-      swaylock
-      swayidle
-      grim
-      slurp
-      wl-clipboard
+      brightnessctl
       cliphist
+      fuzzel
+      grim
+      libnotify
+      pamixer
       pavucontrol
+      playerctl
+      slurp
+      sway-audio-idle-inhibit
+      swaybg
+      swayidle
+      swaylock
+      swaynotificationcenter
+      waybar
+      wf-recorder
+      wireplumber
+      wl-clipboard
+      wlogout
     ];
   };
 

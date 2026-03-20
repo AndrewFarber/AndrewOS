@@ -41,10 +41,8 @@ refresh-wm
 
 systemctl --user restart waybar
 
-pkill -x mako || true
-while pgrep -x mako > /dev/null; do sleep 0.1; done
-mako &
-disown
+swaync-client --reload-config
+swaync-client --reload-css
 
 refresh-tmux
 

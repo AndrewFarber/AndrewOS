@@ -19,7 +19,7 @@ in {
     (mkScript "launch-terminal" { file = ../bin/launch-terminal; runtimeInputs = [ pkgs.alacritty ]; })
     (mkScript "menu" { file = ../bin/menu; runtimeInputs = [ pkgs.fuzzel ]; })
     (mkScript "rebuild" { file = ../bin/rebuild; runtimeInputs = [ pkgs.alacritty ]; })
-    (mkScript "refresh-mako" { file = ../bin/refresh-mako; runtimeInputs = [ pkgs.mako ]; })
+    (mkScript "refresh-swaync" { file = ../bin/refresh-swaync; runtimeInputs = [ pkgs.swaynotificationcenter ]; })
     (mkScript "refresh-tmux" { file = ../bin/refresh-tmux; runtimeInputs = [ pkgs.tmux ]; })
     (mkScript "refresh-waybar" { file = ../bin/refresh-waybar; })
     (mkScript "refresh-wm" { file = ../bin/refresh-wm; runtimeInputs = [ pkgs.sway ]; })
@@ -29,7 +29,7 @@ in {
     (mkScript "screenshot-area" { file = ../bin/screenshot-area; runtimeInputs = [ pkgs.grim pkgs.slurp pkgs.wl-clipboard ]; })
     (mkScript "screenshot-save" { file = ../bin/screenshot-save; runtimeInputs = [ pkgs.grim pkgs.slurp ]; })
     (mkScript "screenshot-screen" { file = ../bin/screenshot-screen; runtimeInputs = [ pkgs.grim pkgs.wl-clipboard ]; })
-    (mkScript "theme" { file = ../bin/theme; runtimeInputs = [ pkgs.alacritty pkgs.fuzzel pkgs.gnused pkgs.mako pkgs.procps pkgs.swaybg ]; })
+    (mkScript "theme" { file = ../bin/theme; runtimeInputs = [ pkgs.alacritty pkgs.fuzzel pkgs.gnused pkgs.swaynotificationcenter pkgs.swaybg ]; })
     (mkScript "update" { file = ../bin/update; runtimeInputs = [ pkgs.alacritty pkgs.nix ]; })
     (mkScript "wallpaper" { file = ../bin/wallpaper; runtimeInputs = [ pkgs.fuzzel pkgs.sway ]; })
   ];
