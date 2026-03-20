@@ -12,9 +12,11 @@ in
   home.stateVersion = "24.11";
   programs.home-manager.enable = true;
 
+  _module.args.theme = theme;
+
   imports = [
     ./scripts.nix
-    { imports = [ ./terminal/btop.nix ]; _module.args.theme = theme; }
+    ./terminal/btop.nix
     ./terminal/alacritty.nix
     ./dev/cli-tools.nix
     ./shell/direnv.nix
@@ -27,7 +29,7 @@ in
     theme.neovimModule
   ] ++ (if desktop == "sway" then [
     ./desktop/fuzzel.nix
-    { imports = [ ./desktop/sway.nix ]; _module.args.theme = theme; }
+    ./desktop/sway.nix
     ./desktop/waybar.nix
   ] else []);
 
