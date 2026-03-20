@@ -16,7 +16,7 @@ window#waybar {
 #workspaces button {
     padding: 0 8px;
     background-color: transparent;
-    color: #3c3836;              /* Muted color for inactive workspaces */
+    color: #928374;              /* Muted color for inactive workspaces */
     border: none;
     border-radius: 0;
 }

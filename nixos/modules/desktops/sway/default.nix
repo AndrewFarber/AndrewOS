@@ -56,9 +56,9 @@
   services.xserver.xkb = {
     layout = "us";
     variant = "";
+    options = "ctrl:nocaps";
   };
   console.useXkbConfig = true;  # Apply same keyboard config to TTY console
-  services.xserver.xkb.options = "ctrl:nocaps";
 
   security.polkit.enable = true;
 
@@ -68,10 +68,4 @@
     extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
   };
 
-  fonts.packages = with pkgs; [
-    noto-fonts
-    noto-fonts-cjk-sans
-    noto-fonts-color-emoji
-    font-awesome
-  ];
 }

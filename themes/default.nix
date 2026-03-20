@@ -28,9 +28,15 @@ in
   # Wallpaper
   inherit wallpaper;
 
+  # Lock screen
+  lockColor = {
+    "tokyo-night" = "222436";
+    "gruvbox" = "282828";
+  }.${theme} or "000000";
+
   # btop
   btopTheme = {
     "tokyo-night" = "tokyo-night";
     "gruvbox" = "gruvbox_material_dark";
-  }.${theme};
+  }.${theme} or "default";
 }

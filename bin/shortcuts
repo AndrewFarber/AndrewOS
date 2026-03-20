@@ -13,6 +13,14 @@ shortcuts="
 󰁌 Layout
   Super + Shift + H/J/K/L  Move Window
   Super + Shift + 1-0      Move to Workspace 1-10
+  Super + B                Split Horizontal
+  Super + V                Split Vertical
+  Super + Shift + Q        Close Window
+  Super + R                Resize Mode
+
+󰏗 Scratchpad
+  Super + Shift + Minus    Move to Scratchpad
+  Super + Minus            Show Scratchpad
 
 󰛐 System
   Super + Shift + S      Screenshot Area
@@ -23,4 +31,4 @@ shortcuts="
   Super + ?              This Cheatsheet
 "
 
-printf '%s' "$shortcuts" | fuzzel --dmenu --prompt "Shortcuts: " --width 70 --lines 25
+printf '%s' "$shortcuts" | fuzzel --dmenu --prompt "Shortcuts: " --width 70 --lines 33

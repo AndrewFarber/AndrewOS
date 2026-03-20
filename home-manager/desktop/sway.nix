@@ -1,4 +1,4 @@
-{ pkgs, lib, ... }:
+{ pkgs, lib, theme, ... }:
 
 {
   wayland.windowManager.sway = {
@@ -30,7 +30,7 @@
         "${mod}+Shift+q" = "kill";
         "${mod}+d" = "exec menu";
         "${mod}+Shift+c" = "reload";
-        "${mod}+Escape" = "exec lock";
+        "${mod}+Escape" = "exec swaylock -f -c ${theme.lockColor}";
         "${mod}+Shift+s" = ''exec grim -g "$(slurp)" - | wl-copy'';
 
         "${mod}+h" = "focus left";
@@ -116,7 +116,7 @@
       startup = [
         { command = "wl-paste --watch cliphist store"; }
         { command = "mako"; }
-        { command = "swayidle -w timeout 300 'swaylock -f' timeout 600 'systemctl suspend' before-sleep 'swaylock -f'"; }
+        { command = "swayidle -w timeout 300 'swaylock -f -c ${theme.lockColor}' timeout 600 'systemctl suspend' before-sleep 'swaylock -f -c ${theme.lockColor}'"; }
       ];
     };
 

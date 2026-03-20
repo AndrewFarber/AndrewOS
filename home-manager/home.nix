@@ -27,7 +27,7 @@ in
     theme.neovimModule
   ] ++ (if desktop == "sway" then [
     ./desktop/fuzzel.nix
-    ./desktop/sway.nix
+    { imports = [ ./desktop/sway.nix ]; _module.args.theme = theme; }
     ./desktop/waybar.nix
   ] else []);
 

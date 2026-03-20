@@ -2,5 +2,5 @@
   username = "afarber";
   fullName = "Andrew Farber";
   email = "Andrew.Farber@outlook.com";
-  theme = "gruvbox";
+  theme = "tokyo-night";
 }

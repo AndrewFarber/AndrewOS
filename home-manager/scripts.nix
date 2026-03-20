@@ -17,7 +17,6 @@ in {
     (mkScript "launch-files" { file = ../bin/launch-files; runtimeInputs = [ pkgs.alacritty pkgs.yazi ]; })
     (mkScript "launch-git" { file = ../bin/launch-git; runtimeInputs = [ pkgs.alacritty pkgs.lazygit ]; })
     (mkScript "launch-terminal" { file = ../bin/launch-terminal; runtimeInputs = [ pkgs.alacritty ]; })
-    (mkScript "lock" { file = ../bin/lock; runtimeInputs = [ pkgs.swaylock ]; })
     (mkScript "menu" { file = ../bin/menu; runtimeInputs = [ pkgs.fuzzel ]; })
     (mkScript "rebuild" { file = ../bin/rebuild; runtimeInputs = [ pkgs.alacritty ]; })
     (mkScript "refresh-mako" { file = ../bin/refresh-mako; runtimeInputs = [ pkgs.mako ]; })

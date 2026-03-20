@@ -8,9 +8,6 @@ set $accent #7daea3
 # Background wallpaper
 output * bg ~/.config/sway/wallpaper fill
 
-# Swaylock colors
-set $lock_color 282828
-
 # Window border colors
 #                       border    background text  indicator child_border
 client.focused          $accent   $accent    $bg   $accent   $accent
