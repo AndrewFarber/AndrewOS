@@ -23,6 +23,8 @@
         delete-line-forward = "none";
         prev = "Up Control+k";
         next = "Down Control+j";
+        custom-1 = "Control+l";
+        custom-2 = "Control+h";
       };
     };
   };

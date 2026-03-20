@@ -8,6 +8,7 @@ window#waybar {
     /* Semi-transparent background for a modern look */
     background-color: rgba(40, 40, 40, 0.9);
     color: #d4be98;
+    padding-right: 8px;
 
     /* Accent-colored bottom border to separate from windows */
     border-bottom: 2px solid #7daea3;
@@ -57,6 +58,7 @@ window#waybar {
 #network,
 #bluetooth,
 #pulseaudio,
+#custom-notification,
 #tray {
     padding: 0 10px;
     color: #d4be98;

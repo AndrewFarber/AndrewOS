@@ -21,7 +21,7 @@ in
 
         modules-left = [ "${wmPrefix}/workspaces" "${wmPrefix}/mode" ];
         modules-center = [ "${wmPrefix}/window" ];
-        modules-right = [ "network" "bluetooth" "pulseaudio" "cpu" "memory" "disk" "battery" "clock" "tray" ];
+        modules-right = [ "network" "bluetooth" "pulseaudio" "cpu" "memory" "disk" "battery" "clock" "custom/notification" "tray" ];
 
         "${wmPrefix}/workspaces" = {
           disable-scroll = true;
@@ -96,6 +96,22 @@ in
           tooltip-format-connected = "{controller_alias}\n{num_connections} connected\n\n{device_enumerate}";
           tooltip-format-enumerate-connected = "{device_alias}";
           on-click = "${alacritty} -e ${pkgs.bluez}/bin/bluetoothctl";
+        };
+
+        "custom/notification" = {
+          tooltip = false;
+          format = "{icon}";
+          format-icons = {
+            notification = "󱅫";
+            none = "󰂚";
+            dnd-notification = "󰂛";
+            dnd-none = "󰂛";
+          };
+          return-type = "json";
+          exec = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+          on-click = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+          on-click-right = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+          escape = true;
         };
 
         pulseaudio = {

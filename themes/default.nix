@@ -24,6 +24,7 @@ in
   sway = ./${theme}/sway;
   fuzzel = ./${theme}/fuzzel.ini;
   waybar = ./${theme}/waybar.css;
+  swaync = ./${theme}/swaync.css;
 
   # Wallpaper
   inherit wallpaper;

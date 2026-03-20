@@ -1,44 +1,107 @@
-declare -A icons=(
-  [launch-terminal]="  Open Terminal"
-  [launch-browser]="󰖟 Open Browser"
-  [launch-editor]="󰅪 Open Editor"
-  [launch-files]="󰉋 Open File Manager"
-  [launch-git]="󰊢 Open Lazygit"
-  [launch-docker]="󰡨 Open Lazydocker"
-  [launch-audio]="󰕾 Audio Settings"
-  [refresh-wm]="󰑓 Refresh Window Manager"
-  [refresh-waybar]="󰑓 Refresh Waybar"
-  [refresh-swaync]="󰑓 Refresh Notifications"
-  [refresh-tmux]="󰑓 Refresh Tmux"
-  [restart-pipewire]="󰜉 Restart Pipewire"
-  [restart-wifi]="󰜉 Restart Wifi"
-  [screenshot-area]="󰄀 Screenshot Area"
-  [screenshot-screen]="󰄀 Screenshot Screen"
-  [screenshot-save]="󰄀 Screenshot Save to File"
-  [rebuild]="󱁤 Rebuild NixOS"
-  [update]="󰇚 Update Flake & Rebuild"
-  [gc]="󰩺 Garbage Collect (User)"
-  [gc-system]="󰩺 Garbage Collect (System)"
-  [theme]="󰔎 Change Theme"
-  [wallpaper]="󰸉 Change Wallpaper"
-  [lock]="󰌾 Lock Screen"
+folders=(
+  "  Launch"
+  "󰄀 Screenshot"
+  "󰑓 Refresh"
+  "󰒓 System"
 )
 
-entries=""
-for key in "${!icons[@]}"; do
-  entries+="${icons[$key]}"$'\n'
-done
+declare -A items
+items["  Launch"]="
+  Open Terminal|launch-terminal
+󰖟 Open Browser|launch-browser
+󰅪 Open Editor|launch-editor
+󰉋 Open File Manager|launch-files
+󰊢 Open Lazygit|launch-git
+󰡨 Open Lazydocker|launch-docker
+󰕾 Audio Settings|launch-audio
+"
 
-choice=$(printf '%s' "$entries" | fuzzel --dmenu --prompt "> ")
-[ -z "$choice" ] && exit 0
+items["󰄀 Screenshot"]="
+󰄀 Screenshot Area|screenshot-area
+󰄀 Screenshot Screen|screenshot-screen
+󰄀 Screenshot Save to File|screenshot-save
+"
 
-# Reverse-lookup: find the script name from the display label
-script=""
-for key in "${!icons[@]}"; do
-  if [ "${icons[$key]}" = "$choice" ]; then
-    script="$key"
+items["󰑓 Refresh"]="
+󰑓 Refresh Window Manager|refresh-wm
+󰑓 Refresh Waybar|refresh-waybar
+󰑓 Refresh Notifications|refresh-swaync
+󰑓 Refresh Tmux|refresh-tmux
+󰜉 Restart Pipewire|restart-pipewire
+󰜉 Restart Wifi|restart-wifi
+"
+
+items["󰒓 System"]="
+󱁤 Rebuild NixOS|rebuild
+󰇚 Update Flake & Rebuild|update
+󰩺 Garbage Collect (User)|gc
+󰩺 Garbage Collect (System)|gc-system
+󰔎 Change Theme|theme
+󰸉 Change Wallpaper|wallpaper
+󰌾 Lock Screen|lock
+"
+
+show_folders() {
+  local list=""
+  for f in "${folders[@]}"; do
+    list+="$f"$'\n'
+  done
+  printf '%s' "$list" | fuzzel --dmenu --prompt "Menu > "
+}
+
+show_items() {
+  local sub="${items[$1]}"
+  local display=""
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    display+="${line%%|*}"$'\n'
+  done <<< "$sub"
+  printf '%s' "$display" | fuzzel --dmenu --prompt "$1 > "
+}
+
+find_script() {
+  local sub="${items[$1]}"
+  while IFS= read -r line; do
+    [ -z "$line" ] && continue
+    local label="${line%%|*}"
+    local script="${line##*|}"
+    if [ "$label" = "$2" ]; then
+      echo "$script"
+      return
+    fi
+  done <<< "$sub"
+}
+
+# Main loop
+while true; do
+  # Show folder list
+  choice=$(show_folders)
+  rc=$?
+
+  # Exit on Escape (1) or Ctrl+H at top level (11)
+  [ $rc -eq 1 ] && exit 0
+  [ $rc -eq 11 ] && exit 0
+  [ -z "$choice" ] && exit 0
+
+  # Enter: select folder, Ctrl+L: also select folder
+  [ -z "${items[$choice]}" ] && exit 0
+
+  # Sub-menu loop
+  while true; do
+    pick=$(show_items "$choice")
+    rc=$?
+
+    # Escape or Ctrl+H: go back to folders
+    [ $rc -eq 1 ] && break
+    [ $rc -eq 11 ] && break
+
+    # Enter or Ctrl+L: run the selected item
+    if [ $rc -eq 0 ] || [ $rc -eq 10 ]; then
+      [ -z "$pick" ] && break
+      script=$(find_script "$choice" "$pick")
+      [ -n "$script" ] && exec "$script"
+    fi
+
     break
-  fi
+  done
 done
-[ -z "$script" ] && exit 0
-exec "$script"

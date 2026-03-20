@@ -1,0 +1,155 @@
+* {
+    font-family: "MesloLGS Nerd Font", sans-serif;
+    font-size: 13px;
+}
+
+/* Notification popups (right side) */
+.notification-row {
+    outline: none;
+}
+
+.notification-row:focus,
+.notification-row:hover {
+    background: transparent;
+}
+
+.notification {
+    border-radius: 10px;
+    margin: 4px 8px;
+    padding: 0;
+    border: 1px solid #504945;
+    background: rgba(40, 40, 40, 0.95);
+    color: #d4be98;
+}
+
+.notification-content {
+    padding: 8px 12px;
+}
+
+.notification-default-action {
+    border-radius: 10px;
+}
+
+.notification-default-action:hover {
+    background: rgba(125, 174, 163, 0.1);
+}
+
+.close-button {
+    background: #504945;
+    color: #d4be98;
+    border-radius: 50%;
+    margin: 8px;
+    padding: 2px;
+    min-width: 24px;
+    min-height: 24px;
+}
+
+.close-button:hover {
+    background: #ea6962;
+    color: #282828;
+}
+
+.notification-action {
+    background: #504945;
+    color: #d4be98;
+    border-radius: 6px;
+    margin: 4px;
+    padding: 4px 8px;
+    border: none;
+}
+
+.notification-action:hover {
+    background: #7daea3;
+    color: #282828;
+}
+
+.summary {
+    color: #d4be98;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.body {
+    color: #928374;
+    font-size: 13px;
+}
+
+.time {
+    color: #7c6f64;
+    font-size: 11px;
+}
+
+/* Notification urgency */
+.critical {
+    border: 1px solid #ea6962;
+}
+
+.low {
+    border: 1px solid #504945;
+}
+
+/* Control center (notification panel) */
+.control-center {
+    background: rgba(40, 40, 40, 0.95);
+    color: #d4be98;
+    border-radius: 10px;
+    border: 1px solid #504945;
+    padding: 8px;
+}
+
+.control-center-list {
+    background: transparent;
+}
+
+.control-center-list-placeholder {
+    opacity: 0.5;
+}
+
+/* Title widget */
+.widget-title {
+    color: #d4be98;
+    font-size: 16px;
+    font-weight: bold;
+    margin: 4px 8px;
+}
+
+.widget-title > button {
+    background: #504945;
+    color: #d4be98;
+    border-radius: 6px;
+    padding: 4px 12px;
+    border: none;
+    font-size: 12px;
+}
+
+.widget-title > button:hover {
+    background: #7daea3;
+    color: #282828;
+}
+
+/* DND widget */
+.widget-dnd {
+    color: #928374;
+    margin: 4px 8px;
+    font-size: 13px;
+}
+
+.widget-dnd > switch {
+    background: #504945;
+    border-radius: 12px;
+    border: none;
+}
+
+.widget-dnd > switch:checked {
+    background: #7daea3;
+}
+
+.widget-dnd > switch slider {
+    background: #d4be98;
+    border-radius: 50%;
+}
+
+/* Floating notifications */
+.floating-notifications {
+    background: transparent;
+}

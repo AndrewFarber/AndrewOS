@@ -47,6 +47,8 @@ in
     ".config/sway/wallpaper".source = theme.wallpaper;
     ".config/waybar/style.css".source = theme.waybar;
     ".config/fuzzel/theme.ini".source = theme.fuzzel;
+    ".config/swaync/config.json".source = ./desktop/swaync-config.json;
+    ".config/swaync/style.css".source = theme.swaync;
   } else {});
 
 }
