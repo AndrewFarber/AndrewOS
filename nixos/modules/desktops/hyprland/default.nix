@@ -63,6 +63,7 @@
     grim
     slurp
     wl-clipboard
+    cliphist
     pavucontrol
     qt6.qtwayland
     swaybg

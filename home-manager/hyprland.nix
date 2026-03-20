@@ -75,7 +75,7 @@
 
       bind = [
         "$mod, Return, exec, $terminal"
-        "$mod, D, exec, $menu"
+        "$mod, D, exec, ~/AndrewOS/bin/menu"
         "$mod, Q, killactive"
         "$mod, M, exit"
         "$mod, V, togglefloating"
@@ -120,14 +120,40 @@
         # Screenshot
         "$mod SHIFT, S, exec, grim -g \"$(slurp)\" - | wl-copy"
 
-        # Menu
-        "$mod, space, exec, ~/AndrewOS/bin/menu"
+        # App launcher
+        "$mod, space, exec, $menu"
+
+        # Clipboard history
+        "$mod ALT, V, exec, cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
+
+        # Wallpaper picker
+        "$mod ALT, W, exec, ~/AndrewOS/bin/wallpaper"
 
         # Lock screen
         "$mod, Escape, exec, hyprlock"
       ];
 
+      decoration = {
+        rounding = 8;
+        blur.enabled = true;
+        blur.size = 4;
+        blur.passes = 2;
+        shadow.enabled = true;
+      };
+
+      animations = {
+        enabled = true;
+        bezier = [ "ease, 0.25, 0.1, 0.25, 1" ];
+        animation = [
+          "windows, 1, 4, ease, slide"
+          "windowsOut, 1, 4, ease, slide"
+          "fade, 1, 4, ease"
+          "workspaces, 1, 4, ease, slide"
+        ];
+      };
+
       exec-once = [
+        "wl-paste --watch cliphist store"
         "swaybg -i ~/.config/hypr/wallpaper -m fill"
         "waybar"
         "mako"

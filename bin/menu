@@ -24,6 +24,7 @@ declare -A icons=(
   [update]="󰇚 Update Flake & Rebuild"
   [gc]="󰩺 Garbage Collect (User)"
   [gc-system]="󰩺 Garbage Collect (System)"
+  [wallpaper]="󰸉 Change Wallpaper"
   [lock]="󰌾 Lock Screen"
 )
 

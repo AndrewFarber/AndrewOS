@@ -28,7 +28,7 @@
       in {
         "${mod}+Return" = "exec alacritty";
         "${mod}+Shift+q" = "kill";
-        "${mod}+d" = "exec fuzzel";
+        "${mod}+d" = "exec ~/AndrewOS/bin/menu";
         "${mod}+Shift+c" = "reload";
         "${mod}+Shift+e" = "exec swaymsg exit";
         "${mod}+Shift+s" = ''exec grim -g "$(slurp)" - | wl-copy'';
@@ -68,7 +68,9 @@
         "${mod}+b" = "splith";
         "${mod}+v" = "splitv";
 
-        "${mod}+space" = "exec ~/AndrewOS/bin/menu";
+        "${mod}+space" = "exec fuzzel";
+        "${mod}+Alt+v" = ''exec cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'';
+        "${mod}+Alt+w" = "exec ~/AndrewOS/bin/wallpaper";
         "${mod}+Shift+minus" = "move scratchpad";
         "${mod}+minus" = "scratchpad show";
 
@@ -110,6 +112,7 @@
       bars = [];
 
       startup = [
+        { command = "wl-paste --watch cliphist store"; }
         { command = "mako"; }
         { command = "waybar"; }
       ];

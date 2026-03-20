@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+WALLPAPER_DIR="$HOME/AndrewOS/themes/tokyo-night/backgrounds"
+
+# List image files and pick one via fuzzel
+chosen=$(ls "$WALLPAPER_DIR"/*.{png,jpg,jpeg,webp} 2>/dev/null | xargs -n1 basename | fuzzel --dmenu --prompt "Wallpaper > ")
+[ -z "$chosen" ] && exit 0
+
+wallpaper="$WALLPAPER_DIR/$chosen"
+[ ! -f "$wallpaper" ] && exit 1
+
+if [ "$XDG_CURRENT_DESKTOP" = "sway" ]; then
+  swaymsg output '*' bg "$wallpaper" fill
+else
+  pkill swaybg 2>/dev/null
+  swaybg -i "$wallpaper" -m fill &
+  disown
+fi
