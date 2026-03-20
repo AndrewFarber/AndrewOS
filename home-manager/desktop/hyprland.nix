@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, theme, ... }:
 
 {
   programs.hyprlock = {
@@ -10,7 +10,7 @@
       };
       background = {
         monitor = "";
-        color = "rgb(24, 25, 38)";
+        color = theme.hyprlock.background;
         blur_passes = 2;
         blur_size = 4;
       };
@@ -18,9 +18,9 @@
         monitor = "";
         size = "300, 50";
         outline_thickness = 2;
-        outer_color = "rgb(122, 162, 247)";
-        inner_color = "rgb(36, 40, 59)";
-        font_color = "rgb(192, 202, 245)";
+        outer_color = theme.hyprlock.accent;
+        inner_color = theme.hyprlock.inner;
+        font_color = theme.hyprlock.font;
         fade_on_empty = false;
         placeholder_text = "";
         hide_input = false;

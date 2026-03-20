@@ -1,0 +1,85 @@
+* {
+    /* Use the same font as alacritty for consistency */
+    font-family: "MesloLGS Nerd Font", "Font Awesome 6 Free", sans-serif;
+    font-size: 13px;
+}
+
+window#waybar {
+    /* Semi-transparent background for a modern look */
+    background-color: rgba(40, 40, 40, 0.9);
+    color: #d4be98;
+
+    /* Accent-colored bottom border to separate from windows */
+    border-bottom: 2px solid #7daea3;
+}
+
+#workspaces button {
+    padding: 0 8px;
+    background-color: transparent;
+    color: #3c3836;              /* Muted color for inactive workspaces */
+    border: none;
+    border-radius: 0;
+}
+
+#workspaces button:hover {
+    /* Subtle highlight on hover */
+    background-color: rgba(125, 174, 163, 0.2);
+}
+
+#workspaces button.focused {
+    /* Active workspace: accent background with dark text */
+    background-color: #7daea3;
+    color: #282828;
+}
+
+#workspaces button.urgent {
+    /* Urgent workspace: red background for attention */
+    background-color: #ea6962;
+    color: #282828;
+}
+
+#mode {
+    /* Orange background to stand out when in a special mode */
+    background-color: #d65d0e;
+    color: #282828;
+    padding: 0 10px;
+}
+
+#window {
+    color: #d4be98;
+}
+
+#clock,
+#cpu,
+#memory,
+#tray {
+    padding: 0 10px;
+    color: #d4be98;
+}
+
+#clock {
+    color: #d3869b;  /* Magenta for time - easy to spot */
+}
+
+#cpu {
+    color: #89b482;  /* Cyan/green for CPU */
+}
+
+#memory {
+    color: #d8a657;  /* Yellow for memory */
+}
+
+#tray {
+    padding: 0 5px;
+}
+
+#tray > .passive {
+    /* Dim passive/inactive tray icons */
+    -gtk-icon-effect: dim;
+}
+
+#tray > .needs-attention {
+    /* Highlight tray icons that need attention */
+    -gtk-icon-effect: highlight;
+    background-color: #ea6962;
+}

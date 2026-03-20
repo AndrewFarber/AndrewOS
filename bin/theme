@@ -1,0 +1,53 @@
+THEMES_DIR="$HOME/AndrewOS/themes"
+DEFAULT_NIX="$THEMES_DIR/default.nix"
+
+# List theme directories
+themes=()
+for dir in "$THEMES_DIR"/*/; do
+  themes+=("$(basename "$dir")")
+done
+
+[ ${#themes[@]} -eq 0 ] && exit 1
+
+# Show picker
+chosen=$(printf '%s\n' "${themes[@]}" | fuzzel --dmenu --prompt "Theme > ")
+[ -z "$chosen" ] && exit 0
+
+# Read current theme
+current=$(sed -n 's/.*theme = "\(.*\)".*/\1/p' "$DEFAULT_NIX")
+
+if [ "$chosen" = "$current" ]; then
+  exit 0
+fi
+
+# Update themes/default.nix
+sed -i "s/theme = \".*\"/theme = \"$chosen\"/" "$DEFAULT_NIX"
+
+# Rebuild in a floating terminal (so sudo prompt is visible)
+# shellcheck disable=SC2016
+if ! alacritty --class floating-term -e bash -c 'sudo nixos-rebuild switch --flake ~/AndrewOS; s=$?; echo "Press enter to close..."; read; exit $s'; then
+  sed -i "s/theme = \".*\"/theme = \"$current\"/" "$DEFAULT_NIX"
+  echo "Rebuild failed — reverted to $current"
+  exit 1
+fi
+
+# Refresh window manager
+if [ "$XDG_CURRENT_DESKTOP" = "Hyprland" ]; then
+  hyprctl reload
+  # Restart swaybg for new wallpaper (exec-once doesn't re-run on reload)
+  pkill swaybg || true
+  swaybg -i ~/.config/hypr/wallpaper -m fill &
+  disown
+else
+  swaymsg reload
+fi
+
+# Restart waybar for CSS changes (kill all instances first, since
+# WM reload may have spawned one with the new Nix store path)
+sleep 1
+killall waybar || true
+sleep 0.5
+waybar &
+disown
+
+echo "Switched to $chosen"

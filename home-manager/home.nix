@@ -30,7 +30,7 @@ in
     ./desktop/waybar.nix
   ] else if desktop == "hyprland" then [
     ./desktop/fuzzel.nix
-    ./desktop/hyprland.nix
+    { imports = [ ./desktop/hyprland.nix ]; _module.args.theme = theme; }
     ./desktop/waybar.nix
   ] else []);
 
