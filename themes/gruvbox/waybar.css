@@ -52,21 +52,66 @@ window#waybar {
 #clock,
 #cpu,
 #memory,
+#disk,
+#battery,
+#network,
+#bluetooth,
+#pulseaudio,
 #tray {
     padding: 0 10px;
     color: #d4be98;
 }
 
 #clock {
-    color: #d3869b;  /* Magenta for time - easy to spot */
+    color: #d3869b;  /* Magenta for time */
 }
 
 #cpu {
-    color: #89b482;  /* Cyan/green for CPU */
+    color: #89b482;  /* Green for CPU */
 }
 
 #memory {
     color: #d8a657;  /* Yellow for memory */
+}
+
+#disk {
+    color: #a9b665;  /* Green for disk */
+}
+
+#battery {
+    color: #a9b665;  /* Green for battery */
+}
+
+#battery.warning {
+    color: #e78a4e;  /* Orange when low */
+}
+
+#battery.critical {
+    color: #ea6962;  /* Red when critical */
+}
+
+#network {
+    color: #7daea3;  /* Aqua for network */
+}
+
+#network.disconnected {
+    color: #928374;  /* Muted when disconnected */
+}
+
+#bluetooth {
+    color: #7daea3;  /* Aqua for bluetooth */
+}
+
+#bluetooth.disabled {
+    color: #928374;  /* Muted when disabled */
+}
+
+#pulseaudio {
+    color: #e78a4e;  /* Orange for audio */
+}
+
+#pulseaudio.muted {
+    color: #928374;  /* Muted when silenced */
 }
 
 #tray {

@@ -15,4 +15,7 @@
   # Wireless
   andrewos.networking.wireless.enable = true;
 
+  # Bluetooth
+  andrewos.networking.bluetooth.enable = true;
+
 }

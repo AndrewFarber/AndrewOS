@@ -74,6 +74,8 @@
         "${mod}+Shift+minus" = "move scratchpad";
         "${mod}+minus" = "scratchpad show";
 
+        "${mod}+Shift+slash" = "exec shortcuts";
+
         "${mod}+r" = "mode resize";
       };
 

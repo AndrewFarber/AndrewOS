@@ -3,6 +3,7 @@
 {
   home.packages = with pkgs; [
     bat                       # Cat with syntax highlighting
+    pulsemixer                # TUI audio mixer
     eza                       # Replacement for ls
     fzf                       # Fuzzy finder
     lazydocker                # Simple terminal UI for docker
