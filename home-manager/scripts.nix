@@ -29,7 +29,7 @@ in {
     (mkScript "screenshot-area" { file = ../bin/screenshot-area; runtimeInputs = [ pkgs.grim pkgs.slurp pkgs.wl-clipboard ]; })
     (mkScript "screenshot-save" { file = ../bin/screenshot-save; runtimeInputs = [ pkgs.grim pkgs.slurp ]; })
     (mkScript "screenshot-screen" { file = ../bin/screenshot-screen; runtimeInputs = [ pkgs.grim pkgs.wl-clipboard ]; })
-    (mkScript "theme" { file = ../bin/theme; runtimeInputs = [ pkgs.alacritty pkgs.fuzzel pkgs.gnused pkgs.procps pkgs.swaybg ]; })
+    (mkScript "theme" { file = ../bin/theme; runtimeInputs = [ pkgs.alacritty pkgs.fuzzel pkgs.gnused pkgs.mako pkgs.procps pkgs.swaybg pkgs.waybar ]; })
     (mkScript "update" { file = ../bin/update; runtimeInputs = [ pkgs.alacritty pkgs.nix ]; })
     (mkScript "wallpaper" { file = ../bin/wallpaper; runtimeInputs = [ pkgs.fuzzel pkgs.sway pkgs.swaybg ]; })
   ];
