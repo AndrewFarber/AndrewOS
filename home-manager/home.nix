@@ -16,8 +16,13 @@ in
 
   imports = [
     ./scripts.nix
+    ./applications/alacritty.nix
+    ./applications/chromium.nix
+    ./applications/claude-code.nix
+    ./applications/obsidian.nix
+    ./applications/pavucontrol.nix
+    ./applications/wlogout.nix
     ./terminal/btop.nix
-    ./terminal/alacritty.nix
     ./dev/cli-tools.nix
     ./shell/direnv.nix
     ./dev/git.nix
@@ -33,6 +38,16 @@ in
     ./desktop/swaync.nix
     ./desktop/waybar.nix
   ] else []);
+
+  # Applications
+  andrewos.applications = {
+    alacritty.enable = true;
+    chromium.enable = true;
+    claude-code.enable = true;
+    obsidian.enable = true;
+    pavucontrol.enable = true;
+    wlogout.enable = true;
+  };
 
   # Dotfiles that are always loaded
   home.file = {

@@ -13,7 +13,6 @@
       grim
       libnotify
       pamixer
-      pavucontrol
       playerctl
       slurp
       sway-audio-idle-inhibit
@@ -26,7 +25,6 @@
       wf-recorder
       wireplumber
       wl-clipboard
-      wlogout
     ];
   };
 

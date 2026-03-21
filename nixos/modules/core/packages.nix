@@ -13,8 +13,6 @@
     zsh.enable = true;
   };
   environment.systemPackages = with pkgs; [
-    claude-code
-    obsidian
     wlr-randr
   ];
 }
