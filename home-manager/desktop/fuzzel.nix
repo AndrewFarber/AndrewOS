@@ -13,6 +13,7 @@
         icons-enabled = "yes";
         icon-theme = "hicolor";
         match-mode = "fzf";
+        launch-prefix = "andrewos-workspace-wrap";
         include = "~/.config/fuzzel/theme.ini";
       };
       border = {

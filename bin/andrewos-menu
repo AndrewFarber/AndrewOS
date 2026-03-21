@@ -1,13 +1,16 @@
 folders=(
-  "󰄀 Screenshot"
-  "󰍹 Display"
+  "🔧 Tools"
   "󱂬 Workspace"
+  "󰍹 Display"
   "󰑓 Refresh"
   "󰒓 System"
 )
 
 declare -A items
-items["󰄀 Screenshot"]="
+items["🔧 Tools"]="
+󰉋 File Manager|andrewos-launch-files
+󰊢 Git|andrewos-launch-git
+󰡨 Docker|andrewos-launch-docker
 󰄀 Screenshot Area|andrewos-screenshot-area
 󰄀 Screenshot Screen|andrewos-screenshot-screen
 󰄀 Screenshot Save to File|andrewos-screenshot-save
@@ -35,6 +38,11 @@ items["󰑓 Refresh"]="
 "
 
 items["󰒓 System"]="
+󰍹 System Monitor|andrewos-launch-monitor
+󰋊 Disk Usage|andrewos-launch-disk
+󰕾 Audio Mixer|andrewos-launch-audio
+󰂯 Bluetooth|andrewos-launch-bluetooth
+󰖩 Network|andrewos-launch-network
 󱁤 Rebuild NixOS|andrewos-rebuild
 󰇚 Update Flake & Rebuild|andrewos-update
 󰩺 Garbage Collect (User)|andrewos-gc

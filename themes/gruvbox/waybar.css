@@ -55,11 +55,11 @@ window#waybar > box {
     color: #d4be98;
 }
 
-#right {
+.modules-right {
     background-color: rgba(40, 40, 40, 0.9);
     border-radius: 20px;
     margin: 4px 2px;
-    padding: 0 8px;
+    padding: 0 4px;
 }
 
 #clock,

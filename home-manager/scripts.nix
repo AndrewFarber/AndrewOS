@@ -11,7 +11,7 @@ in {
     (mkScript "andrewos-gc" { file = ../bin/andrewos-gc; runtimeInputs = [ pkgs.alacritty pkgs.nix ]; })
     (mkScript "andrewos-gc-system" { file = ../bin/andrewos-gc-system; runtimeInputs = [ pkgs.alacritty pkgs.nix ]; })
     (mkScript "andrewos-launch-audio" { file = ../bin/andrewos-launch-audio; runtimeInputs = [ pkgs.alacritty pkgs.pulsemixer ]; })
-    (mkScript "andrewos-launch-bluetooth" { file = ../bin/andrewos-launch-bluetooth; runtimeInputs = [ pkgs.alacritty pkgs.bluez ]; })
+    (mkScript "andrewos-launch-bluetooth" { file = ../bin/andrewos-launch-bluetooth; runtimeInputs = [ pkgs.alacritty pkgs.bluetuith ]; })
     (mkScript "andrewos-launch-browser" { file = ../bin/andrewos-launch-browser; runtimeInputs = [ pkgs.chromium ]; })
     (mkScript "andrewos-launch-disk" { file = ../bin/andrewos-launch-disk; runtimeInputs = [ pkgs.alacritty ]; })
     (mkScript "andrewos-launch-docker" { file = ../bin/andrewos-launch-docker; runtimeInputs = [ pkgs.alacritty pkgs.lazydocker ]; })
@@ -45,5 +45,6 @@ in {
     (mkScript "andrewos-toggle-wifi" { file = ../bin/andrewos-toggle-wifi; runtimeInputs = [ pkgs.util-linux ]; })
     (mkScript "andrewos-update" { file = ../bin/andrewos-update; runtimeInputs = [ pkgs.alacritty pkgs.nix ]; })
     (mkScript "andrewos-wallpaper" { file = ../bin/andrewos-wallpaper; runtimeInputs = [ pkgs.fuzzel pkgs.sway ]; })
+    (mkScript "andrewos-workspace-wrap" { file = ../bin/andrewos-workspace-wrap; runtimeInputs = [ pkgs.sway pkgs.jq ]; })
   ];
 }

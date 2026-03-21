@@ -1,10 +1,14 @@
-{ desktop ? "", pkgs, ... }:
+{ desktop ? "", pkgs, config, ... }:
 
 let
   wmPrefix = "sway";
 in
 
 {
+  systemd.user.services.waybar.Service.Environment = [
+    "PATH=${config.home.profileDirectory}/bin:/run/current-system/sw/bin:/run/wrappers/bin"
+  ];
+
   programs.waybar = {
     enable = true;
     systemd.enable = true;
@@ -20,12 +24,7 @@ in
 
         modules-left = [ "${wmPrefix}/workspaces" "${wmPrefix}/mode" ];
         modules-center = [ "${wmPrefix}/window" ];
-        modules-right = [ "group/right" ];
-
-        "group/right" = {
-          orientation = "inherit";
-          modules = [ "network" "bluetooth" "cpu" "memory" "disk" "pulseaudio" "battery" "clock" "custom/notification" "tray" ];
-        };
+        modules-right = [ "network" "bluetooth" "cpu" "memory" "disk" "pulseaudio" "battery" "clock" "custom/notification" "tray" ];
 
         "${wmPrefix}/workspaces" = {
           disable-scroll = true;

@@ -1,1 +1,1 @@
-exec alacritty -e lazydocker
+exec alacritty --class floating-term -e lazydocker

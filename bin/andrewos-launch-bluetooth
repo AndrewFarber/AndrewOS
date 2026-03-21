@@ -1,1 +1,1 @@
-exec alacritty --class floating-term -e bluetoothctl
+exec alacritty --class floating-term -e bluetuith
