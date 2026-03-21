@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.andrewos.applications.proton-pass.enable = lib.mkEnableOption "Proton Pass (Chromium web app)";
+  options.andrewos.applications.proton-pass.enable = lib.mkEnableOption "Proton Pass";
 
   config = lib.mkIf config.andrewos.applications.proton-pass.enable {
     xdg.desktopEntries.proton-pass = {

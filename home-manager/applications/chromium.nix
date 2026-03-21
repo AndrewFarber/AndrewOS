@@ -1,7 +1,7 @@
 { config, lib, ... }:
 
 {
-  options.andrewos.applications.chromium.enable = lib.mkEnableOption "Chromium web browser";
+  options.andrewos.applications.chromium.enable = lib.mkEnableOption "Chromium";
 
   config = lib.mkIf config.andrewos.applications.chromium.enable {
     programs.chromium = {

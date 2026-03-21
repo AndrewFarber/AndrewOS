@@ -10,7 +10,7 @@
         general.import = [ "~/.config/alacritty/theme.toml" ];
 
         window = {
-          opacity = 0.9;
+          opacity = 0.85;
           padding = {
             x = 5;
             y = 5;

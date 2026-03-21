@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.andrewos.applications.linear.enable = lib.mkEnableOption "Linear (Chromium web app)";
+  options.andrewos.applications.linear.enable = lib.mkEnableOption "Linear";
 
   config = lib.mkIf config.andrewos.applications.linear.enable {
     xdg.desktopEntries.linear = {

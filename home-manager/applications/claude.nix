@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.andrewos.applications.claude.enable = lib.mkEnableOption "Claude (Chromium web app)";
+  options.andrewos.applications.claude.enable = lib.mkEnableOption "Claude";
 
   config = lib.mkIf config.andrewos.applications.claude.enable {
     xdg.desktopEntries.claude = {

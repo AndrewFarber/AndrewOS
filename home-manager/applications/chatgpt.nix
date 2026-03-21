@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.andrewos.applications.chatgpt.enable = lib.mkEnableOption "ChatGPT (Chromium web app)";
+  options.andrewos.applications.chatgpt.enable = lib.mkEnableOption "ChatGPT";
 
   config = lib.mkIf config.andrewos.applications.chatgpt.enable {
     xdg.desktopEntries.chatgpt = {

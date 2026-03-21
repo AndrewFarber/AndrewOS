@@ -1,7 +1,7 @@
 { config, lib, pkgs, ... }:
 
 {
-  options.andrewos.applications.notion.enable = lib.mkEnableOption "Notion (Chromium web app)";
+  options.andrewos.applications.notion.enable = lib.mkEnableOption "Notion";
 
   config = lib.mkIf config.andrewos.applications.notion.enable {
     xdg.desktopEntries.notion = {

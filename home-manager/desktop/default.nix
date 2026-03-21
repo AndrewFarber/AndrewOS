@@ -7,6 +7,8 @@
     ../applications/chatgpt.nix
     ../applications/chromium.nix
     ../applications/claude.nix
+    ../applications/figma.nix
+    ../applications/github.nix
     ../applications/linear.nix
     ../applications/notion.nix
     ../applications/obsidian.nix
@@ -25,6 +27,8 @@
     chatgpt.enable = true;
     chromium.enable = true;
     claude.enable = true;
+    figma.enable = true;
+    github.enable = true;
     linear.enable = true;
     notion.enable = true;
     obsidian.enable = true;
