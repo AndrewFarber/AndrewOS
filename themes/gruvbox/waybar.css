@@ -43,6 +43,102 @@ window#waybar > box {
     color: #282828;
 }
 
+/* Hide app workspaces (11-19) from the regular left pill */
+#workspaces:not(.apps) #sway-workspace-11,
+#workspaces:not(.apps) #sway-workspace-12,
+#workspaces:not(.apps) #sway-workspace-13,
+#workspaces:not(.apps) #sway-workspace-14,
+#workspaces:not(.apps) #sway-workspace-15,
+#workspaces:not(.apps) #sway-workspace-16,
+#workspaces:not(.apps) #sway-workspace-17,
+#workspaces:not(.apps) #sway-workspace-18 {
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    font-size: 0;
+    opacity: 0;
+}
+
+#workspaces:not(.apps) #sway-workspace-11 label,
+#workspaces:not(.apps) #sway-workspace-12 label,
+#workspaces:not(.apps) #sway-workspace-13 label,
+#workspaces:not(.apps) #sway-workspace-14 label,
+#workspaces:not(.apps) #sway-workspace-15 label,
+#workspaces:not(.apps) #sway-workspace-16 label,
+#workspaces:not(.apps) #sway-workspace-17 label,
+#workspaces:not(.apps) #sway-workspace-18 label {
+    font-size: 0;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* Apps pill: hide all buttons by default */
+#workspaces.apps button {
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+    border: none;
+    font-size: 0;
+    opacity: 0;
+}
+
+#workspaces.apps button label {
+    font-size: 0;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
+    margin: 0;
+}
+
+/* Apps pill: show only app workspace buttons (11-18) */
+#workspaces.apps #sway-workspace-11,
+#workspaces.apps #sway-workspace-12,
+#workspaces.apps #sway-workspace-13,
+#workspaces.apps #sway-workspace-14,
+#workspaces.apps #sway-workspace-15,
+#workspaces.apps #sway-workspace-16,
+#workspaces.apps #sway-workspace-17,
+#workspaces.apps #sway-workspace-18 {
+    padding: 0 8px;
+    margin: 4px 2px;
+    background-color: transparent;
+    color: #928374;
+    border: none;
+    border-radius: 16px;
+    font-size: 13px;
+    opacity: 1;
+    transition: background-color 0.2s ease;
+}
+
+#workspaces.apps #sway-workspace-11 label,
+#workspaces.apps #sway-workspace-12 label,
+#workspaces.apps #sway-workspace-13 label,
+#workspaces.apps #sway-workspace-14 label,
+#workspaces.apps #sway-workspace-15 label,
+#workspaces.apps #sway-workspace-16 label,
+#workspaces.apps #sway-workspace-17 label,
+#workspaces.apps #sway-workspace-18 label {
+    font-size: 13px;
+}
+
+/* Apps pill: focused workspace */
+#workspaces.apps #sway-workspace-11.focused,
+#workspaces.apps #sway-workspace-12.focused,
+#workspaces.apps #sway-workspace-13.focused,
+#workspaces.apps #sway-workspace-14.focused,
+#workspaces.apps #sway-workspace-15.focused,
+#workspaces.apps #sway-workspace-16.focused,
+#workspaces.apps #sway-workspace-17.focused,
+#workspaces.apps #sway-workspace-18.focused {
+    background-color: #7daea3;
+    color: #282828;
+}
+
 #mode {
     background-color: #d65d0e;
     color: #282828;

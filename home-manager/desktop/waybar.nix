@@ -23,7 +23,7 @@ in
         spacing = 4;
 
         modules-left = [ "${wmPrefix}/workspaces" "${wmPrefix}/mode" ];
-        modules-center = [ "${wmPrefix}/window" ];
+        modules-center = [ "${wmPrefix}/workspaces#apps" ];
         modules-right = [ "network" "bluetooth" "cpu" "memory" "disk" "pulseaudio" "battery" "clock" "custom/notification" "tray" ];
 
         "${wmPrefix}/workspaces" = {
@@ -36,8 +36,32 @@ in
           format = "<span style=\"italic\">{}</span>";
         };
 
-        "${wmPrefix}/window" = {
-          max-length = 50;
+        "${wmPrefix}/workspaces#apps" = {
+          disable-scroll = true;
+          all-outputs = true;
+          format = "{icon}";
+
+          format-icons = {
+            "11" = "F1:  Chromium";
+            "12" = "F2:  GitHub";
+            "13" = "F3:  Notion";
+            "14" = "F4: 󰌆 Proton";
+            "15" = "F5: 󰝨 Linear";
+            "16" = "F6:  Figma";
+            "17" = "F7: 󰚩 Claude";
+            "18" = "F8: 󰭻 ChatGPT";            default = " App";
+          };
+
+          persistent-workspaces = {
+            "11" = [];
+            "12" = [];
+            "13" = [];
+            "14" = [];
+            "15" = [];
+            "16" = [];
+            "17" = [];
+            "18" = [];
+          };
         };
 
         tray = {

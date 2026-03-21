@@ -64,7 +64,6 @@
         "${mod}+Shift+7" = "move container to workspace number 7";
         "${mod}+Shift+8" = "move container to workspace number 8";
         "${mod}+Shift+9" = "move container to workspace number 9";
-        "${mod}+Shift+0" = "move container to workspace number 10";
 
         "${mod}+b" = "splith";
         "${mod}+v" = "splitv";
@@ -92,6 +91,15 @@
         "XF86AudioNext" = "exec playerctl next";
         "XF86AudioPrev" = "exec playerctl previous";
 
+        # App workspaces (Super+F1–F8 → launch/switch to app on workspace 11–18)
+        "${mod}+F1" = "exec andrewos-app-launch 1";
+        "${mod}+F2" = "exec andrewos-app-launch 2";
+        "${mod}+F3" = "exec andrewos-app-launch 3";
+        "${mod}+F4" = "exec andrewos-app-launch 4";
+        "${mod}+F5" = "exec andrewos-app-launch 5";
+        "${mod}+F6" = "exec andrewos-app-launch 6";
+        "${mod}+F7" = "exec andrewos-app-launch 7";
+        "${mod}+F8" = "exec andrewos-app-launch 8";
         "${mod}+r" = "mode resize";
       };
 

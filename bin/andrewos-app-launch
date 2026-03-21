@@ -1,0 +1,32 @@
+# Launched by sway keybinding (Super+F1–F8).
+# Switches to the app workspace, launching the app if needed.
+
+slot=$1
+ws_num=$((10 + slot))
+
+# Map slot to launch command
+case "$slot" in
+  1) cmd="chromium" ;;
+  2) cmd="chromium --app=https://github.com" ;;
+  3) cmd="chromium --app=https://notion.so" ;;
+  4) cmd="chromium --app=https://account.proton.me" ;;
+  5) cmd="chromium --app=https://linear.app" ;;
+  6) cmd="chromium --app=https://figma.com" ;;
+  7) cmd="chromium --app=https://claude.ai" ;;
+  8) cmd="chromium --app=https://chatgpt.com" ;;
+  *) exit 1 ;;
+esac
+
+# Check if workspace has any windows (not just whether it exists)
+has_windows=$(swaymsg -t get_tree | jq '
+  [.nodes[].nodes[] | select(.num == '"$ws_num"')] |
+  if length == 0 then false
+  else .[0] | ((.nodes | length) + (.floating_nodes | length)) > 0
+  end
+')
+
+if [ "$has_windows" = "true" ]; then
+  swaymsg workspace number "$ws_num"
+else
+  swaymsg workspace "$ws_num" && swaymsg exec "$cmd"
+fi

@@ -8,6 +8,7 @@ let
     };
 in {
   home.packages = [
+    (mkScript "andrewos-app-launch" { file = ../bin/andrewos-app-launch; runtimeInputs = [ pkgs.sway pkgs.jq ]; })
     (mkScript "andrewos-gc" { file = ../bin/andrewos-gc; runtimeInputs = [ pkgs.alacritty pkgs.nix ]; })
     (mkScript "andrewos-gc-system" { file = ../bin/andrewos-gc-system; runtimeInputs = [ pkgs.alacritty pkgs.nix ]; })
     (mkScript "andrewos-launch-audio" { file = ../bin/andrewos-launch-audio; runtimeInputs = [ pkgs.alacritty pkgs.pulsemixer ]; })

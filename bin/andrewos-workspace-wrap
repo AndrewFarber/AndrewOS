@@ -1,30 +1,44 @@
-# Fuzzel launch-prefix wrapper: opens each app on a new named workspace.
+# Fuzzel launch-prefix wrapper: opens each app on a fixed workspace slot.
 # Receives the full exec string from fuzzel as arguments.
 
 cmd="$*"
 
-# Map command to a glyph + label based on patterns in the exec string
+# Map command to a fixed app slot (workspace number 11-18).
+# More specific patterns first so e.g. claude.ai matches before chromium.
 case "$cmd" in
-  *claude.ai*)    label=$(printf '\U000F09D1 Claude')     ;;
-  *chatgpt*)      label=$(printf '\U000F0368 ChatGPT')    ;;
-  *figma*)        label=$(printf '\U0000EF47 Figma')      ;;
-  *github*)       label=$(printf '\U000F009B GitHub')      ;;
-  *linear.app*)   label=$(printf '\U000F0765 Linear')     ;;
-  *notion*)       label=$(printf '\U0000E848 Notion')      ;;
-  *proton*)       label=$(printf '\U000F0306 Proton Pass') ;;
-  *obsidian*)     label=$(printf '\U000F0184 Obsidian')    ;;
-  *chromium*)     label=$(printf '\U0000F268 Chromium')    ;;
-  *alacritty*)    label=$(printf '\U0000E795 Terminal')    ;;
-  *)              label=$(printf '\U000F059F App')         ;;
+  *github*)       ws_num=12 ;;
+  *notion*)       ws_num=13 ;;
+  *proton*)       ws_num=14 ;;
+  *linear.app*)   ws_num=15 ;;
+  *figma*)        ws_num=16 ;;
+  *claude.ai*)    ws_num=17 ;;
+  *chatgpt*)      ws_num=18 ;;
+  *chromium*)     ws_num=11 ;;
+  *)
+    # Unknown app: find next unused workspace number in 11-18
+    used=$(swaymsg -t get_workspaces -r | jq -r '.[].num' | sort -n)
+    ws_num=""
+    for n in $(seq 11 18); do
+      if ! echo "$used" | grep -qx "$n"; then
+        ws_num=$n
+        break
+      fi
+    done
+    [ -z "$ws_num" ] && ws_num=20
+    ;;
 esac
 
-# Find the lowest unused workspace number (1-20)
-used=$(swaymsg -t get_workspaces -r | jq -r '.[].num' | sort -n)
-ws_num=1
-for n in $used; do
-  [ "$n" -eq "$ws_num" ] && ws_num=$((ws_num + 1))
-done
+# Check if workspace has any windows (not just whether it exists)
+has_windows=$(swaymsg -t get_tree | jq '
+  [.nodes[].nodes[] | select(.num == '"$ws_num"')] |
+  if length == 0 then false
+  else .[0] | ((.nodes | length) + (.floating_nodes | length)) > 0
+  end
+')
 
-# Switch to the new workspace, then exec the app
-swaymsg workspace "$ws_num: $label"
-exec $cmd
+if [ "$has_windows" = "true" ]; then
+  swaymsg workspace number "$ws_num"
+else
+  swaymsg workspace "$ws_num"
+  exec $cmd
+fi
