@@ -4,7 +4,10 @@
   imports = [
     ../scripts.nix
     ../applications/alacritty.nix
+    ../applications/chatgpt.nix
     ../applications/chromium.nix
+    ../applications/claude.nix
+    ../applications/linear.nix
     ../applications/notion.nix
     ../applications/obsidian.nix
     ../applications/pavucontrol.nix
@@ -18,11 +21,20 @@
 
   andrewos.applications = {
     alacritty.enable = true;
+    chatgpt.enable = true;
     chromium.enable = true;
+    claude.enable = true;
+    linear.enable = true;
     notion.enable = true;
     obsidian.enable = true;
     pavucontrol.enable = true;
     wlogout.enable = true;
+  };
+
+  # Hide system desktop entries from the app launcher
+  xdg.desktopEntries.nixos-manual = {
+    name = "NixOS Manual";
+    noDisplay = true;
   };
 
   # Desktop theme files (except alacritty theme.toml which stays in home.nix)

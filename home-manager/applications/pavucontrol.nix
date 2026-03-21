@@ -7,5 +7,10 @@
     home.packages = with pkgs; [
       pavucontrol
     ];
+
+    xdg.desktopEntries.pavucontrol = {
+      name = "PulseAudio Volume Control";
+      noDisplay = true;
+    };
   };
 }
