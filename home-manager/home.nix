@@ -17,9 +17,8 @@ in
   imports = [
     ./applications/claude-code.nix
     ./terminal/btop.nix
-    ./dev/cli-tools.nix
+    ./dev
     ./shell/direnv.nix
-    ./dev/git.nix
     ./editor/lsps.nix
     ./editor/neovim.nix
     ./shell/starship.nix
@@ -32,6 +31,18 @@ in
 
   andrewos.applications = {
     claude-code.enable = true;
+  };
+
+  andrewos.dev = {
+    bat.enable = true;
+    eza.enable = true;
+    fzf.enable = true;
+    lazydocker.enable = true;
+    lazygit.enable = true;
+    pulsemixer.enable = true;
+    ripgrep.enable = true;
+    tldr.enable = true;
+    yazi.enable = true;
   };
 
   home.file = {
