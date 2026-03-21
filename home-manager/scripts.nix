@@ -22,6 +22,8 @@ in {
     (mkScript "andrewos-launch-network" { file = ../bin/andrewos-launch-network; runtimeInputs = [ pkgs.alacritty pkgs.impala ]; })
     (mkScript "andrewos-launch-terminal" { file = ../bin/andrewos-launch-terminal; runtimeInputs = [ pkgs.alacritty ]; })
     (mkScript "andrewos-menu" { file = ../bin/andrewos-menu; runtimeInputs = [ pkgs.fuzzel ]; })
+    (mkScript "andrewos-move-workspace" { file = ../bin/andrewos-move-workspace; runtimeInputs = [ pkgs.fuzzel pkgs.sway pkgs.jq ]; })
+    (mkScript "andrewos-rename-workspace" { file = ../bin/andrewos-rename-workspace; runtimeInputs = [ pkgs.fuzzel pkgs.sway pkgs.jq ]; })
     (mkScript "andrewos-rebuild" { file = ../bin/andrewos-rebuild; runtimeInputs = [ pkgs.alacritty ]; })
     (mkScript "andrewos-resolution" { file = ../bin/andrewos-resolution; runtimeInputs = [ pkgs.fuzzel pkgs.wlr-randr ]; })
     (mkScript "andrewos-refresh-swaync" { file = ../bin/andrewos-refresh-swaync; runtimeInputs = [ pkgs.swaynotificationcenter ]; })

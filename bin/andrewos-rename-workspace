@@ -1,0 +1,24 @@
+# Step 1: Pick a workspace to rename
+workspaces=$(swaymsg -t get_workspaces -r | jq -r '.[] | "\(.num)\t\(.num): \(.output)"' | sort -n | cut -f2-)
+[ -z "$workspaces" ] && exit 1
+
+chosen_ws=$(printf '%s\n' "$workspaces" | fuzzel --dmenu --prompt "Rename workspace > ")
+[ -z "$chosen_ws" ] && exit 0
+
+# Extract workspace number (everything before the colon)
+ws_num="${chosen_ws%%:*}"
+
+# Look up the actual workspace name (may include a label from a previous rename)
+ws_name=$(swaymsg -t get_workspaces -r | jq -r --argjson num "$ws_num" '.[] | select(.num == $num) | .name')
+
+# Step 2: Ask for the new label
+new_label=$(printf '' | fuzzel --dmenu --prompt "Name for $ws_num > ")
+
+# Build new name: keep number prefix for keybindings
+if [ -z "$new_label" ]; then
+  new_name="$ws_num"
+else
+  new_name="$ws_num: $new_label"
+fi
+
+swaymsg rename workspace "$ws_name" to "$new_name"

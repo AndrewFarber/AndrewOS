@@ -1,6 +1,7 @@
 folders=(
   "󰄀 Screenshot"
   "󰍹 Display"
+  "󱂬 Workspace"
   "󰑓 Refresh"
   "󰒓 System"
 )
@@ -17,6 +18,11 @@ items["󰍹 Display"]="
 󰹑 Change Scale|andrewos-scale
 󰓼 Rotate Display|andrewos-rotate
 󰶐 Toggle Display|andrewos-toggle-display
+"
+
+items["󱂬 Workspace"]="
+󱂬 Move Workspace to Output|andrewos-move-workspace
+󱂬 Rename Workspace|andrewos-rename-workspace
 "
 
 items["󰑓 Refresh"]="

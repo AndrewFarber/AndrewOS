@@ -21,8 +21,8 @@ in
 
         "${wmPrefix}/workspaces" = {
           disable-scroll = true;
-          all-outputs = true;
-          format = "{name}";
+          all-outputs = false;
+          format = "{value}";
         };
 
         "${wmPrefix}/mode" = {

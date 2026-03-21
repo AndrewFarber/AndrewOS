@@ -1,0 +1,23 @@
+# Step 1: Pick a workspace
+workspaces=$(swaymsg -t get_workspaces -r | jq -r '.[] | "\(.num)\t\(.num): \(.output)"' | sort -n | cut -f2-)
+[ -z "$workspaces" ] && exit 1
+
+chosen_ws=$(printf '%s\n' "$workspaces" | fuzzel --dmenu --prompt "Move workspace > ")
+[ -z "$chosen_ws" ] && exit 0
+
+# Extract workspace number (everything before the colon)
+ws_name="${chosen_ws%%:*}"
+
+# Step 2: Pick a target output
+outputs=$(swaymsg -t get_outputs -r | jq -r '.[] | select(.active) | "\(.name)  \(.make) \(.model)"')
+[ -z "$outputs" ] && exit 1
+
+chosen_out=$(printf '%s\n' "$outputs" | fuzzel --dmenu --prompt "To output > ")
+[ -z "$chosen_out" ] && exit 0
+
+# Extract output name (everything before the double space)
+out_name="${chosen_out%%  *}"
+
+# Move the workspace to the target output
+swaymsg workspace number "$ws_name"
+swaymsg move workspace to output "$out_name"
