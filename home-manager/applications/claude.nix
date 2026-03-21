@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   options.andrewos.applications.claude.enable = lib.mkEnableOption "Claude";
@@ -7,7 +7,7 @@
     xdg.desktopEntries.claude = {
       name = "Claude";
       comment = "Claude by Anthropic";
-      exec = "${pkgs.chromium}/bin/chromium --app=https://claude.ai";
+      exec = "andrewos-launch-claude";
       icon = "${../../assets/icons/claude.png}";
       terminal = false;
       categories = [ "Network" ];

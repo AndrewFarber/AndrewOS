@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   options.andrewos.applications.linear.enable = lib.mkEnableOption "Linear";
@@ -7,7 +7,7 @@
     xdg.desktopEntries.linear = {
       name = "Linear";
       comment = "Linear project management";
-      exec = "${pkgs.chromium}/bin/chromium --app=https://linear.app";
+      exec = "andrewos-launch-linear";
       icon = "${../../assets/icons/linear.png}";
       terminal = false;
       categories = [ "Office" ];

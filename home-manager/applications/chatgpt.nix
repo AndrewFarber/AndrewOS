@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   options.andrewos.applications.chatgpt.enable = lib.mkEnableOption "ChatGPT";
@@ -7,7 +7,7 @@
     xdg.desktopEntries.chatgpt = {
       name = "ChatGPT";
       comment = "ChatGPT by OpenAI";
-      exec = "${pkgs.chromium}/bin/chromium --app=https://chatgpt.com";
+      exec = "andrewos-launch-chatgpt";
       icon = "${../../assets/icons/chatgpt.png}";
       terminal = false;
       categories = [ "Network" ];

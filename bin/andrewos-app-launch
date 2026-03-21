@@ -6,14 +6,14 @@ ws_num=$((10 + slot))
 
 # Map slot to launch command
 case "$slot" in
-  1) cmd="chromium" ;;
-  2) cmd="chromium --app=https://github.com" ;;
-  3) cmd="chromium --app=https://notion.so" ;;
-  4) cmd="chromium --app=https://account.proton.me" ;;
-  5) cmd="chromium --app=https://linear.app" ;;
-  6) cmd="chromium --app=https://figma.com" ;;
-  7) cmd="chromium --app=https://claude.ai" ;;
-  8) cmd="chromium --app=https://chatgpt.com" ;;
+  1) cmd="andrewos-launch-browser" ;;
+  2) cmd="andrewos-launch-github" ;;
+  3) cmd="andrewos-launch-notion" ;;
+  4) cmd="andrewos-launch-proton-pass" ;;
+  5) cmd="andrewos-launch-linear" ;;
+  6) cmd="andrewos-launch-figma" ;;
+  7) cmd="andrewos-launch-claude" ;;
+  8) cmd="andrewos-launch-chatgpt" ;;
   *) exit 1 ;;
 esac
 

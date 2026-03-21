@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   options.andrewos.applications.github.enable = lib.mkEnableOption "GitHub";
@@ -7,7 +7,7 @@
     xdg.desktopEntries.github = {
       name = "GitHub";
       comment = "GitHub";
-      exec = "${pkgs.chromium}/bin/chromium --app=https://github.com";
+      exec = "andrewos-launch-github";
       icon = "${../../assets/icons/github.png}";
       terminal = false;
       categories = [ "Development" ];

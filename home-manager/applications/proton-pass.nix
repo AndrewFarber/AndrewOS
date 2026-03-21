@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   options.andrewos.applications.proton-pass.enable = lib.mkEnableOption "Proton Pass";
@@ -7,7 +7,7 @@
     xdg.desktopEntries.proton-pass = {
       name = "Proton Pass";
       comment = "Proton Pass password manager";
-      exec = "${pkgs.chromium}/bin/chromium --app=https://account.proton.me/pass";
+      exec = "andrewos-launch-proton-pass";
       icon = "${../../assets/icons/proton-pass.png}";
       terminal = false;
       categories = [ "Network" ];

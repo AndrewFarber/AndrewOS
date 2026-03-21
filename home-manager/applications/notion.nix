@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   options.andrewos.applications.notion.enable = lib.mkEnableOption "Notion";
@@ -7,7 +7,7 @@
     xdg.desktopEntries.notion = {
       name = "Notion";
       comment = "Notion workspace";
-      exec = "${pkgs.chromium}/bin/chromium --app=https://www.notion.so";
+      exec = "andrewos-launch-notion";
       icon = "${../../assets/icons/notion.png}";
       terminal = false;
       categories = [ "Office" ];

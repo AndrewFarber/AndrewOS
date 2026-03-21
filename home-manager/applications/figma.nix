@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   options.andrewos.applications.figma.enable = lib.mkEnableOption "Figma";
@@ -7,7 +7,7 @@
     xdg.desktopEntries.figma = {
       name = "Figma";
       comment = "Figma design tool";
-      exec = "${pkgs.chromium}/bin/chromium --app=https://www.figma.com";
+      exec = "andrewos-launch-figma";
       icon = "${../../assets/icons/figma.png}";
       terminal = false;
       categories = [ "Graphics" ];

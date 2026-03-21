@@ -27,7 +27,7 @@
       keybindings = let
         mod = "Mod4";
       in {
-        "${mod}+Return" = "exec alacritty";
+        "${mod}+Return" = "exec andrewos-launch-terminal";
         "${mod}+Shift+q" = "kill";
         "${mod}+d" = "exec andrewos-menu";
         "${mod}+Shift+c" = "reload";

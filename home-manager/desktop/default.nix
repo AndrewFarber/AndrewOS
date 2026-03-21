@@ -11,7 +11,7 @@
     ../applications/github.nix
     ../applications/linear.nix
     ../applications/notion.nix
-    ../applications/obsidian.nix
+
     ../applications/pavucontrol.nix
     ../applications/proton-pass.nix
     ../applications/wlogout.nix
@@ -31,7 +31,7 @@
     github.enable = true;
     linear.enable = true;
     notion.enable = true;
-    obsidian.enable = true;
+
     pavucontrol.enable = true;
     proton-pass.enable = true;
     wlogout.enable = true;
