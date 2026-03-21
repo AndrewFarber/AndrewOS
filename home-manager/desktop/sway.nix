@@ -13,6 +13,7 @@
       up = "k";
       right = "l";
 
+      # Keep in sync with nixos/modules/desktops/sway/default.nix
       input = {
         "type:keyboard" = {
           xkb_options = "ctrl:nocaps";

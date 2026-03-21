@@ -61,6 +61,7 @@
     pulse.enable = true;        # PulseAudio compatibility
   };
 
+  # Keep in sync with home-manager/desktop/sway.nix
   services.xserver.xkb = {
     layout = "us";
     variant = "";
