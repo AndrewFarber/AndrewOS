@@ -15,6 +15,9 @@ opt.shiftwidth = 2          -- 2 spaces for indent width
 opt.expandtab = true        -- expand tabs to spaces
 opt.autoindent = true       -- copy indent from current line when starting new line
 
+-- Clipboard
+opt.clipboard = "unnamedplus"  -- use system clipboard for all yank/delete/put
+
 -- Appearance
 opt.showmode = false        -- show mode below status bar
 opt.signcolumn = 'yes'      -- always include column left of line numbers
