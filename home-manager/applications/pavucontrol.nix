@@ -12,5 +12,10 @@
       name = "PulseAudio Volume Control";
       noDisplay = true;
     };
+
+    xdg.desktopEntries."org.pulseaudio.pavucontrol" = {
+      name = "PulseAudio Volume Control";
+      noDisplay = true;
+    };
   };
 }
