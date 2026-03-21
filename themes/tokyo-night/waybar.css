@@ -1,53 +1,65 @@
 * {
-    /* Use the same font as alacritty for consistency */
     font-family: "MesloLGS Nerd Font", "Font Awesome 6 Free", sans-serif;
     font-size: 13px;
 }
 
 window#waybar {
-    /* Semi-transparent background for a modern look */
-    background-color: rgba(34, 36, 54, 0.9);
+    background-color: transparent;
     color: #c8d3f5;
-    padding-right: 8px;
+}
 
-    /* Accent-colored bottom border to separate from windows */
-    border-bottom: 2px solid #82aaff;
+window#waybar > box {
+    background-color: transparent;
+}
+
+#workspaces {
+    background-color: rgba(34, 36, 54, 0.9);
+    border-radius: 20px;
+    margin: 4px 2px;
+    padding: 0 4px;
 }
 
 #workspaces button {
     padding: 0 8px;
+    margin: 4px 2px;
     background-color: transparent;
-    color: #828bb8;              /* Muted color for inactive workspaces */
+    color: #828bb8;
     border: none;
-    border-radius: 0;
+    border-radius: 16px;
+    transition: background-color 0.2s ease;
 }
 
 #workspaces button:hover {
-    /* Subtle highlight on hover */
     background-color: rgba(130, 170, 255, 0.2);
 }
 
 #workspaces button.focused {
-    /* Active workspace: accent blue background with dark text */
     background-color: #82aaff;
     color: #222436;
 }
 
 #workspaces button.urgent {
-    /* Urgent workspace: red background for attention */
     background-color: #ff757f;
     color: #222436;
 }
 
 #mode {
-    /* Orange background to stand out when in a special mode */
     background-color: #ff966c;
     color: #222436;
     padding: 0 10px;
+    border-radius: 20px;
+    margin: 4px 2px;
 }
 
 #window {
     color: #c8d3f5;
+}
+
+#right {
+    background-color: rgba(34, 36, 54, 0.9);
+    border-radius: 20px;
+    margin: 4px 2px;
+    padding: 0 8px;
 }
 
 #clock,
@@ -61,72 +73,65 @@ window#waybar {
 #custom-notification,
 #tray {
     padding: 0 10px;
-    color: #c8d3f5;
 }
 
 #clock {
-    color: #c099ff;  /* Purple for time */
+    color: #c099ff;
 }
 
 #cpu {
-    color: #86e1fc;  /* Cyan for CPU */
+    color: #86e1fc;
 }
 
 #memory {
-    color: #ffc777;  /* Yellow for memory */
+    color: #ffc777;
 }
 
 #disk {
-    color: #c3e88d;  /* Green for disk */
+    color: #c3e88d;
 }
 
 #battery {
-    color: #c3e88d;  /* Green for battery */
+    color: #c3e88d;
 }
 
 #battery.warning {
-    color: #ff966c;  /* Orange when low */
+    color: #ff966c;
 }
 
 #battery.critical {
-    color: #ff757f;  /* Red when critical */
+    color: #ff757f;
 }
 
 #network {
-    color: #4fd6be;  /* Teal for network */
+    color: #4fd6be;
 }
 
 #network.disconnected {
-    color: #828bb8;  /* Muted when disconnected */
+    color: #828bb8;
 }
 
 #bluetooth {
-    color: #82aaff;  /* Blue for bluetooth */
+    color: #82aaff;
 }
 
 #bluetooth.disabled {
-    color: #828bb8;  /* Muted when disabled */
+    color: #828bb8;
 }
 
 #pulseaudio {
-    color: #fca7ea;  /* Pink for audio */
+    color: #fca7ea;
 }
 
 #pulseaudio.muted {
-    color: #828bb8;  /* Muted when silenced */
-}
-
-#tray {
-    padding: 0 5px;
+    color: #828bb8;
 }
 
 #tray > .passive {
-    /* Dim passive/inactive tray icons */
     -gtk-icon-effect: dim;
 }
 
 #tray > .needs-attention {
-    /* Highlight tray icons that need attention */
     -gtk-icon-effect: highlight;
     background-color: #ff757f;
 }

@@ -12,12 +12,20 @@ in
       mainBar = {
         layer = "top";
         position = "top";
-        height = 30;
-        spacing = 8;
+        height = 34;
+        margin-top = 6;
+        margin-left = 8;
+        margin-right = 8;
+        spacing = 4;
 
         modules-left = [ "${wmPrefix}/workspaces" "${wmPrefix}/mode" ];
         modules-center = [ "${wmPrefix}/window" ];
-        modules-right = [ "network" "bluetooth" "pulseaudio" "cpu" "memory" "disk" "battery" "clock" "custom/notification" "tray" ];
+        modules-right = [ "group/right" ];
+
+        "group/right" = {
+          orientation = "inherit";
+          modules = [ "network" "bluetooth" "cpu" "memory" "disk" "pulseaudio" "battery" "clock" "custom/notification" "tray" ];
+        };
 
         "${wmPrefix}/workspaces" = {
           disable-scroll = true;
