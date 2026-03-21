@@ -23,14 +23,14 @@ in
 
   imports = [
     ./applications/claude-code.nix
-    ./terminal/btop.nix
     ./dev
-    ./shell/direnv.nix
     ./editor/lsps.nix
     ./editor/neovim.nix
-    ./shell/starship.nix
+    ./terminal/btop.nix
+    ./terminal/direnv.nix
+    ./terminal/starship.nix
     ./terminal/tmux.nix
-    ./shell/zsh.nix
+    ./terminal/zsh.nix
     theme.neovimModule
   ] ++ (if desktop != "" then [
     ./desktop
