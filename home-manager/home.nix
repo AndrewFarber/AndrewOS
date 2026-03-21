@@ -12,6 +12,13 @@ in
   home.stateVersion = "24.11";
   programs.home-manager.enable = true;
 
+  home.pointerCursor = {
+    name = "Adwaita";
+    package = pkgs.adwaita-icon-theme;
+    size = 24;
+    gtk.enable = true;
+  };
+
   _module.args.theme = theme;
 
   imports = [
