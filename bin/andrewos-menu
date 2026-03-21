@@ -21,8 +21,7 @@ items["󰮫 Launch"]="
 
 items["󰖷 Tools"]="
 󰉋 File Manager|andrewos-launch-files
-󰊢 Git|andrewos-launch-git
-󰡨 Docker|andrewos-launch-docker
+󰡨 LazyDocker|andrewos-launch-lazydocker
 󰄀 Screenshot Area|andrewos-screenshot-area
 󰄀 Screenshot Screen|andrewos-screenshot-screen
 󰄀 Screenshot Save to File|andrewos-screenshot-save
