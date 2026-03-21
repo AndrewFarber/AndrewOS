@@ -40,6 +40,10 @@
       name = "Yazi";
       noDisplay = true;
     };
+    btop = {
+      name = "btop++";
+      noDisplay = true;
+    };
   };
 
 }

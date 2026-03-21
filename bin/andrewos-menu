@@ -1,21 +1,10 @@
 folders=(
-  "󰮫 Launch"
   "󰄀 Screenshot"
   "󰑓 Refresh"
   "󰒓 System"
 )
 
 declare -A items
-items["󰮫 Launch"]="
-󰆍 Open Terminal|andrewos-launch-terminal
-󰖟 Open Browser|andrewos-launch-browser
-󰅪 Open Editor|andrewos-launch-editor
-󰉋 Open File Manager|andrewos-launch-files
-󰊢 Open Lazygit|andrewos-launch-git
-󰡨 Open Lazydocker|andrewos-launch-docker
-󰕾 Audio Settings|andrewos-launch-audio
-"
-
 items["󰄀 Screenshot"]="
 󰄀 Screenshot Area|andrewos-screenshot-area
 󰄀 Screenshot Screen|andrewos-screenshot-screen

@@ -1,11 +1,15 @@
-{ config, lib, pkgs, ... }:
+{ config, lib, ... }:
 
 {
   options.andrewos.applications.chromium.enable = lib.mkEnableOption "Chromium web browser";
 
   config = lib.mkIf config.andrewos.applications.chromium.enable {
-    home.packages = with pkgs; [
-      chromium
-    ];
+    programs.chromium = {
+      enable = true;
+      extensions = [
+        { id = "dbepggeogbaibhgnhhndojpepiihcmeb"; }  # Vimium
+        { id = "ghmbeldphafepmbegfdlkpapadhbakde"; }  # Proton PW Manager
+      ];
+    };
   };
 }

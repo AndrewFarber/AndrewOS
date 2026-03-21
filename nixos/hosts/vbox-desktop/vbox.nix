@@ -1,4 +1,4 @@
-{ desktop, ... }:
+{ ... }:
 
 {
   virtualisation.virtualbox.guest.enable = true;

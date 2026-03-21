@@ -5,5 +5,5 @@ let
     sway = ./sway;
   };
 in {
-  imports = if desktops ? ${desktop} then [ desktops.${desktop} ] else [];
+  imports = if desktops ? ${desktop} then [ desktops.${desktop} ] else throw "Unknown desktop: ${desktop}";
 }

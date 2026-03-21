@@ -25,6 +25,7 @@
       wf-recorder
       wireplumber
       wl-clipboard
+      wlr-randr
     ];
   };
 
