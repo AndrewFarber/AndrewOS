@@ -1,1 +1,1 @@
-exec chromium --app=https://www.notion.so
+exec chromium --new-window --app=https://www.notion.so

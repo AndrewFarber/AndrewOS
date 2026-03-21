@@ -1,1 +1,1 @@
-exec chromium --app=https://linear.app
+exec chromium --new-window --app=https://linear.app

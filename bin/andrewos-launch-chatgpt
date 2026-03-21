@@ -1,1 +1,1 @@
-exec chromium --app=https://chatgpt.com
+exec chromium --new-window --app=https://chatgpt.com

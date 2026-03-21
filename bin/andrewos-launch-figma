@@ -1,1 +1,1 @@
-exec chromium --app=https://www.figma.com
+exec chromium --new-window --app=https://www.figma.com

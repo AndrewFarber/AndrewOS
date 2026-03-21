@@ -1,1 +1,1 @@
-exec chromium --app=https://claude.ai
+exec chromium --new-window --app=https://claude.ai

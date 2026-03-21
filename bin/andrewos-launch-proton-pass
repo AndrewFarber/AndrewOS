@@ -1,1 +1,1 @@
-exec chromium --app=https://account.proton.me/pass
+exec chromium --new-window --app=https://account.proton.me/pass
