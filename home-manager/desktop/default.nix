@@ -11,6 +11,7 @@
     ../applications/notion.nix
     ../applications/obsidian.nix
     ../applications/pavucontrol.nix
+    ../applications/proton-pass.nix
     ../applications/wlogout.nix
   ] ++ (if desktop == "sway" then [
     ./fuzzel.nix
@@ -28,6 +29,7 @@
     notion.enable = true;
     obsidian.enable = true;
     pavucontrol.enable = true;
+    proton-pass.enable = true;
     wlogout.enable = true;
   };
 
