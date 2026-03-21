@@ -1,11 +1,21 @@
 THEME=$(sed -n 's/.*theme = "\(.*\)".*/\1/p' "$HOME/AndrewOS/user.nix")
-WALLPAPER_DIR="$HOME/AndrewOS/themes/$THEME/backgrounds"
+THEME_DIR="$HOME/AndrewOS/themes/$THEME/backgrounds"
+ASSETS_DIR="$HOME/AndrewOS/assets/bg"
 
-# List image files and pick one via fuzzel
-chosen=$(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' \) -print0 | xargs -0 -n1 basename | fuzzel --dmenu --prompt "Wallpaper > ")
+# List image files from both theme backgrounds and shared assets
+chosen=$({
+  find "$THEME_DIR" -maxdepth 1 -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' \) -printf "$THEME_DIR/%f\n" 2>/dev/null
+  find "$ASSETS_DIR" -maxdepth 1 -type f \( -name '*.png' -o -name '*.jpg' -o -name '*.jpeg' -o -name '*.webp' \) -printf "$ASSETS_DIR/%f\n" 2>/dev/null
+} | while IFS= read -r path; do basename "$path"; done | fuzzel --dmenu --prompt "Wallpaper > ")
 [ -z "$chosen" ] && exit 0
 
-wallpaper="$WALLPAPER_DIR/$chosen"
-[ ! -f "$wallpaper" ] && exit 1
+# Resolve the chosen filename back to its full path
+if [ -f "$THEME_DIR/$chosen" ]; then
+  wallpaper="$THEME_DIR/$chosen"
+elif [ -f "$ASSETS_DIR/$chosen" ]; then
+  wallpaper="$ASSETS_DIR/$chosen"
+else
+  exit 1
+fi
 
 swaymsg output '*' bg "$wallpaper" fill
