@@ -19,6 +19,7 @@ in
     ./applications/alacritty.nix
     ./applications/chromium.nix
     ./applications/claude-code.nix
+    ./applications/notion.nix
     ./applications/obsidian.nix
     ./applications/pavucontrol.nix
     ./applications/wlogout.nix
@@ -44,6 +45,7 @@ in
     alacritty.enable = true;
     chromium.enable = true;
     claude-code.enable = true;
+    notion.enable = true;
     obsidian.enable = true;
     pavucontrol.enable = true;
     wlogout.enable = true;
