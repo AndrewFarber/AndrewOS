@@ -3,6 +3,12 @@
 
 cmd="$*"
 
+# When launched via "launch local" keybinding, skip workspace routing
+# and open the app on the current workspace.
+if [ "${ANDREWOS_LAUNCH_LOCAL:-}" = "1" ]; then
+  exec $cmd
+fi
+
 # Map command to a fixed app slot (workspace number 11-18).
 # More specific patterns first so e.g. claude.ai matches before chromium.
 case "$cmd" in

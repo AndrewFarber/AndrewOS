@@ -68,7 +68,8 @@
         "${mod}+b" = "splith";
         "${mod}+v" = "splitv";
 
-        "${mod}+space" = "exec fuzzel";
+        "${mod}+space" = "exec andrewos-app-menu";
+        "${mod}+Ctrl+d" = "exec env ANDREWOS_LAUNCH_LOCAL=1 fuzzel";
         "${mod}+Alt+v" = ''exec cliphist list | fuzzel --dmenu | cliphist decode | wl-copy'';
         "${mod}+Alt+w" = "exec andrewos-wallpaper";
         "${mod}+Shift+minus" = "move scratchpad";

@@ -9,6 +9,48 @@ let
 in {
   home.packages = [
     (mkScript "andrewos-app-launch" { file = ../bin/andrewos-app-launch; runtimeInputs = [ pkgs.sway pkgs.jq ]; })
+    (pkgs.writeShellApplication {
+      name = "andrewos-app-menu";
+      runtimeInputs = [ pkgs.fuzzel ];
+      text = ''
+        apps=(
+          "Chromium|1"
+          "GitHub|2"
+          "Notion|3"
+          "Proton|4"
+          "Linear|5"
+          "Figma|6"
+          "Claude|7"
+          "ChatGPT|8"
+        )
+
+        choice=$({
+          printf 'Chromium\0icon\x1f${../assets/icons/chromium.png}\n'
+          printf 'GitHub\0icon\x1f${../assets/icons/github.png}\n'
+          printf 'Notion\0icon\x1f${../assets/icons/notion.png}\n'
+          printf 'Proton\0icon\x1f${../assets/icons/proton-pass.png}\n'
+          printf 'Linear\0icon\x1f${../assets/icons/linear.png}\n'
+          printf 'Figma\0icon\x1f${../assets/icons/figma.png}\n'
+          printf 'Claude\0icon\x1f${../assets/icons/claude.png}\n'
+          printf 'ChatGPT\0icon\x1f${../assets/icons/chatgpt.png}\n'
+        } | fuzzel --dmenu --prompt "Apps > ")
+
+        [ -z "$choice" ] && exit 0
+
+        slot=""
+        for entry in "''${apps[@]}"; do
+          name="''${entry%%|*}"
+          num="''${entry##*|}"
+          if [ "$choice" = "$name" ]; then
+            slot="$num"
+            break
+          fi
+        done
+        [ -z "$slot" ] && exit 1
+
+        exec andrewos-app-launch "$slot"
+      '';
+    })
     (mkScript "andrewos-gc" { file = ../bin/andrewos-gc; runtimeInputs = [ pkgs.alacritty pkgs.nix ]; })
     (mkScript "andrewos-gc-system" { file = ../bin/andrewos-gc-system; runtimeInputs = [ pkgs.alacritty pkgs.nix ]; })
     (mkScript "andrewos-launch-audio" { file = ../bin/andrewos-launch-audio; runtimeInputs = [ pkgs.alacritty pkgs.pulsemixer ]; })
@@ -32,6 +74,7 @@ in {
     (mkScript "andrewos-menu" { file = ../bin/andrewos-menu; runtimeInputs = [ pkgs.fuzzel ]; })
     (mkScript "andrewos-move-workspace" { file = ../bin/andrewos-move-workspace; runtimeInputs = [ pkgs.fuzzel pkgs.sway pkgs.jq ]; })
     (mkScript "andrewos-rename-workspace" { file = ../bin/andrewos-rename-workspace; runtimeInputs = [ pkgs.fuzzel pkgs.sway pkgs.jq ]; })
+    (mkScript "andrewos-reset-workspace-name" { file = ../bin/andrewos-reset-workspace-name; runtimeInputs = [ pkgs.fuzzel pkgs.sway pkgs.jq pkgs.libnotify ]; })
     (mkScript "andrewos-rebuild" { file = ../bin/andrewos-rebuild; runtimeInputs = [ pkgs.alacritty ]; })
     (mkScript "andrewos-resolution" { file = ../bin/andrewos-resolution; runtimeInputs = [ pkgs.fuzzel pkgs.wlr-randr ]; })
     (mkScript "andrewos-refresh-swaync" { file = ../bin/andrewos-refresh-swaync; runtimeInputs = [ pkgs.swaynotificationcenter ]; })

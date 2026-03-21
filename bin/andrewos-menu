@@ -1,4 +1,5 @@
 folders=(
+  "󰮫 Launch"
   "󰖷 Tools"
   "󱂬 Workspace"
   "󰍹 Display"
@@ -7,6 +8,17 @@ folders=(
 )
 
 declare -A items
+items["󰮫 Launch"]="
+ Chromium|andrewos-launch-browser
+ GitHub|andrewos-launch-github
+ Notion|andrewos-launch-notion
+󰌆 Proton|andrewos-launch-proton-pass
+󰝨 Linear|andrewos-launch-linear
+ Figma|andrewos-launch-figma
+󰚩 Claude|andrewos-launch-claude
+󰭻 ChatGPT|andrewos-launch-chatgpt
+"
+
 items["󰖷 Tools"]="
 󰉋 File Manager|andrewos-launch-files
 󰊢 Git|andrewos-launch-git
@@ -26,6 +38,7 @@ items["󰍹 Display"]="
 items["󱂬 Workspace"]="
 󱂬 Move Workspace to Output|andrewos-move-workspace
 󱂬 Rename Workspace|andrewos-rename-workspace
+󱂬 Reset Workspace Name|andrewos-reset-workspace-name
 "
 
 items["󰑓 Refresh / Restart"]="

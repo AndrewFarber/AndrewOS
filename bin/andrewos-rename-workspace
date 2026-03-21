@@ -1,5 +1,5 @@
-# Step 1: Pick a workspace to rename
-workspaces=$(swaymsg -t get_workspaces -r | jq -r '.[] | "\(.num)\t\(.num): \(.output)"' | sort -n | cut -f2-)
+# Step 1: Pick a workspace to rename (exclude app workspaces 11-18)
+workspaces=$(swaymsg -t get_workspaces -r | jq -r '.[] | select(.num < 11 or .num > 18) | "\(.num)\t\(.num): \(.output)"' | sort -n | cut -f2-)
 [ -z "$workspaces" ] && exit 1
 
 chosen_ws=$(printf '%s\n' "$workspaces" | fuzzel --dmenu --prompt "Rename workspace > ")

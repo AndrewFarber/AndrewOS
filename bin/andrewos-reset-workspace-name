@@ -1,0 +1,21 @@
+# Pick a workspace and reset its name to just its number (exclude app workspaces 11-18)
+workspaces=$(swaymsg -t get_workspaces -r | jq -r '
+  .[] | select(.num < 11 or .num > 18) |
+  "\(.num)\t\(.name)"' | sort -n | cut -f2-)
+[ -z "$workspaces" ] && exit 1
+
+chosen=$(printf '%s\n' "$workspaces" | fuzzel --dmenu --prompt "Reset name > ")
+[ -z "$chosen" ] && exit 0
+
+# Extract workspace number (everything before the colon, or the whole string if bare)
+ws_num="${chosen%%:*}"
+# Trim any trailing whitespace from the number
+ws_num="${ws_num%% *}"
+
+# Look up the actual current name
+ws_name=$(swaymsg -t get_workspaces -r | jq -r --argjson num "$ws_num" '.[] | select(.num == $num) | .name')
+
+# Only rename if the name differs from the bare number
+if [ "$ws_name" != "$ws_num" ]; then
+  swaymsg rename workspace "$ws_name" to "$ws_num"
+fi
