@@ -1,10 +1,10 @@
 folders=(
+  "󱂬 Workspace"
   "󰮫 Launch"
   "󰖷 Tools"
-  "󱂬 Workspace"
   "󰍹 Display"
-  "󰑓 Refresh / Restart"
   "󰒓 System"
+  "󰑓 Refresh / Restart"
 )
 
 declare -A items
@@ -36,9 +36,9 @@ items["󰍹 Display"]="
 "
 
 items["󱂬 Workspace"]="
-󱂬 Move Workspace to Output|andrewos-move-workspace
 󱂬 Rename Workspace|andrewos-rename-workspace
 󱂬 Reset Workspace Name|andrewos-reset-workspace-name
+󱂬 Move Workspace|andrewos-move-workspace
 "
 
 items["󰑓 Refresh / Restart"]="
