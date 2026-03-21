@@ -5,7 +5,7 @@ Personal [NixOS](https://nixos.org/) and [Home Manager](https://nix-community.gi
 ## Features
 
 - **Declarative System Configuration** - Entire system defined in Nix, easily reproducible
-- **Sway Desktop** - Wayland tiling window manager with waybar, fuzzel, and mako
+- **Sway Desktop** - Wayland tiling window manager with waybar, fuzzel, and swaync
 - **Theme System** - Switchable themes (tokyo-night, gruvbox) affecting terminal, editor, desktop
 - **Comprehensive Development Setup** - Neovim with LSP, Git integration, and debugging support
 - **Modular Architecture** - Pluggable modules for bootloaders, drivers, desktops, and user config
@@ -44,11 +44,12 @@ Personal [NixOS](https://nixos.org/) and [Home Manager](https://nix-community.gi
      fullName = "Your Name";
      email = "you@example.com";
      theme = "gruvbox";
+     timezone = "America/Los_Angeles";
    }
    ```
 6. Build and switch:
    ```bash
-   sudo nixos-rebuild switch --flake .#vbox-desktop
+   sudo nixos-rebuild switch --flake .#vbox-desktop   # or .#thinkpad-x1
    ```
 7. Reboot
 
@@ -64,6 +65,7 @@ Edit `user.nix` at the repository root to set your personal information:
 | `fullName` | Full name (for Git)                  |
 | `email`    | Email (for Git)                      |
 | `theme`    | Active theme (`tokyo-night`, `gruvbox`) |
+| `timezone` | System timezone (e.g. `America/Los_Angeles`) |
 
 ## Development Environments
 

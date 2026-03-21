@@ -41,8 +41,7 @@ andrewos-refresh-wm
 
 systemctl --user restart waybar
 
-swaync-client --reload-config
-swaync-client --reload-css
+andrewos-refresh-swaync
 
 andrewos-refresh-tmux
 

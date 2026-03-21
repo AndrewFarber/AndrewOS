@@ -49,7 +49,7 @@ items["󰒓 System"]="
 󰩺 Garbage Collect (System)|andrewos-gc-system
 󰔎 Change Theme|andrewos-theme
 󰸉 Change Wallpaper|andrewos-wallpaper
-󰌾 Lock Screen|lock
+󰌾 Lock Screen|swaylock -f
 "
 
 show_folders() {

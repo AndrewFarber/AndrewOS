@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ pkgs, theme, ... }:
 
 let
   config = builtins.toJSON {
@@ -34,7 +34,6 @@ let
       "menubar"
       "mpris"
       "volume"
-      "backlight"
       "dnd"
       "notifications"
     ];
@@ -80,7 +79,7 @@ let
           animation-type = "slide_down";
           animation-duration = 250;
           actions = [
-            { label = "󰌾 Lock"; command = "swaylock -f"; }
+            { label = "󰌾 Lock"; command = "swaylock -f -c ${theme.lockColor}"; }
             { label = "󰤄 Suspend"; command = "systemctl suspend"; }
             { label = "󰜉 Reboot"; command = "systemctl reboot"; }
             { label = "󰐥 Shutdown"; command = "systemctl poweroff"; }
@@ -106,12 +105,6 @@ let
       volume = {
         label = "󰕾";
         show-per-app = false;
-      };
-      backlight = {
-        label = "󰃟";
-        device = "intel_backlight";
-        subsystem = "backlight";
-        min = 0;
       };
     };
   };

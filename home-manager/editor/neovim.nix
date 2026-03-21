@@ -4,7 +4,7 @@
   programs.neovim = {
     enable = true;
     defaultEditor = true;
-    extraPackages = [ pkgs.gcc pkgs.nodejs ];
+    extraPackages = [ pkgs.gcc pkgs.nodejs pkgs.python3Packages.debugpy ];
     plugins = with pkgs.vimPlugins; [
 
       # Dependencies

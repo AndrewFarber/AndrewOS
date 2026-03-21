@@ -22,7 +22,7 @@ cmp.setup({
       { name = 'vsnip' },
     },
     {
-      { name = 'buffers' },
+      { name = 'buffer' },
     }
   ),
 

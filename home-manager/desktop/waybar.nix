@@ -1,4 +1,4 @@
-{ desktop ? "", pkgs, config, ... }:
+{ pkgs, config, ... }:
 
 let
   wmPrefix = "sway";
