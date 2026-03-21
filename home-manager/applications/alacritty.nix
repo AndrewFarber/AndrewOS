@@ -20,5 +20,10 @@
         font.normal.family = "MesloLGS Nerd Font";
       };
     };
+
+    xdg.desktopEntries.Alacritty = {
+      name = "Alacritty";
+      noDisplay = true;
+    };
   };
 }
