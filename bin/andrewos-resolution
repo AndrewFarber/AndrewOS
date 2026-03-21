@@ -1,0 +1,71 @@
+# Parse wlr-randr to find connected outputs and their modes
+output=""
+current_output=""
+declare -A output_modes
+declare -A output_current
+outputs=()
+
+while IFS= read -r line; do
+  # Output name line (no leading whitespace)
+  if [[ "$line" =~ ^([A-Za-z0-9-]+)\ \" ]]; then
+    current_output="${BASH_REMATCH[1]}"
+    outputs+=("$current_output")
+  # Mode line (4-space indent)
+  elif [[ "$line" =~ ^\ {4}([0-9]+x[0-9]+)\ px,\ ([0-9.]+)\ Hz(.*)$ ]]; then
+    res="${BASH_REMATCH[1]}"
+    hz="${BASH_REMATCH[2]}"
+    flags="${BASH_REMATCH[3]}"
+    # Round Hz to integer for display
+    hz_int=$(printf '%.0f' "$hz")
+    mode="${res} @ ${hz_int}Hz"
+    if [[ "$flags" == *current* ]]; then
+      output_current["$current_output"]="$mode"
+    fi
+    output_modes["$current_output"]+="${mode}"$'\n'
+  fi
+done < <(wlr-randr)
+
+# Need at least one output
+[ "${#outputs[@]}" -eq 0 ] && exit 1
+
+# If multiple outputs, let user pick one
+if [ "${#outputs[@]}" -eq 1 ]; then
+  output="${outputs[0]}"
+else
+  list=""
+  for o in "${outputs[@]}"; do
+    list+="$o"$'\n'
+  done
+  output=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Output > ")
+  [ -z "$output" ] && exit 0
+fi
+
+# Get modes for the selected output
+modes="${output_modes[$output]}"
+[ -z "$modes" ] && exit 1
+
+# Mark the current mode
+current="${output_current[$output]}"
+marked=""
+while IFS= read -r mode; do
+  [ -z "$mode" ] && continue
+  if [ "$mode" = "$current" ]; then
+    marked+="$mode (current)"$'\n'
+  else
+    marked+="$mode"$'\n'
+  fi
+done <<< "$modes"
+
+# Let user pick a mode
+chosen=$(printf '%s' "$marked" | fuzzel --dmenu --prompt "Resolution > ")
+[ -z "$chosen" ] && exit 0
+
+# Strip " (current)" suffix if present
+chosen="${chosen% (current)}"
+
+# Parse chosen mode: "WxH @ Hz"
+if [[ "$chosen" =~ ^([0-9]+x[0-9]+)\ @\ ([0-9]+)Hz$ ]]; then
+  res="${BASH_REMATCH[1]}"
+  hz="${BASH_REMATCH[2]}"
+  wlr-randr --output "$output" --mode "${res}@${hz}Hz"
+fi

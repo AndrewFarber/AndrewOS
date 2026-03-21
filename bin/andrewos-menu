@@ -27,6 +27,8 @@ items["󰒓 System"]="
 󰩺 Garbage Collect (System)|andrewos-gc-system
 󰔎 Change Theme|andrewos-theme
 󰸉 Change Wallpaper|andrewos-wallpaper
+󰍹 Change Resolution|andrewos-resolution
+󰹑 Change Scale|andrewos-scale
 󰌾 Lock Screen|lock
 "
 

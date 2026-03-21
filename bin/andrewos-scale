@@ -1,0 +1,57 @@
+# Parse wlr-randr to find connected outputs and their current scale
+current_output=""
+declare -A output_scale
+outputs=()
+
+while IFS= read -r line; do
+  # Output name line (no leading whitespace)
+  if [[ "$line" =~ ^([A-Za-z0-9-]+)\ \" ]]; then
+    current_output="${BASH_REMATCH[1]}"
+    outputs+=("$current_output")
+  # Scale line
+  elif [[ "$line" =~ ^\ +Scale:\ ([0-9.]+) ]]; then
+    output_scale["$current_output"]="${BASH_REMATCH[1]}"
+  fi
+done < <(wlr-randr)
+
+# Need at least one output
+[ "${#outputs[@]}" -eq 0 ] && exit 1
+
+# If multiple outputs, let user pick one
+if [ "${#outputs[@]}" -eq 1 ]; then
+  output="${outputs[0]}"
+else
+  list=""
+  for o in "${outputs[@]}"; do
+    list+="$o"$'\n'
+  done
+  output=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Output > ")
+  [ -z "$output" ] && exit 0
+fi
+
+# Get current scale and format it for comparison
+current_raw="${output_scale[$output]}"
+current=$(printf '%.2f' "$current_raw")
+
+# Preset scale values
+scales=("1" "1.25" "1.5" "1.75" "2")
+
+# Build list, marking the current scale
+list=""
+for s in "${scales[@]}"; do
+  s_fmt=$(printf '%.2f' "$s")
+  if [ "$s_fmt" = "$current" ]; then
+    list+="$s (current)"$'\n'
+  else
+    list+="$s"$'\n'
+  fi
+done
+
+# Let user pick a scale
+chosen=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Scale > ")
+[ -z "$chosen" ] && exit 0
+
+# Strip " (current)" suffix if present
+chosen="${chosen% (current)}"
+
+wlr-randr --output "$output" --scale "$chosen"
