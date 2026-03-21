@@ -1,13 +1,13 @@
 folders=(
-  "🔧 Tools"
+  "󰖷 Tools"
   "󱂬 Workspace"
   "󰍹 Display"
-  "󰑓 Refresh"
+  "󰑓 Refresh / Restart"
   "󰒓 System"
 )
 
 declare -A items
-items["🔧 Tools"]="
+items["󰖷 Tools"]="
 󰉋 File Manager|andrewos-launch-files
 󰊢 Git|andrewos-launch-git
 󰡨 Docker|andrewos-launch-docker
@@ -28,13 +28,13 @@ items["󱂬 Workspace"]="
 󱂬 Rename Workspace|andrewos-rename-workspace
 "
 
-items["󰑓 Refresh"]="
+items["󰑓 Refresh / Restart"]="
 󰑓 Refresh Window Manager|andrewos-refresh-wm
 󰑓 Refresh Waybar|andrewos-refresh-waybar
 󰑓 Refresh Notifications|andrewos-refresh-swaync
 󰑓 Refresh Tmux|andrewos-refresh-tmux
-󰜉 Restart Pipewire|andrewos-restart-pipewire
-󰜉 Restart Wifi|andrewos-restart-wifi
+󰑓 Restart Pipewire|andrewos-restart-pipewire
+󰑓 Restart Wifi|andrewos-restart-wifi
 "
 
 items["󰒓 System"]="
