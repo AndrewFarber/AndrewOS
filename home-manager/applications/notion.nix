@@ -10,7 +10,7 @@
       exec = "${pkgs.chromium}/bin/chromium --app=https://www.notion.so";
       icon = "${../../assets/icons/notion.png}";
       terminal = false;
-      categories = [ "Office" "Productivity" ];
+      categories = [ "Office" ];
     };
   };
 }
