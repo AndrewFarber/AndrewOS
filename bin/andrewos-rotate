@@ -1,0 +1,46 @@
+# Parse wlr-randr to find connected outputs and their transform
+current_output=""
+declare -A output_transform
+outputs=()
+
+while IFS= read -r line; do
+  if [[ "$line" =~ ^([A-Za-z0-9-]+)\ \" ]]; then
+    current_output="${BASH_REMATCH[1]}"
+    outputs+=("$current_output")
+  elif [[ "$line" =~ ^\ +Transform:\ (.+) ]]; then
+    output_transform["$current_output"]="${BASH_REMATCH[1]}"
+  fi
+done < <(wlr-randr)
+
+[ "${#outputs[@]}" -eq 0 ] && exit 1
+
+# If multiple outputs, let user pick one
+if [ "${#outputs[@]}" -eq 1 ]; then
+  output="${outputs[0]}"
+else
+  list=""
+  for o in "${outputs[@]}"; do
+    list+="$o"$'\n'
+  done
+  output=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Select display > ")
+  [ -z "$output" ] && exit 0
+fi
+
+current="${output_transform[$output]}"
+transforms=("normal" "90" "180" "270" "flipped" "flipped-90" "flipped-180" "flipped-270")
+
+list=""
+for t in "${transforms[@]}"; do
+  if [ "$t" = "$current" ]; then
+    list+="$t (current)"$'\n'
+  else
+    list+="$t"$'\n'
+  fi
+done
+
+chosen=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Rotation for $output > ")
+[ -z "$chosen" ] && exit 0
+
+chosen="${chosen% (current)}"
+
+wlr-randr --output "$output" --transform "$chosen"

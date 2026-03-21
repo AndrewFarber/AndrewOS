@@ -36,7 +36,7 @@ else
   for o in "${outputs[@]}"; do
     list+="$o"$'\n'
   done
-  output=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Output > ")
+  output=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Select display > ")
   [ -z "$output" ] && exit 0
 fi
 
@@ -57,7 +57,7 @@ while IFS= read -r mode; do
 done <<< "$modes"
 
 # Let user pick a mode
-chosen=$(printf '%s' "$marked" | fuzzel --dmenu --prompt "Resolution > ")
+chosen=$(printf '%s' "$marked" | fuzzel --dmenu --prompt "Resolution for $output > ")
 [ -z "$chosen" ] && exit 0
 
 # Strip " (current)" suffix if present

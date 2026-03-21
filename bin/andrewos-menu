@@ -1,5 +1,6 @@
 folders=(
   "󰄀 Screenshot"
+  "󰍹 Display"
   "󰑓 Refresh"
   "󰒓 System"
 )
@@ -9,6 +10,13 @@ items["󰄀 Screenshot"]="
 󰄀 Screenshot Area|andrewos-screenshot-area
 󰄀 Screenshot Screen|andrewos-screenshot-screen
 󰄀 Screenshot Save to File|andrewos-screenshot-save
+"
+
+items["󰍹 Display"]="
+󰍹 Change Resolution|andrewos-resolution
+󰹑 Change Scale|andrewos-scale
+󰓼 Rotate Display|andrewos-rotate
+󰶐 Toggle Display|andrewos-toggle-display
 "
 
 items["󰑓 Refresh"]="
@@ -27,8 +35,6 @@ items["󰒓 System"]="
 󰩺 Garbage Collect (System)|andrewos-gc-system
 󰔎 Change Theme|andrewos-theme
 󰸉 Change Wallpaper|andrewos-wallpaper
-󰍹 Change Resolution|andrewos-resolution
-󰹑 Change Scale|andrewos-scale
 󰌾 Lock Screen|lock
 "
 

@@ -25,7 +25,7 @@ else
   for o in "${outputs[@]}"; do
     list+="$o"$'\n'
   done
-  output=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Output > ")
+  output=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Select display > ")
   [ -z "$output" ] && exit 0
 fi
 
@@ -48,7 +48,7 @@ for s in "${scales[@]}"; do
 done
 
 # Let user pick a scale
-chosen=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Scale > ")
+chosen=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Scale for $output > ")
 [ -z "$chosen" ] && exit 0
 
 # Strip " (current)" suffix if present

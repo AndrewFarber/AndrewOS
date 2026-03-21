@@ -1,0 +1,35 @@
+# Parse wlr-randr to find connected outputs and their enabled state
+current_output=""
+declare -A output_enabled
+outputs=()
+
+while IFS= read -r line; do
+  if [[ "$line" =~ ^([A-Za-z0-9-]+)\ \" ]]; then
+    current_output="${BASH_REMATCH[1]}"
+    outputs+=("$current_output")
+  elif [[ "$line" =~ ^\ +Enabled:\ (.+) ]]; then
+    output_enabled["$current_output"]="${BASH_REMATCH[1]}"
+  fi
+done < <(wlr-randr)
+
+[ "${#outputs[@]}" -eq 0 ] && exit 1
+
+# Build list showing current state
+list=""
+for o in "${outputs[@]}"; do
+  state="${output_enabled[$o]}"
+  if [ "$state" = "yes" ]; then
+    list+="$o (on)"$'\n'
+  else
+    list+="$o (off)"$'\n'
+  fi
+done
+
+chosen=$(printf '%s' "$list" | fuzzel --dmenu --prompt "Toggle display > ")
+[ -z "$chosen" ] && exit 0
+
+# Strip state suffix
+output="${chosen% (on)}"
+output="${output% (off)}"
+
+wlr-randr --output "$output" --toggle
