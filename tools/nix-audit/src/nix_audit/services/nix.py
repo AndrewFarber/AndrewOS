@@ -151,10 +151,15 @@ async def search_packages(query: str) -> list[dict]:
     results = []
     for attr_path, info in data.items():
         # attr_path like "legacyPackages.x86_64-linux.hello"
-        name = attr_path.split(".")[-1]
+        # or "legacyPackages.x86_64-linux.terraform-providers.1password_onepassword"
+        parts = attr_path.split(".")
+        name = parts[-1]
+        # nixpkgs_attr is the full path after legacyPackages.<system>
+        nixpkgs_attr = ".".join(parts[2:]) if len(parts) > 2 else name
         results.append(
             {
                 "name": name,
+                "nixpkgs_attr": nixpkgs_attr,
                 "version": info.get("version", "unknown"),
                 "description": info.get("description", ""),
             }

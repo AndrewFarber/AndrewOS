@@ -99,14 +99,37 @@ class PackagesScreen(Screen):
         filter_input.display = True
         filter_input.focus()
 
-    def action_dismiss_filter(self) -> None:
+    def _confirm_filter(self) -> None:
+        """Hide filter input, keep filtered results, focus table."""
         filter_input = self.query_one("#filter-input", Input)
-        if not filter_input.display:
-            return
+        filter_input.display = False
+        table = self.query_one("#packages-table", DataTable)
+        table.focus()
+        if filter_input.value:
+            self.query_one("#status-bar", Static).update(
+                f"Filter: \"{filter_input.value}\" ({table.row_count} matches) — Escape to clear"
+            )
+
+    def _clear_filter(self) -> None:
+        """Clear filter, restore full list."""
+        filter_input = self.query_one("#filter-input", Input)
         filter_input.value = ""
         filter_input.display = False
         self._apply_filter("")
-        self.query_one("#packages-table", DataTable).focus()
+        self.query_one("#status-bar", Static).update(
+            f"{len(self._all_rows)} packages loaded"
+        )
+
+    def action_dismiss_filter(self) -> None:
+        filter_input = self.query_one("#filter-input", Input)
+        if filter_input.has_focus:
+            # From input: confirm filter, keep results, focus table
+            self._confirm_filter()
+            return
+        if filter_input.value:
+            # From table with active filter: clear filter, restore full list
+            self._clear_filter()
+            return
 
     def action_cursor_down(self) -> None:
         table = self.query_one("#packages-table", DataTable)
@@ -149,16 +172,8 @@ class PackagesScreen(Screen):
     def action_select_package(self) -> None:
         filter_input = self.query_one("#filter-input", Input)
         if filter_input.has_focus:
-            filter_input.display = False
-            table = self.query_one("#packages-table", DataTable)
-            if table.row_count > 0:
-                table.focus()
-                row_idx = table.cursor_row
-                row = table.get_row_at(row_idx)
-                name = row[1]
-                from nix_audit.screens.detail import DetailScreen
-
-                self.app.push_screen(DetailScreen(package_name=str(name)))
+            # Confirm filter and focus table (don't open detail yet)
+            self._confirm_filter()
             return
         table = self.query_one("#packages-table", DataTable)
         if table.row_count == 0:

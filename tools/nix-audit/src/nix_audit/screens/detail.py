@@ -64,9 +64,16 @@ class DetailScreen(Screen):
         Binding("q", "go_back", "Go Back", show=False, priority=True),
     ]
 
-    def __init__(self, package_name: str):
+    def __init__(
+        self,
+        package_name: str,
+        version: str | None = None,
+        nixpkgs_attr: str | None = None,
+    ):
         super().__init__()
         self.package_name = package_name
+        self._init_version = version
+        self.nixpkgs_attr = nixpkgs_attr or package_name
 
     def compose(self) -> ComposeResult:
         yield Header()
@@ -79,11 +86,16 @@ class DetailScreen(Screen):
     def on_mount(self) -> None:
         db = self.app.db
         pkg = db.get_package(self.package_name)
+        # If opened from search with a known version, ensure the DB has it
+        if self._init_version and (not pkg or pkg["version"] == "unknown"):
+            db.upsert_package(self.package_name, self._init_version)
+            pkg = db.get_package(self.package_name)
         info = self.query_one("#pkg-info", Static)
         if pkg:
+            store = pkg.get("store_path") or "(not installed)"
             info.update(
                 f"[bold]{self.package_name}[/bold] v{pkg['version']}\n"
-                f"Store: {pkg.get('store_path', 'N/A')}"
+                f"Store: {store}"
             )
         else:
             info.update(f"[bold]{self.package_name}[/bold] (not installed)")
@@ -156,7 +168,7 @@ class DetailScreen(Screen):
         db = self.app.db
         pkg = db.get_package(self.package_name)
         if not pkg:
-            db.upsert_package(self.package_name, "unknown")
+            db.upsert_package(self.package_name, self._init_version or "unknown")
             pkg = db.get_package(self.package_name)
         version = pkg["version"]
         store_path = pkg.get("store_path")
@@ -164,9 +176,9 @@ class DetailScreen(Screen):
         reports = []
         self.loading = True
 
-        # Claude audit
+        # Claude audit — use nixpkgs_attr for nix eval (handles nested attrs)
         status.update("[ansi_yellow]Fetching derivation source...[/]")
-        source, _saved = await resolve_and_read_source(self.package_name)
+        source, _saved = await resolve_and_read_source(self.nixpkgs_attr)
         if source:
             status.update("[ansi_yellow]Running Claude audit...[/]")
             try:
@@ -223,7 +235,7 @@ class DetailScreen(Screen):
     async def _save_source_worker(self) -> None:
         status = self.query_one("#action-status", Static)
         status.update("[ansi_yellow]Saving source files...[/]")
-        saved = await save_derivation_files(self.package_name)
+        saved = await save_derivation_files(self.nixpkgs_attr)
         if saved:
             status.update(
                 f"[ansi_green]Saved {len(saved)} file(s) to sources/{self.package_name}/[/]"

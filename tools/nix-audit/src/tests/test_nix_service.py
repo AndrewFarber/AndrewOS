@@ -106,6 +106,10 @@ async def test_search_packages(mock_subprocess, sample_nix_search_json):
     names = [r["name"] for r in results]
     assert "hello" in names
     assert "hello-wayland" in names
+    # Verify nixpkgs_attr is preserved
+    for r in results:
+        assert "nixpkgs_attr" in r
+        assert r["nixpkgs_attr"] == r["name"]  # simple case, no nesting
 
 
 @pytest.mark.asyncio
