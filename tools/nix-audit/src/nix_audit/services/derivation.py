@@ -50,12 +50,8 @@ async def _resolve_nix_files(package_name: str) -> list[Path] | None:
     return files
 
 
-async def get_derivation_source(package_name: str) -> str | None:
-    """Fetch the Nix derivation source for a package using meta.position."""
-    files = await _resolve_nix_files(package_name)
-    if not files:
-        return None
-
+def _read_source(files: list[Path]) -> str | None:
+    """Read .nix file contents and concatenate them."""
     sources = []
     total_size = 0
     for f in files:
@@ -69,16 +65,12 @@ async def get_derivation_source(package_name: str) -> str | None:
                 return None
             continue
 
-    log.info("Fetched derivation source for %s (%d bytes)", package_name, total_size)
+    log.info("Read derivation source (%d bytes, %d files)", total_size, len(sources))
     return "\n\n".join(sources) if sources else None
 
 
-async def save_derivation_files(package_name: str) -> list[Path] | None:
-    """Copy derivation .nix files to ~/.local/share/nix-audit/sources/<package>/."""
-    files = await _resolve_nix_files(package_name)
-    if not files:
-        return None
-
+def _copy_files(files: list[Path], package_name: str) -> list[Path] | None:
+    """Copy .nix files to the sources directory."""
     dest_dir = SOURCES_DIR / package_name
     dest_dir.mkdir(parents=True, exist_ok=True)
 
@@ -97,6 +89,35 @@ async def save_derivation_files(package_name: str) -> list[Path] | None:
 
     log.info("Saved %d source file(s) for %s to %s", len(saved), package_name, dest_dir)
     return saved
+
+
+async def get_derivation_source(package_name: str) -> str | None:
+    """Fetch the Nix derivation source for a package using meta.position."""
+    files = await _resolve_nix_files(package_name)
+    if not files:
+        return None
+    return _read_source(files)
+
+
+async def save_derivation_files(package_name: str) -> list[Path] | None:
+    """Copy derivation .nix files to ~/.local/share/nix-audit/sources/<package>/."""
+    files = await _resolve_nix_files(package_name)
+    if not files:
+        return None
+    return _copy_files(files, package_name)
+
+
+async def resolve_and_read_source(package_name: str) -> tuple[str | None, list[Path] | None]:
+    """Resolve nix files once, return (source_text, saved_file_paths).
+
+    Avoids calling nix eval twice when both source and saved files are needed.
+    """
+    files = await _resolve_nix_files(package_name)
+    if not files:
+        return None, None
+    source = _read_source(files)
+    saved = _copy_files(files, package_name)
+    return source, saved
 
 
 def get_saved_sources_dir(package_name: str) -> Path | None:

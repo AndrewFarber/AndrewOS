@@ -7,10 +7,11 @@ from textual.containers import Vertical
 from textual.screen import ModalScreen, Screen
 from textual.widgets import DataTable, Footer, Header, Static
 
+from nix_audit.screens.help import DETAIL_HELP, HelpScreen
 from nix_audit.services.claude import run_claude_audit
 from nix_audit.services.derivation import (
-    get_derivation_source,
     get_saved_sources_dir,
+    resolve_and_read_source,
     save_derivation_files,
 )
 from nix_audit.services.vulnix import format_vulnix_report, scan_package
@@ -50,10 +51,15 @@ class DetailScreen(Screen):
     BINDINGS = [
         Binding("j", "cursor_down", "Down", show=False, priority=True),
         Binding("k", "cursor_up", "Up", show=False, priority=True),
+        Binding("ctrl+d", "page_down", "Page Down", show=False, priority=True),
+        Binding("ctrl+u", "page_up", "Page Up", show=False, priority=True),
+        Binding("g", "cursor_first", "First", show=False, priority=True),
+        Binding("G", "cursor_last", "Last", show=False, priority=True),
         Binding("a", "run_audit", "Audit Package", priority=True),
         Binding("s", "save_source", "Save Source", priority=True),
         Binding("e", "open_editor", "Open in Neovim", priority=True),
         Binding("enter", "view_report", "View Report", priority=True),
+        Binding("question_mark", "show_help", "Show Help"),
         Binding("escape", "go_back", "Go Back", priority=True),
         Binding("q", "go_back", "Go Back", show=False, priority=True),
     ]
@@ -103,11 +109,37 @@ class DetailScreen(Screen):
                 summary,
             )
 
+    HALF_PAGE = 15
+
     def action_cursor_down(self) -> None:
         self.query_one("#audit-table", DataTable).action_cursor_down()
 
     def action_cursor_up(self) -> None:
         self.query_one("#audit-table", DataTable).action_cursor_up()
+
+    def action_page_down(self) -> None:
+        table = self.query_one("#audit-table", DataTable)
+        if table.row_count == 0:
+            return
+        target = min(table.cursor_row + self.HALF_PAGE, table.row_count - 1)
+        table.move_cursor(row=target)
+
+    def action_page_up(self) -> None:
+        table = self.query_one("#audit-table", DataTable)
+        if table.row_count == 0:
+            return
+        target = max(table.cursor_row - self.HALF_PAGE, 0)
+        table.move_cursor(row=target)
+
+    def action_cursor_first(self) -> None:
+        table = self.query_one("#audit-table", DataTable)
+        table.move_cursor(row=0)
+
+    def action_cursor_last(self) -> None:
+        table = self.query_one("#audit-table", DataTable)
+        if table.row_count == 0:
+            return
+        table.move_cursor(row=table.row_count - 1)
 
     def action_run_audit(self) -> None:
         self.app.push_screen(
@@ -134,11 +166,8 @@ class DetailScreen(Screen):
 
         # Claude audit
         status.update("[ansi_yellow]Fetching derivation source...[/]")
-        source = await get_derivation_source(self.package_name)
+        source, _saved = await resolve_and_read_source(self.package_name)
         if source:
-            # Auto-save source files for later editor access
-            await save_derivation_files(self.package_name)
-
             status.update("[ansi_yellow]Running Claude audit...[/]")
             try:
                 result = await run_claude_audit(self.package_name, version, source)
@@ -146,8 +175,10 @@ class DetailScreen(Screen):
                 risk = result["risk_level"]
                 n_findings = len(result.get("findings", []))
                 summary = f"{risk} -- {n_findings} finding(s)"
-                audit_id = db.save_audit(self.package_name, version, report_md, summary, "claude")
-                db.save_findings(audit_id, result.get("findings", []))
+                db.save_audit(
+                    self.package_name, version, report_md, summary, "claude",
+                    findings=result.get("findings", []),
+                )
                 reports.append(report_md)
             except Exception as e:
                 log.error("Claude audit failed for %s: %s", self.package_name, e)
@@ -230,6 +261,9 @@ class DetailScreen(Screen):
             from nix_audit.screens.report import ReportScreen
 
             self.app.push_screen(ReportScreen(report))
+
+    def action_show_help(self) -> None:
+        self.app.push_screen(HelpScreen("Package Detail", DETAIL_HELP))
 
     def action_go_back(self) -> None:
         self.app.pop_screen()

@@ -157,6 +157,23 @@ def render_report_markdown(data: dict, name: str, version: str) -> str:
                     lines.append(f"  *Recommendation:* {f['recommendation']}")
         lines.append("")
 
+    # Render findings with categories not in the known set
+    other_findings = []
+    for cat_key, cat_findings in by_category.items():
+        if cat_key not in category_labels:
+            other_findings.extend(cat_findings)
+    if other_findings:
+        lines.append("## Other Findings")
+        lines.append("")
+        for f in other_findings:
+            sev = f["severity"].upper()
+            lines.append(f"- **[{sev}]** {f['title']}")
+            if f["detail"]:
+                lines.append(f"  {f['detail']}")
+            if f.get("recommendation"):
+                lines.append(f"  *Recommendation:* {f['recommendation']}")
+        lines.append("")
+
     lines.append("## Summary")
     lines.append("")
     lines.append(data.get("summary", "No summary provided."))
@@ -219,7 +236,8 @@ async def run_claude_audit(name: str, version: str, derivation_source: str) -> d
     base = _safe_filename(name, version)
     json_path = REPORT_DIR / base.replace(".md", ".json")
     md_path = REPORT_DIR / base
-    json_path.write_text(json.dumps(data, indent=2))
-    md_path.write_text(data["report_markdown"])
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, json_path.write_text, json.dumps(data, indent=2))
+    await loop.run_in_executor(None, md_path.write_text, data["report_markdown"])
     log.info("Claude audit for %s %s saved to %s", name, version, REPORT_DIR)
     return data

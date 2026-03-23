@@ -6,6 +6,7 @@ from nix_audit.services.derivation import (
     MAX_SOURCE_BYTES,
     get_derivation_source,
     get_saved_sources_dir,
+    resolve_and_read_source,
     save_derivation_files,
 )
 
@@ -165,3 +166,40 @@ def test_get_saved_sources_dir_empty(tmp_path):
         result = get_saved_sources_dir("hello")
 
     assert result is None
+
+
+@pytest.mark.asyncio
+async def test_resolve_and_read_source(mock_subprocess, tmp_path):
+    """resolve_and_read_source returns both source text and saved files."""
+    nix_file = tmp_path / "default.nix"
+    nix_file.write_text('{ pname = "hello"; }')
+
+    position = f'"{nix_file}:1"'
+    proc = AsyncMock()
+    proc.communicate.return_value = (position.encode(), b"")
+    proc.returncode = 0
+    mock_subprocess.return_value = proc
+
+    dest_dir = tmp_path / "sources"
+    with patch("nix_audit.services.derivation.SOURCES_DIR", dest_dir):
+        source, saved = await resolve_and_read_source("hello")
+
+    assert source is not None
+    assert 'pname = "hello"' in source
+    assert saved is not None
+    assert len(saved) == 1
+    # Only one nix eval call should have been made
+    assert mock_subprocess.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_resolve_and_read_source_not_found(mock_subprocess):
+    """resolve_and_read_source returns (None, None) on failure."""
+    proc = AsyncMock()
+    proc.communicate.return_value = (b"", b"error")
+    proc.returncode = 1
+    mock_subprocess.return_value = proc
+
+    source, saved = await resolve_and_read_source("nonexistent")
+    assert source is None
+    assert saved is None

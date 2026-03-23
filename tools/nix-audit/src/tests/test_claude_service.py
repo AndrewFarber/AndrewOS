@@ -221,3 +221,31 @@ def test_safe_filename_special_chars():
     assert " " not in result
     assert "/" not in result
     assert "+" not in result
+
+
+def test_render_report_markdown_unknown_category():
+    """Findings with categories not in the known set appear under 'Other Findings'."""
+    data = {
+        "risk_level": "LOW",
+        "findings": [
+            {
+                "category": "unknown",
+                "severity": "info",
+                "title": "Uncategorized finding",
+                "detail": "Some detail",
+                "recommendation": None,
+            },
+            {
+                "category": "supply_chain",
+                "severity": "low",
+                "title": "Normal finding",
+                "detail": "",
+                "recommendation": None,
+            },
+        ],
+        "summary": "Mixed categories.",
+    }
+    md = render_report_markdown(data, "pkg", "1.0")
+    assert "## Other Findings" in md
+    assert "Uncategorized finding" in md
+    assert "Normal finding" in md

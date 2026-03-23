@@ -47,8 +47,36 @@ class AuditDatabase:
         self.conn.execute("PRAGMA foreign_keys = ON")
         self._migrate()
 
+    # Expected columns per table for forward migration.
+    # Format: {table: {column: "TYPE [DEFAULT ...]"}}
+    _EXPECTED_COLUMNS: dict[str, dict[str, str]] = {
+        "packages": {
+            "store_path": "TEXT",
+            "first_seen": "TEXT NOT NULL DEFAULT (datetime('now'))",
+            "last_seen": "TEXT NOT NULL DEFAULT (datetime('now'))",
+        },
+        "audits": {
+            "findings_summary": "TEXT",
+            "audit_type": "TEXT NOT NULL DEFAULT 'claude'",
+        },
+        "findings": {
+            "detail": "TEXT",
+            "recommendation": "TEXT",
+        },
+    }
+
     def _migrate(self):
         self.conn.executescript(SCHEMA)
+        self.conn.commit()
+        # Add any columns that are missing from existing tables
+        for table, columns in self._EXPECTED_COLUMNS.items():
+            existing = {
+                row[1] for row in self.conn.execute(f"PRAGMA table_info({table})").fetchall()
+            }
+            for col_name, col_def in columns.items():
+                if col_name not in existing:
+                    log.info("Migrating: adding column %s.%s", table, col_name)
+                    self.conn.execute(f"ALTER TABLE {table} ADD COLUMN {col_name} {col_def}")
         self.conn.commit()
 
     def close(self):
@@ -115,22 +143,26 @@ class AuditDatabase:
         report_markdown: str,
         findings_summary: str | None = None,
         audit_type: str = "claude",
+        findings: list[dict] | None = None,
     ) -> int:
-        """Save an audit and return its id."""
+        """Save an audit (and optional findings) atomically. Returns the audit id."""
         pkg = self.get_package(package_name)
         if not pkg:
             log.error("Attempted to save audit for unknown package %r", package_name)
             raise ValueError(f"Package {package_name!r} not found in database")
-        cursor = self.conn.execute(
-            """\
-            INSERT INTO audits
-                (package_id, version_audited, report_markdown, findings_summary, audit_type)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (pkg["id"], version, report_markdown, findings_summary, audit_type),
-        )
-        self.conn.commit()
-        return cursor.lastrowid
+        with self.conn:
+            cursor = self.conn.execute(
+                """\
+                INSERT INTO audits
+                    (package_id, version_audited, report_markdown, findings_summary, audit_type)
+                VALUES (?, ?, ?, ?, ?)
+                """,
+                (pkg["id"], version, report_markdown, findings_summary, audit_type),
+            )
+            audit_id = cursor.lastrowid
+            if findings:
+                self._insert_findings(audit_id, findings)
+        return audit_id
 
     def get_audits_for_package(self, package_name: str) -> list[dict]:
         pkg = self.get_package(package_name)
@@ -146,25 +178,29 @@ class AuditDatabase:
         ).fetchall()
         return [dict(r) for r in rows]
 
+    def _insert_findings(self, audit_id: int, findings: list[dict]):
+        """Insert findings rows (caller must manage transaction)."""
+        for f in findings:
+            self.conn.execute(
+                """\
+                INSERT INTO findings
+                    (audit_id, category, severity, title, detail, recommendation)
+                VALUES (?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    audit_id,
+                    f.get("category", "unknown"),
+                    f.get("severity", "info"),
+                    f.get("title", ""),
+                    f.get("detail", ""),
+                    f.get("recommendation"),
+                ),
+            )
+
     def save_findings(self, audit_id: int, findings: list[dict]):
         """Save structured findings linked to the given audit."""
         with self.conn:
-            for f in findings:
-                self.conn.execute(
-                    """\
-                    INSERT INTO findings
-                        (audit_id, category, severity, title, detail, recommendation)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                    """,
-                    (
-                        audit_id,
-                        f.get("category", "unknown"),
-                        f.get("severity", "info"),
-                        f.get("title", ""),
-                        f.get("detail", ""),
-                        f.get("recommendation"),
-                    ),
-                )
+            self._insert_findings(audit_id, findings)
 
     def get_findings_for_audit(self, audit_id: int) -> list[dict]:
         """Get all structured findings for a given audit."""

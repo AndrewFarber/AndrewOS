@@ -5,6 +5,7 @@ from textual.binding import Binding
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header, Input, Static
 
+from nix_audit.screens.help import PACKAGES_HELP, HelpScreen
 from nix_audit.services.nix import get_installed_packages
 
 log = logging.getLogger(__name__)
@@ -14,11 +15,14 @@ class PackagesScreen(Screen):
     BINDINGS = [
         Binding("j", "cursor_down", "Down", show=False, priority=True),
         Binding("k", "cursor_up", "Up", show=False, priority=True),
+        Binding("ctrl+d", "page_down", "Page Down", show=False, priority=True),
+        Binding("ctrl+u", "page_up", "Page Up", show=False, priority=True),
         Binding("g", "cursor_first", "First", show=False, priority=True),
         Binding("G", "cursor_last", "Last", show=False, priority=True),
         Binding("enter", "select_package", "Package Detail", priority=True),
         Binding("escape", "dismiss_filter", "Dismiss Filter", show=False, priority=True),
         Binding("slash", "open_filter", "Filter Packages"),
+        Binding("S", "search_nixpkgs", "Search Nixpkgs", priority=True),
         Binding("r", "refresh", "Refresh List"),
         Binding("question_mark", "show_help", "Show Help"),
         Binding("q", "quit", "Quit"),
@@ -72,6 +76,10 @@ class PackagesScreen(Screen):
             self._all_rows.append(row)
             table.add_row(*row)
         status.update(f"{len(packages)} packages loaded")
+        # Re-apply active filter if one is set
+        filter_input = self.query_one("#filter-input", Input)
+        if filter_input.display and filter_input.value:
+            self._apply_filter(filter_input.value)
         table.focus()
 
     def _apply_filter(self, query: str) -> None:
@@ -83,7 +91,8 @@ class PackagesScreen(Screen):
                 table.add_row(*row)
 
     def on_input_changed(self, event: Input.Changed) -> None:
-        self._apply_filter(event.value)
+        if event.input.id == "filter-input":
+            self._apply_filter(event.value)
 
     def action_open_filter(self) -> None:
         filter_input = self.query_one("#filter-input", Input)
@@ -111,6 +120,22 @@ class PackagesScreen(Screen):
             return
         table.action_cursor_up()
 
+    HALF_PAGE = 15
+
+    def action_page_down(self) -> None:
+        table = self.query_one("#packages-table", DataTable)
+        if table.row_count == 0:
+            return
+        target = min(table.cursor_row + self.HALF_PAGE, table.row_count - 1)
+        table.move_cursor(row=target)
+
+    def action_page_up(self) -> None:
+        table = self.query_one("#packages-table", DataTable)
+        if table.row_count == 0:
+            return
+        target = max(table.cursor_row - self.HALF_PAGE, 0)
+        table.move_cursor(row=target)
+
     def action_cursor_first(self) -> None:
         table = self.query_one("#packages-table", DataTable)
         table.move_cursor(row=0)
@@ -128,6 +153,12 @@ class PackagesScreen(Screen):
             table = self.query_one("#packages-table", DataTable)
             if table.row_count > 0:
                 table.focus()
+                row_idx = table.cursor_row
+                row = table.get_row_at(row_idx)
+                name = row[1]
+                from nix_audit.screens.detail import DetailScreen
+
+                self.app.push_screen(DetailScreen(package_name=str(name)))
             return
         table = self.query_one("#packages-table", DataTable)
         if table.row_count == 0:
@@ -146,8 +177,10 @@ class PackagesScreen(Screen):
     def action_refresh(self) -> None:
         self.load_packages()
 
+    def action_search_nixpkgs(self) -> None:
+        from nix_audit.screens.search import SearchScreen
+
+        self.app.push_screen(SearchScreen())
+
     def action_show_help(self) -> None:
-        self.notify(
-            "j/k: navigate  Enter: detail  /: filter  Esc: clear  r: refresh  q: quit",
-            title="Keybindings",
-        )
+        self.app.push_screen(HelpScreen("Packages", PACKAGES_HELP))

@@ -5,6 +5,7 @@ from textual.binding import Binding
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header
 
+from nix_audit.screens.help import SEARCH_HELP, HelpScreen
 from nix_audit.services.nix import search_packages
 from nix_audit.widgets.search_bar import SearchBar
 
@@ -13,8 +14,16 @@ log = logging.getLogger(__name__)
 
 class SearchScreen(Screen):
     BINDINGS = [
-        Binding("escape", "go_back", "Go Back", priority=True),
+        Binding("j", "cursor_down", "Down", show=False, priority=True),
+        Binding("k", "cursor_up", "Up", show=False, priority=True),
+        Binding("ctrl+d", "page_down", "Page Down", show=False, priority=True),
+        Binding("ctrl+u", "page_up", "Page Up", show=False, priority=True),
+        Binding("g", "cursor_first", "First", show=False, priority=True),
+        Binding("G", "cursor_last", "Last", show=False, priority=True),
         Binding("enter", "select_result", "Package Detail", show=False, priority=True),
+        Binding("question_mark", "show_help", "Show Help"),
+        Binding("escape", "go_back", "Go Back", priority=True),
+        Binding("q", "go_back", "Go Back", show=False, priority=True),
     ]
 
     def compose(self) -> ComposeResult:
@@ -48,6 +57,46 @@ class SearchScreen(Screen):
             if len(desc) > 60:
                 desc = desc[:60] + "..."
             table.add_row(pkg["name"], pkg["version"], desc)
+        if results:
+            table.focus()
+
+    HALF_PAGE = 15
+
+    def action_cursor_down(self) -> None:
+        table = self.query_one("#search-results", DataTable)
+        if table.row_count == 0:
+            return
+        table.action_cursor_down()
+
+    def action_cursor_up(self) -> None:
+        table = self.query_one("#search-results", DataTable)
+        if table.row_count == 0:
+            return
+        table.action_cursor_up()
+
+    def action_page_down(self) -> None:
+        table = self.query_one("#search-results", DataTable)
+        if table.row_count == 0:
+            return
+        target = min(table.cursor_row + self.HALF_PAGE, table.row_count - 1)
+        table.move_cursor(row=target)
+
+    def action_page_up(self) -> None:
+        table = self.query_one("#search-results", DataTable)
+        if table.row_count == 0:
+            return
+        target = max(table.cursor_row - self.HALF_PAGE, 0)
+        table.move_cursor(row=target)
+
+    def action_cursor_first(self) -> None:
+        table = self.query_one("#search-results", DataTable)
+        table.move_cursor(row=0)
+
+    def action_cursor_last(self) -> None:
+        table = self.query_one("#search-results", DataTable)
+        if table.row_count == 0:
+            return
+        table.move_cursor(row=table.row_count - 1)
 
     def action_select_result(self) -> None:
         table = self.query_one("#search-results", DataTable)
@@ -59,6 +108,9 @@ class SearchScreen(Screen):
         from nix_audit.screens.detail import DetailScreen
 
         self.app.push_screen(DetailScreen(package_name=str(name)))
+
+    def action_show_help(self) -> None:
+        self.app.push_screen(HelpScreen("Search", SEARCH_HELP))
 
     def action_go_back(self) -> None:
         self.app.pop_screen()

@@ -61,3 +61,15 @@ ConfirmAuditScreen {
     border: thick ansi_blue;
     background: $background;
 }
+
+HelpScreen {
+    align: center middle;
+}
+
+#help-dialog {
+    width: 50;
+    height: auto;
+    padding: 1 2;
+    border: thick ansi_blue;
+    background: $background;
+}

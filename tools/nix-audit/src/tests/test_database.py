@@ -192,3 +192,76 @@ def test_save_findings_with_audit_id(tmp_db):
     assert findings_1[0]["title"] == "first"
     assert len(findings_2) == 1
     assert findings_2[0]["title"] == "second"
+
+
+def test_save_audit_with_findings_atomic(tmp_db):
+    """save_audit(findings=...) saves audit and findings in one transaction."""
+    tmp_db.upsert_package("hello", "2.12.1")
+    findings = [
+        {"category": "supply_chain", "severity": "high", "title": "No hash pinning"},
+        {"category": "runtime", "severity": "low", "title": "Large closure"},
+    ]
+    audit_id = tmp_db.save_audit(
+        "hello", "2.12.1", "report", "summary", "claude", findings=findings
+    )
+    saved = tmp_db.get_findings_for_audit(audit_id)
+    assert len(saved) == 2
+    assert saved[0]["title"] == "No hash pinning"
+    assert saved[1]["title"] == "Large closure"
+
+
+def test_save_audit_without_findings_param(tmp_db):
+    """save_audit without findings= still works (no findings inserted)."""
+    tmp_db.upsert_package("hello", "2.12.1")
+    audit_id = tmp_db.save_audit("hello", "2.12.1", "report", "summary", "vulnix")
+    saved = tmp_db.get_findings_for_audit(audit_id)
+    assert saved == []
+
+
+def test_migrate_adds_missing_columns(tmp_path):
+    """Migration should add columns that don't exist in older schema."""
+    import sqlite3
+
+    from nix_audit.models.database import AuditDatabase
+
+    db_path = tmp_path / "old.db"
+    # Create a minimal old-style schema missing some columns
+    conn = sqlite3.connect(str(db_path))
+    conn.executescript("""\
+        CREATE TABLE packages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE,
+            version TEXT NOT NULL
+        );
+        CREATE TABLE audits (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            package_id INTEGER NOT NULL REFERENCES packages(id),
+            version_audited TEXT NOT NULL,
+            date TEXT NOT NULL DEFAULT (datetime('now')),
+            report_markdown TEXT NOT NULL
+        );
+        CREATE TABLE findings (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            audit_id INTEGER NOT NULL REFERENCES audits(id),
+            category TEXT NOT NULL,
+            severity TEXT NOT NULL,
+            title TEXT NOT NULL
+        );
+    """)
+    conn.close()
+
+    # Opening the DB with AuditDatabase should migrate
+    db = AuditDatabase(db_path=db_path)
+    # Check that missing columns were added
+    pkg_cols = {row[1] for row in db.conn.execute("PRAGMA table_info(packages)").fetchall()}
+    assert "store_path" in pkg_cols
+    assert "first_seen" in pkg_cols
+
+    audit_cols = {row[1] for row in db.conn.execute("PRAGMA table_info(audits)").fetchall()}
+    assert "findings_summary" in audit_cols
+    assert "audit_type" in audit_cols
+
+    finding_cols = {row[1] for row in db.conn.execute("PRAGMA table_info(findings)").fetchall()}
+    assert "detail" in finding_cols
+    assert "recommendation" in finding_cols
+    db.close()
