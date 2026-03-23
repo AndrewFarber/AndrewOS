@@ -12,10 +12,10 @@ log = logging.getLogger(__name__)
 
 class PackagesScreen(Screen):
     BINDINGS = [
-        Binding("j", "cursor_down", "Down", show=False),
-        Binding("k", "cursor_up", "Up", show=False),
-        Binding("g", "cursor_first", "First", show=False),
-        Binding("G", "cursor_last", "Last", show=False),
+        Binding("j", "cursor_down", "Down", show=False, priority=True),
+        Binding("k", "cursor_up", "Up", show=False, priority=True),
+        Binding("g", "cursor_first", "First", show=False, priority=True),
+        Binding("G", "cursor_last", "Last", show=False, priority=True),
         Binding("enter", "select_package", "Package Detail", priority=True),
         Binding("escape", "dismiss_filter", "Dismiss Filter", show=False, priority=True),
         Binding("slash", "open_filter", "Filter Packages"),
@@ -72,6 +72,7 @@ class PackagesScreen(Screen):
             self._all_rows.append(row)
             table.add_row(*row)
         status.update(f"{len(packages)} packages loaded")
+        table.focus()
 
     def _apply_filter(self, query: str) -> None:
         table = self.query_one("#packages-table", DataTable)
@@ -100,10 +101,14 @@ class PackagesScreen(Screen):
 
     def action_cursor_down(self) -> None:
         table = self.query_one("#packages-table", DataTable)
+        if table.row_count == 0:
+            return
         table.action_cursor_down()
 
     def action_cursor_up(self) -> None:
         table = self.query_one("#packages-table", DataTable)
+        if table.row_count == 0:
+            return
         table.action_cursor_up()
 
     def action_cursor_first(self) -> None:
