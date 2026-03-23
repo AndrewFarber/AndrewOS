@@ -11,4 +11,9 @@ run:
     python -m nix_audit
 
 lint:
-    python -m py_compile src/nix_audit/app.py
+    ruff check src/
+    ruff format --check src/
+
+fmt:
+    ruff check --fix src/
+    ruff format src/

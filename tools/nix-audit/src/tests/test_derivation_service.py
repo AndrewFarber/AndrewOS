@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from nix_audit.services.derivation import get_derivation_source
+from nix_audit.services.derivation import MAX_SOURCE_BYTES, get_derivation_source
 
 
 @pytest.fixture
@@ -68,3 +68,24 @@ async def test_get_derivation_source_missing_file(mock_subprocess):
 
     source = await get_derivation_source("hello")
     assert source is None
+
+
+@pytest.mark.asyncio
+async def test_get_derivation_source_size_cap(mock_subprocess, tmp_path):
+    """Siblings exceeding MAX_SOURCE_BYTES are excluded."""
+    main_file = tmp_path / "default.nix"
+    main_file.write_text("main content")
+
+    # Create a sibling that would push over the limit
+    big_sibling = tmp_path / "big.nix"
+    big_sibling.write_text("x" * (MAX_SOURCE_BYTES + 1))
+
+    position = f'"{main_file}:1"'
+    proc = AsyncMock()
+    proc.communicate.return_value = (position.encode(), b"")
+    proc.returncode = 0
+    mock_subprocess.return_value = proc
+
+    source = await get_derivation_source("hello")
+    assert "main content" in source
+    assert "x" * 100 not in source

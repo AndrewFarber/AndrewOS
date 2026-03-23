@@ -1,5 +1,8 @@
+import logging
 import sqlite3
 from pathlib import Path
+
+log = logging.getLogger(__name__)
 
 DEFAULT_DB_PATH = Path.home() / ".local" / "share" / "nix-audit" / "audit.db"
 
@@ -55,6 +58,21 @@ class AuditDatabase:
         )
         self.conn.commit()
 
+    def upsert_packages_batch(self, packages: list[dict]):
+        """Upsert many packages in a single transaction."""
+        with self.conn:
+            self.conn.executemany(
+                """\
+                INSERT INTO packages (name, version, store_path)
+                VALUES (:name, :version, :store_path)
+                ON CONFLICT(name) DO UPDATE SET
+                    version = excluded.version,
+                    store_path = excluded.store_path,
+                    last_seen = datetime('now')
+                """,
+                packages,
+            )
+
     def get_package(self, name: str) -> dict | None:
         row = self.conn.execute(
             "SELECT * FROM packages WHERE name = ?", (name,)
@@ -94,10 +112,12 @@ class AuditDatabase:
     ):
         pkg = self.get_package(package_name)
         if not pkg:
+            log.error("Attempted to save audit for unknown package %r", package_name)
             raise ValueError(f"Package {package_name!r} not found in database")
         self.conn.execute(
             """\
-            INSERT INTO audits (package_id, version_audited, report_markdown, findings_summary, audit_type)
+            INSERT INTO audits
+                (package_id, version_audited, report_markdown, findings_summary, audit_type)
             VALUES (?, ?, ?, ?, ?)
             """,
             (pkg["id"], version, report_markdown, findings_summary, audit_type),
@@ -117,3 +137,38 @@ class AuditDatabase:
             (pkg["id"],),
         ).fetchall()
         return [dict(r) for r in rows]
+
+    def get_all_audit_info(self) -> dict[str, dict]:
+        """Get audit status and last-audited date for all packages in one query.
+
+        Returns {name: {"status": str, "last_audited": str}}.
+        """
+        rows = self.conn.execute(
+            """\
+            SELECT
+                p.name,
+                p.version,
+                a.version_audited,
+                a.date AS last_date
+            FROM packages p
+            LEFT JOIN (
+                SELECT package_id, version_audited, date,
+                       ROW_NUMBER() OVER (PARTITION BY package_id ORDER BY date DESC) AS rn
+                FROM audits
+            ) a ON a.package_id = p.id AND a.rn = 1
+            """,
+        ).fetchall()
+        result = {}
+        for row in rows:
+            row = dict(row)
+            if row["version_audited"] is None:
+                status = "none"
+                last_audited = "never"
+            elif row["version_audited"] == row["version"]:
+                status = "current"
+                last_audited = row["last_date"]
+            else:
+                status = "outdated"
+                last_audited = row["last_date"]
+            result[row["name"]] = {"status": status, "last_audited": last_audited}
+        return result

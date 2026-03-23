@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from nix_audit.services.claude import run_claude_audit, AUDIT_PROMPT
+from nix_audit.services.claude import AUDIT_PROMPT, _safe_filename, run_claude_audit
 
 
 @pytest.fixture
@@ -56,3 +56,21 @@ def test_prompt_contains_key_checks():
     assert "builtins.fetchurl" in prompt
     assert "impureEnvVars" in prompt
     assert "setuid" in prompt.lower() or "Setuid" in prompt
+
+
+def test_safe_filename_normal():
+    assert _safe_filename("hello", "2.12.1") == "hello-2.12.1.md"
+
+
+def test_safe_filename_path_traversal():
+    result = _safe_filename("../../../etc/passwd", "1.0")
+    assert "/" not in result
+    # Path separators are stripped, so traversal is impossible
+    assert result.endswith(".md")
+
+
+def test_safe_filename_special_chars():
+    result = _safe_filename("foo bar/baz", "1.0+git")
+    assert " " not in result
+    assert "/" not in result
+    assert "+" not in result

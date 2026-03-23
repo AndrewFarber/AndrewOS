@@ -1,5 +1,4 @@
-from unittest.mock import AsyncMock, patch, MagicMock
-from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -28,7 +27,7 @@ def app(tmp_path, mock_packages):
 
 @pytest.mark.asyncio
 async def test_app_starts(app):
-    async with app.run_test() as pilot:
+    async with app.run_test() as _pilot:
         assert app.title == "nix-audit"
 
 

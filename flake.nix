@@ -52,6 +52,7 @@
               ps.pytest-asyncio
             ]))
             pkgs.just
+            pkgs.ruff
           ];
         };
       };

@@ -1,5 +1,4 @@
 import pytest
-from nix_audit.models.database import AuditDatabase
 
 
 def test_schema_migration(tmp_db):
@@ -76,3 +75,46 @@ def test_get_audits_for_package(tmp_db):
 
 def test_get_audits_empty(tmp_db):
     assert tmp_db.get_audits_for_package("nonexistent") == []
+
+
+def test_upsert_packages_batch(tmp_db):
+    packages = [
+        {"name": "hello", "version": "2.12.1", "store_path": "/nix/store/abc-hello-2.12.1"},
+        {"name": "git", "version": "2.43.0", "store_path": "/nix/store/def-git-2.43.0"},
+        {"name": "ripgrep", "version": "14.1.0", "store_path": "/nix/store/ghi-ripgrep-14.1.0"},
+    ]
+    tmp_db.upsert_packages_batch(packages)
+    all_pkgs = tmp_db.get_all_packages()
+    assert len(all_pkgs) == 3
+    names = {p["name"] for p in all_pkgs}
+    assert names == {"hello", "git", "ripgrep"}
+
+
+def test_upsert_packages_batch_updates_existing(tmp_db):
+    tmp_db.upsert_package("hello", "2.12.0", "/nix/store/old-hello-2.12.0")
+    packages = [
+        {"name": "hello", "version": "2.12.1", "store_path": "/nix/store/new-hello-2.12.1"},
+    ]
+    tmp_db.upsert_packages_batch(packages)
+    pkg = tmp_db.get_package("hello")
+    assert pkg["version"] == "2.12.1"
+
+
+def test_get_all_audit_info(tmp_db):
+    tmp_db.upsert_package("hello", "2.12.1")
+    tmp_db.upsert_package("git", "2.43.0")
+    tmp_db.save_audit("hello", "2.12.1", "report", "summary")
+
+    info = tmp_db.get_all_audit_info()
+    assert info["hello"]["status"] == "current"
+    assert info["hello"]["last_audited"] != "never"
+    assert info["git"]["status"] == "none"
+    assert info["git"]["last_audited"] == "never"
+
+
+def test_get_all_audit_info_outdated(tmp_db):
+    tmp_db.upsert_package("hello", "2.13.0")
+    tmp_db.save_audit("hello", "2.12.1", "old report", "old summary")
+
+    info = tmp_db.get_all_audit_info()
+    assert info["hello"]["status"] == "outdated"

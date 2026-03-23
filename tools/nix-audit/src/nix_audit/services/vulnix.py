@@ -1,5 +1,8 @@
 import asyncio
+import logging
 import re
+
+log = logging.getLogger(__name__)
 
 
 async def scan_package(store_path: str) -> list[dict]:
@@ -11,8 +14,16 @@ async def scan_package(store_path: str) -> list[dict]:
     )
     stdout, stderr = await proc.communicate()
     output = stdout.decode()
-    # vulnix exits non-zero when CVEs are found, so don't check returncode
-    return parse_vulnix_output(output)
+    err = stderr.decode().strip()
+    # vulnix exits 2 when CVEs are found — that's expected.
+    # Any other non-zero exit with no stdout is a real error.
+    if proc.returncode != 0 and not output.strip():
+        msg = f"vulnix failed (exit {proc.returncode}): {err}"
+        log.error(msg)
+        raise RuntimeError(msg)
+    cves = parse_vulnix_output(output)
+    log.info("vulnix scan of %s found %d CVE(s)", store_path, len(cves))
+    return cves
 
 
 def parse_vulnix_output(output: str) -> list[dict]:
@@ -51,6 +62,6 @@ def format_vulnix_report(cves: list[dict], package_name: str, version: str) -> s
     for cve in cves:
         lines.append(f"- **{cve['cve_id']}**")
     lines.append(
-        f"\nCheck https://nvd.nist.gov/ for details on each CVE."
+        "\nCheck https://nvd.nist.gov/ for details on each CVE."
     )
     return "\n".join(lines)

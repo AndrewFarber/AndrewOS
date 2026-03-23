@@ -1,3 +1,5 @@
+import logging
+
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.screen import Screen
@@ -6,6 +8,8 @@ from textual.widgets import DataTable, Footer, Header, Static
 from nix_audit.services.claude import run_claude_audit
 from nix_audit.services.derivation import get_derivation_source
 from nix_audit.services.vulnix import format_vulnix_report, scan_package
+
+log = logging.getLogger(__name__)
 
 
 class DetailScreen(Screen):
@@ -83,17 +87,20 @@ class DetailScreen(Screen):
         status.update("[ansi_yellow]Running Claude audit (this may take a minute)...[/]")
         db = self.app.db
         pkg = db.get_package(self.package_name)
-        version = pkg["version"] if pkg else "unknown"
+        if not pkg:
+            db.upsert_package(self.package_name, "unknown")
+            pkg = db.get_package(self.package_name)
+        version = pkg["version"]
         try:
             report = await run_claude_audit(self.package_name, version, source)
         except RuntimeError as e:
+            log.error("Claude audit failed for %s: %s", self.package_name, e)
             status.update(f"[ansi_red]Audit failed: {e}[/]")
             return
         # Extract first line as summary
         first_line = report.strip().splitlines()[0] if report.strip() else ""
         summary = first_line[:100]
-        if pkg:
-            db.save_audit(self.package_name, version, report, summary, "claude")
+        db.save_audit(self.package_name, version, report, summary, "claude")
         self._refresh_audits()
         status.update("[ansi_green]Claude audit complete[/]")
         from nix_audit.screens.report import ReportScreen
@@ -113,6 +120,7 @@ class DetailScreen(Screen):
         try:
             cves = await scan_package(pkg["store_path"])
         except Exception as e:
+            log.error("Vulnix scan failed for %s: %s", self.package_name, e)
             status.update(f"[ansi_red]Vulnix scan failed: {e}[/]")
             return
         report = format_vulnix_report(cves, self.package_name, pkg["version"])

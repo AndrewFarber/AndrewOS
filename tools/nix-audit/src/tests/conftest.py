@@ -1,5 +1,5 @@
+
 import pytest
-from pathlib import Path
 
 from nix_audit.models.database import AuditDatabase
 

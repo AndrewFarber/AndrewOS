@@ -1,6 +1,6 @@
-from textual.widgets import Input
 from textual.message import Message
 from textual.timer import Timer
+from textual.widgets import Input
 
 
 class SearchBar(Input):

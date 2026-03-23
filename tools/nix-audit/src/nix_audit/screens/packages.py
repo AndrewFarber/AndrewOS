@@ -1,10 +1,13 @@
+import logging
+
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header, Static
 
-from nix_audit.models.database import AuditDatabase
 from nix_audit.services.nix import get_installed_packages
+
+log = logging.getLogger(__name__)
 
 
 class PackagesScreen(Screen):
@@ -41,22 +44,24 @@ class PackagesScreen(Screen):
         try:
             packages = await get_installed_packages()
         except RuntimeError as e:
+            log.error("Failed to load packages: %s", e)
             status.update(f"Error: {e}")
             return
         db = self.app.db
         table = self.query_one("#packages-table", DataTable)
         table.clear()
+        db.upsert_packages_batch(packages)
+        audit_info = db.get_all_audit_info()
         for pkg in packages:
-            db.upsert_package(pkg["name"], pkg["version"], pkg["store_path"])
-            audit_status = db.get_audit_status(pkg["name"])
+            info = audit_info.get(pkg["name"], {})
+            audit_status = info.get("status", "none")
+            last_audited = info.get("last_audited", "never")
             if audit_status == "current":
                 indicator = "[ansi_green]\u25cf[/]"
             elif audit_status == "outdated":
                 indicator = "[ansi_yellow]\u25cf[/]"
             else:
                 indicator = "[ansi_red]\u25cb[/]"
-            audits = db.get_audits_for_package(pkg["name"])
-            last_audited = audits[0]["date"] if audits else "never"
             table.add_row(indicator, pkg["name"], pkg["version"], last_audited)
         status.update(f"{len(packages)} packages loaded")
 

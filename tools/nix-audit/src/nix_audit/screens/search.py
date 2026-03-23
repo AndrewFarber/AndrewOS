@@ -1,3 +1,5 @@
+import logging
+
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.screen import Screen
@@ -5,6 +7,8 @@ from textual.widgets import DataTable, Footer, Header
 
 from nix_audit.services.nix import search_packages
 from nix_audit.widgets.search_bar import SearchBar
+
+log = logging.getLogger(__name__)
 
 
 class SearchScreen(Screen):
@@ -35,10 +39,14 @@ class SearchScreen(Screen):
         table.clear()
         try:
             results = await search_packages(query)
-        except RuntimeError:
+        except RuntimeError as e:
+            log.error("Search failed for %r: %s", query, e)
+            self.notify(f"Search failed: {e}", severity="error")
             return
         for pkg in results:
-            desc = pkg["description"][:60] + "..." if len(pkg["description"]) > 60 else pkg["description"]
+            desc = pkg["description"]
+            if len(desc) > 60:
+                desc = desc[:60] + "..."
             table.add_row(pkg["name"], pkg["version"], desc)
 
     def action_select_result(self) -> None:

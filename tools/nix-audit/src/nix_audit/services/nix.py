@@ -1,6 +1,9 @@
 import asyncio
 import json
+import logging
 import re
+
+log = logging.getLogger(__name__)
 
 
 async def get_installed_packages() -> list[dict]:
@@ -12,9 +15,9 @@ async def get_installed_packages() -> list[dict]:
     )
     stdout, stderr = await proc.communicate()
     if proc.returncode != 0:
-        raise RuntimeError(
-            f"home-manager packages failed (exit {proc.returncode}): {stderr.decode()}"
-        )
+        msg = f"home-manager packages failed (exit {proc.returncode}): {stderr.decode()}"
+        log.error(msg)
+        raise RuntimeError(msg)
     packages = []
     for line in stdout.decode().strip().splitlines():
         line = line.strip()
@@ -48,6 +51,7 @@ async def get_installed_packages() -> list[dict]:
                         "name": full_name,
                         "version": "unknown",
                     })
+    log.info("Loaded %d installed packages", len(packages))
     return sorted(packages, key=lambda p: p["name"])
 
 
@@ -60,9 +64,9 @@ async def search_packages(query: str) -> list[dict]:
     )
     stdout, stderr = await proc.communicate()
     if proc.returncode != 0:
-        raise RuntimeError(
-            f"nix search failed (exit {proc.returncode}): {stderr.decode()}"
-        )
+        msg = f"nix search failed (exit {proc.returncode}): {stderr.decode()}"
+        log.error(msg)
+        raise RuntimeError(msg)
     text = stdout.decode().strip()
     if not text:
         return []

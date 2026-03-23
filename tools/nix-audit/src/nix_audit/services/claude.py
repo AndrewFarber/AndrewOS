@@ -1,8 +1,14 @@
 import asyncio
+import logging
+import os
+import re
 from pathlib import Path
 
+log = logging.getLogger(__name__)
+
 AUDIT_PROMPT = """\
-You are a Nix package security auditor. Analyze the following Nix derivation source code for package "{name}" version {version}.
+You are a Nix package security auditor. Analyze the following Nix \
+derivation source code for package "{name}" version {version}.
 
 Review across these four categories:
 
@@ -44,7 +50,17 @@ Here is the derivation source:
 ```
 """
 
-REPORT_DIR = Path("/tmp/nix-audit")
+REPORT_DIR = (
+    Path(os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local" / "share")))
+    / "nix-audit"
+    / "reports"
+)
+
+
+def _safe_filename(name: str, version: str) -> str:
+    """Sanitize name and version for use in filenames."""
+    safe = re.sub(r"[^a-zA-Z0-9._-]", "_", f"{name}-{version}")
+    return safe[:200] + ".md"
 
 
 async def run_claude_audit(
@@ -61,12 +77,12 @@ async def run_claude_audit(
     )
     stdout, stderr = await proc.communicate()
     if proc.returncode != 0:
-        raise RuntimeError(
-            f"claude audit failed (exit {proc.returncode}): {stderr.decode()}"
-        )
+        msg = f"claude audit failed (exit {proc.returncode}): {stderr.decode()}"
+        log.error(msg)
+        raise RuntimeError(msg)
     report = stdout.decode()
-    # Save to /tmp/nix-audit/
     REPORT_DIR.mkdir(parents=True, exist_ok=True)
-    report_path = REPORT_DIR / f"{name}-{version}.md"
+    report_path = REPORT_DIR / _safe_filename(name, version)
     report_path.write_text(report)
+    log.info("Claude audit for %s %s saved to %s", name, version, report_path)
     return report
