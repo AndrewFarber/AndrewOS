@@ -13,8 +13,8 @@ log = logging.getLogger(__name__)
 
 class SearchScreen(Screen):
     BINDINGS = [
-        Binding("escape", "go_back", "Back"),
-        Binding("enter", "select_result", "Detail", show=False),
+        Binding("escape", "go_back", "Go Back", priority=True),
+        Binding("enter", "select_result", "Package Detail", show=False, priority=True),
     ]
 
     def compose(self) -> ComposeResult:

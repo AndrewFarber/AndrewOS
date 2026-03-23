@@ -14,13 +14,13 @@ log = logging.getLogger(__name__)
 
 class DetailScreen(Screen):
     BINDINGS = [
-        Binding("j", "cursor_down", "Down", show=False),
-        Binding("k", "cursor_up", "Up", show=False),
-        Binding("a", "run_claude_audit", "Claude Audit"),
-        Binding("v", "run_vulnix", "Vulnix Scan"),
-        Binding("enter", "view_report", "View Report"),
-        Binding("escape", "go_back", "Back"),
-        Binding("q", "go_back", "Back"),
+        Binding("j", "cursor_down", "Down", show=False, priority=True),
+        Binding("k", "cursor_up", "Up", show=False, priority=True),
+        Binding("a", "run_claude_audit", "Audit Package", priority=True),
+        Binding("v", "run_vulnix", "Vulnix Scan", priority=True),
+        Binding("enter", "view_report", "View Report", priority=True),
+        Binding("escape", "go_back", "Go Back", priority=True),
+        Binding("q", "go_back", "Go Back", show=False, priority=True),
     ]
 
     def __init__(self, package_name: str):

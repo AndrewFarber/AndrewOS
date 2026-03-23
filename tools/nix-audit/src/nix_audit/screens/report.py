@@ -6,12 +6,12 @@ from textual.widgets import Footer, Header, Markdown
 
 class ReportScreen(Screen):
     BINDINGS = [
-        Binding("j", "scroll_down", "Down", show=False),
-        Binding("k", "scroll_up", "Up", show=False),
-        Binding("g", "scroll_home", "Top", show=False),
+        Binding("j", "scroll_down", "Down", show=False, priority=True),
+        Binding("k", "scroll_up", "Up", show=False, priority=True),
+        Binding("g", "scroll_home", "Top", show=False, priority=True),
         Binding("G", "scroll_end", "Bottom", show=False, priority=True),
-        Binding("escape", "go_back", "Back"),
-        Binding("q", "go_back", "Back"),
+        Binding("escape", "go_back", "Go Back", priority=True),
+        Binding("q", "go_back", "Go Back", show=False, priority=True),
     ]
 
     def __init__(self, report: str):

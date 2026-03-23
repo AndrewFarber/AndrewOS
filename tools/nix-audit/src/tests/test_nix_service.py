@@ -40,14 +40,49 @@ async def test_get_installed_packages_versions(mock_subprocess, sample_hm_output
 
 
 @pytest.mark.asyncio
-async def test_get_installed_packages_error(mock_subprocess):
+async def test_get_installed_packages_gcroot_fallback(
+    mock_subprocess, sample_hm_output, tmp_path
+):
+    """When home-manager packages fails, fall back to gcroot."""
+    # home-manager packages fails
+    hm_proc = AsyncMock()
+    hm_proc.communicate.return_value = (b"", b"")
+    hm_proc.returncode = 1
+
+    # nix-store query succeeds
+    nix_proc = AsyncMock()
+    nix_proc.communicate.return_value = (sample_hm_output.encode(), b"")
+    nix_proc.returncode = 0
+
+    mock_subprocess.side_effect = [hm_proc, nix_proc]
+
+    # Set up fake gcroot
+    gcroot_dir = tmp_path / "home-manager" / "gcroots"
+    gcroot_dir.mkdir(parents=True)
+    gen_dir = tmp_path / "generation"
+    gen_dir.mkdir()
+    home_path = gen_dir / "home-path"
+    home_path.mkdir()
+    (gcroot_dir / "current-home").symlink_to(gen_dir)
+
+    with patch.dict("os.environ", {"XDG_STATE_HOME": str(tmp_path)}):
+        packages = await get_installed_packages()
+
+    assert len(packages) == 3
+    assert mock_subprocess.call_count == 2
+
+
+@pytest.mark.asyncio
+async def test_get_installed_packages_gcroot_missing(mock_subprocess, tmp_path):
+    """Error when both home-manager and gcroot fail."""
     proc = AsyncMock()
-    proc.communicate.return_value = (b"", b"command not found")
-    proc.returncode = 127
+    proc.communicate.return_value = (b"", b"")
+    proc.returncode = 1
     mock_subprocess.return_value = proc
 
-    with pytest.raises(RuntimeError, match="home-manager packages failed"):
-        await get_installed_packages()
+    with patch.dict("os.environ", {"XDG_STATE_HOME": str(tmp_path)}):
+        with pytest.raises(RuntimeError, match="gcroot not found"):
+            await get_installed_packages()
 
 
 @pytest.mark.asyncio

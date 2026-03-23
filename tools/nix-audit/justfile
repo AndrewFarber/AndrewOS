@@ -8,7 +8,7 @@ test-watch:
     python -m pytest src/tests/ -v --watch
 
 run:
-    python -m nix_audit
+    PYTHONPATH=src python -m nix_audit
 
 lint:
     ruff check src/

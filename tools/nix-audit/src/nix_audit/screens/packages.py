@@ -12,15 +12,15 @@ log = logging.getLogger(__name__)
 
 class PackagesScreen(Screen):
     BINDINGS = [
-        Binding("j", "cursor_down", "Down", show=False),
-        Binding("k", "cursor_up", "Up", show=False),
-        Binding("g", "cursor_first", "First", show=False),
+        Binding("j", "cursor_down", "Down", show=False, priority=True),
+        Binding("k", "cursor_up", "Up", show=False, priority=True),
+        Binding("g", "cursor_first", "First", show=False, priority=True),
         Binding("G", "cursor_last", "Last", show=False, priority=True),
-        Binding("enter", "select_package", "Detail"),
-        Binding("slash", "open_search", "Search"),
-        Binding("r", "refresh", "Refresh"),
-        Binding("question_mark", "show_help", "Help"),
-        Binding("q", "quit", "Quit"),
+        Binding("enter", "select_package", "Package Detail", priority=True),
+        Binding("slash", "open_search", "Search Packages", priority=True),
+        Binding("r", "refresh", "Refresh List", priority=True),
+        Binding("question_mark", "show_help", "Show Help", priority=True),
+        Binding("q", "quit", "Quit", priority=True),
     ]
 
     def compose(self) -> ComposeResult:
@@ -97,6 +97,9 @@ class PackagesScreen(Screen):
         from nix_audit.screens.search import SearchScreen
 
         self.app.push_screen(SearchScreen())
+
+    def action_quit(self) -> None:
+        self.app.exit()
 
     def action_refresh(self) -> None:
         self.load_packages()
