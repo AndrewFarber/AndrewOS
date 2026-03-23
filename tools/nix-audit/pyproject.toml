@@ -18,6 +18,9 @@ nix-audit = "nix_audit.app:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+nix_audit = ["*.tcss"]
+
 [tool.ruff]
 target-version = "py311"
 line-length = 100
