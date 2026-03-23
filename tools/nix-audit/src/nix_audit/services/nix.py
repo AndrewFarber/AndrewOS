@@ -123,6 +123,37 @@ async def get_installed_packages() -> list[dict]:
     return sorted(packages, key=lambda p: p["name"])
 
 
+async def get_package_sizes(store_paths: list[str]) -> dict[str, int]:
+    """Get NAR sizes for store paths via nix path-info --json."""
+    if not store_paths:
+        return {}
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "nix",
+            "path-info",
+            "--json",
+            *store_paths,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+        stdout, stderr = await proc.communicate()
+    except FileNotFoundError:
+        log.warning("nix not found in PATH")
+        return {}
+    if proc.returncode != 0:
+        log.warning("nix path-info failed: %s", stderr.decode())
+        return {}
+    data = json.loads(stdout.decode())
+    sizes: dict[str, int] = {}
+    if isinstance(data, list):
+        for entry in data:
+            sizes[entry["path"]] = entry.get("narSize", 0)
+    elif isinstance(data, dict):
+        for path, info in data.items():
+            sizes[path] = info.get("narSize", 0)
+    return sizes
+
+
 async def search_packages(query: str) -> list[dict]:
     """Search nixpkgs via `nix search`."""
     try:

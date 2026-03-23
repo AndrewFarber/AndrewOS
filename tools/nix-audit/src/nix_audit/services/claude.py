@@ -190,6 +190,91 @@ def render_report_markdown(data: dict, name: str, version: str) -> str:
     return "\n".join(lines)
 
 
+async def stream_claude_audit(
+    name: str,
+    version: str,
+    derivation_source: str,
+    on_line=None,
+) -> dict:
+    """Run Claude CLI and stream output line-by-line via callback.
+
+    Args:
+        on_line: Optional async or sync callable receiving each stdout line.
+
+    Returns a dict with keys: risk_level, findings, summary, report_markdown.
+    """
+    prompt = AUDIT_PROMPT.format(name=name, version=version, source=derivation_source)
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "claude",
+            "-p",
+            prompt,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+    except FileNotFoundError:
+        msg = "claude not found in PATH"
+        log.error(msg)
+        raise RuntimeError(msg)
+
+    assert proc.stdout is not None
+    buf: list[str] = []
+    deadline = asyncio.get_event_loop().time() + AUDIT_TIMEOUT
+    try:
+        while True:
+            remaining = deadline - asyncio.get_event_loop().time()
+            if remaining <= 0:
+                raise asyncio.TimeoutError
+            try:
+                raw_line = await asyncio.wait_for(
+                    proc.stdout.readline(),
+                    timeout=remaining,
+                )
+            except asyncio.TimeoutError:
+                raise asyncio.TimeoutError
+            if not raw_line:
+                break
+            line = raw_line.decode()
+            buf.append(line)
+            if on_line is not None:
+                on_line(line)
+    except asyncio.TimeoutError:
+        proc.kill()
+        await proc.wait()
+        msg = f"claude audit timed out after {AUDIT_TIMEOUT}s"
+        log.error(msg)
+        raise RuntimeError(msg)
+
+    await proc.wait()
+    if proc.returncode != 0:
+        stderr_data = await proc.stderr.read() if proc.stderr else b""
+        msg = f"claude audit failed (exit {proc.returncode}): {stderr_data.decode()}"
+        log.error(msg)
+        raise RuntimeError(msg)
+
+    raw = "".join(buf)
+    try:
+        data = parse_claude_response(raw)
+    except (json.JSONDecodeError, KeyError, TypeError) as e:
+        log.warning("Failed to parse Claude JSON response: %s", e)
+        data = {
+            "risk_level": "UNKNOWN",
+            "findings": [],
+            "summary": "Could not parse structured response.",
+            "raw_response": raw,
+        }
+    data["report_markdown"] = render_report_markdown(data, name, version)
+    REPORT_DIR.mkdir(parents=True, exist_ok=True)
+    base = _safe_filename(name, version)
+    json_path = REPORT_DIR / base.replace(".md", ".json")
+    md_path = REPORT_DIR / base
+    loop = asyncio.get_running_loop()
+    await loop.run_in_executor(None, json_path.write_text, json.dumps(data, indent=2))
+    await loop.run_in_executor(None, md_path.write_text, data["report_markdown"])
+    log.info("Claude audit for %s %s saved to %s", name, version, REPORT_DIR)
+    return data
+
+
 async def run_claude_audit(name: str, version: str, derivation_source: str) -> dict:
     """Run Claude CLI to produce a structured security audit.
 

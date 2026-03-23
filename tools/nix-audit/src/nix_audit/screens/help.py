@@ -64,6 +64,18 @@ REPORT_HELP = (
     "  Ctrl+d / u    Page down / up\n"
     "  g / G         Scroll to top / bottom\n"
     "\n[bold]Actions[/bold]\n"
+    "  e             Open in Neovim\n"
+    "  ?             Show this help\n"
+    "  Escape / q    Go back"
+)
+
+AUDIT_HELP = (
+    "[bold]Navigation[/bold]\n"
+    "  j / k         Scroll down / up\n"
+    "  Ctrl+d / u    Page down / up\n"
+    "  g / G         Scroll to top / bottom\n"
+    "\n[bold]Actions[/bold]\n"
+    "  v             View formatted report\n"
     "  ?             Show this help\n"
     "  Escape / q    Go back"
 )

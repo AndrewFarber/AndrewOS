@@ -116,11 +116,13 @@ class SearchScreen(Screen):
         pkg = self._results[row_idx]
         from nix_audit.screens.detail import DetailScreen
 
-        self.app.push_screen(DetailScreen(
-            package_name=pkg["name"],
-            version=pkg["version"],
-            nixpkgs_attr=pkg.get("nixpkgs_attr"),
-        ))
+        self.app.push_screen(
+            DetailScreen(
+                package_name=pkg["name"],
+                version=pkg["version"],
+                nixpkgs_attr=pkg.get("nixpkgs_attr"),
+            )
+        )
 
     def action_focus_input(self) -> None:
         self.query_one("#search-input", Input).focus()

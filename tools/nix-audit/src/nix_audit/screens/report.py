@@ -1,3 +1,6 @@
+import subprocess
+import tempfile
+
 from textual.app import ComposeResult
 from textual.binding import Binding
 from textual.screen import Screen
@@ -16,6 +19,7 @@ class ReportScreen(Screen):
         Binding("ctrl+u", "page_up", "Page Up", show=False, priority=True),
         Binding("g", "scroll_home", "Top", show=False, priority=True),
         Binding("G", "scroll_end", "Bottom", show=False, priority=True),
+        Binding("e", "open_editor", "Open in Neovim", priority=True),
         Binding("question_mark", "show_help", "Show Help"),
         Binding("escape", "go_back", "Go Back", priority=True),
         Binding("q", "go_back", "Go Back", show=False, priority=True),
@@ -37,7 +41,6 @@ class ReportScreen(Screen):
         self.query_one("#report-content", Markdown).scroll_up()
 
     def action_page_down(self) -> None:
-        self.query_one("#report-content", Markdown).scroll_down(animate=False)
         md = self.query_one("#report-content", Markdown)
         md.scroll_to(y=md.scroll_y + HALF_PAGE_LINES, animate=False)
 
@@ -50,6 +53,15 @@ class ReportScreen(Screen):
 
     def action_scroll_end(self) -> None:
         self.query_one("#report-content", Markdown).scroll_end()
+
+    def action_open_editor(self) -> None:
+        with tempfile.NamedTemporaryFile(
+            suffix=".md", prefix="nix-audit-report-", mode="w", delete=False
+        ) as f:
+            f.write(self.report)
+            tmp_path = f.name
+        with self.app.suspend():
+            subprocess.run(["nvim", tmp_path])
 
     def action_show_help(self) -> None:
         self.app.push_screen(HelpScreen("Report", REPORT_HELP))

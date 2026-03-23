@@ -17,7 +17,14 @@ def mock_packages():
 @pytest.fixture
 def app(tmp_path, mock_packages):
     """Create app with mocked nix service and temp database."""
-    with patch("nix_audit.screens.packages.get_installed_packages") as mock_get:
+    with (
+        patch("nix_audit.screens.packages.get_installed_packages") as mock_get,
+        patch(
+            "nix_audit.screens.packages.get_package_sizes",
+            new_callable=AsyncMock,
+            return_value={},
+        ),
+    ):
         mock_get.return_value = mock_packages
         test_app = NixAuditApp()
         test_app.db = AuditDatabase(db_path=tmp_path / "test.db")
@@ -33,7 +40,14 @@ async def test_app_starts(app):
 
 @pytest.mark.asyncio
 async def test_packages_screen_loads(app):
-    with patch("nix_audit.screens.packages.get_installed_packages") as mock_get:
+    with (
+        patch("nix_audit.screens.packages.get_installed_packages") as mock_get,
+        patch(
+            "nix_audit.screens.packages.get_package_sizes",
+            new_callable=AsyncMock,
+            return_value={},
+        ),
+    ):
         mock_get.return_value = [
             {"name": "git", "version": "2.43.0", "store_path": "/nix/store/abc-git-2.43.0"},
             {"name": "hello", "version": "2.12.1", "store_path": "/nix/store/def-hello-2.12.1"},
@@ -49,7 +63,14 @@ async def test_packages_screen_loads(app):
 
 @pytest.mark.asyncio
 async def test_vim_keys_j_k(app):
-    with patch("nix_audit.screens.packages.get_installed_packages") as mock_get:
+    with (
+        patch("nix_audit.screens.packages.get_installed_packages") as mock_get,
+        patch(
+            "nix_audit.screens.packages.get_package_sizes",
+            new_callable=AsyncMock,
+            return_value={},
+        ),
+    ):
         mock_get.return_value = [
             {"name": "git", "version": "2.43.0", "store_path": "/nix/store/abc-git-2.43.0"},
             {"name": "hello", "version": "2.12.1", "store_path": "/nix/store/def-hello-2.12.1"},
@@ -63,7 +84,14 @@ async def test_vim_keys_j_k(app):
 
 @pytest.mark.asyncio
 async def test_quit_key(app):
-    with patch("nix_audit.screens.packages.get_installed_packages") as mock_get:
+    with (
+        patch("nix_audit.screens.packages.get_installed_packages") as mock_get,
+        patch(
+            "nix_audit.screens.packages.get_package_sizes",
+            new_callable=AsyncMock,
+            return_value={},
+        ),
+    ):
         mock_get.return_value = []
         async with app.run_test() as pilot:
             await pilot.pause()
@@ -73,7 +101,14 @@ async def test_quit_key(app):
 @pytest.mark.asyncio
 async def test_detail_save_source(app):
     """Press s on detail screen triggers save worker."""
-    with patch("nix_audit.screens.packages.get_installed_packages") as mock_get:
+    with (
+        patch("nix_audit.screens.packages.get_installed_packages") as mock_get,
+        patch(
+            "nix_audit.screens.packages.get_package_sizes",
+            new_callable=AsyncMock,
+            return_value={},
+        ),
+    ):
         mock_get.return_value = [
             {"name": "git", "version": "2.43.0", "store_path": "/nix/store/abc-git-2.43.0"},
         ]
@@ -104,7 +139,14 @@ async def test_detail_save_source(app):
 @pytest.mark.asyncio
 async def test_detail_open_editor_no_source(app):
     """Press e without saved files shows notification, no crash."""
-    with patch("nix_audit.screens.packages.get_installed_packages") as mock_get:
+    with (
+        patch("nix_audit.screens.packages.get_installed_packages") as mock_get,
+        patch(
+            "nix_audit.screens.packages.get_package_sizes",
+            new_callable=AsyncMock,
+            return_value={},
+        ),
+    ):
         mock_get.return_value = [
             {"name": "git", "version": "2.43.0", "store_path": "/nix/store/abc-git-2.43.0"},
         ]

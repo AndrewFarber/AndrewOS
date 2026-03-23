@@ -2,7 +2,7 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
-from nix_audit.services.nix import get_installed_packages, search_packages
+from nix_audit.services.nix import get_installed_packages, get_package_sizes, search_packages
 
 
 @pytest.fixture
@@ -132,3 +132,41 @@ async def test_search_packages_empty(mock_subprocess):
 
     results = await search_packages("nonexistent")
     assert results == []
+
+
+@pytest.mark.asyncio
+async def test_get_package_sizes(mock_subprocess):
+    """nix path-info --json returns sizes keyed by store path."""
+    import json
+
+    path_info = {
+        "/nix/store/abc-hello-2.12.1": {"narSize": 12345},
+        "/nix/store/def-git-2.43.0": {"narSize": 67890},
+    }
+    proc = AsyncMock()
+    proc.communicate.return_value = (json.dumps(path_info).encode(), b"")
+    proc.returncode = 0
+    mock_subprocess.return_value = proc
+
+    sizes = await get_package_sizes(["/nix/store/abc-hello-2.12.1", "/nix/store/def-git-2.43.0"])
+    assert sizes["/nix/store/abc-hello-2.12.1"] == 12345
+    assert sizes["/nix/store/def-git-2.43.0"] == 67890
+
+
+@pytest.mark.asyncio
+async def test_get_package_sizes_empty():
+    """Empty input returns empty dict without calling nix."""
+    sizes = await get_package_sizes([])
+    assert sizes == {}
+
+
+@pytest.mark.asyncio
+async def test_get_package_sizes_failure(mock_subprocess):
+    """Gracefully returns empty dict on nix path-info failure."""
+    proc = AsyncMock()
+    proc.communicate.return_value = (b"", b"error")
+    proc.returncode = 1
+    mock_subprocess.return_value = proc
+
+    sizes = await get_package_sizes(["/nix/store/abc-hello-2.12.1"])
+    assert sizes == {}

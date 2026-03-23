@@ -10,6 +10,7 @@ from nix_audit.services.claude import (
     parse_claude_response,
     render_report_markdown,
     run_claude_audit,
+    stream_claude_audit,
 )
 
 
@@ -249,3 +250,88 @@ def test_render_report_markdown_unknown_category():
     assert "## Other Findings" in md
     assert "Uncategorized finding" in md
     assert "Normal finding" in md
+
+
+# ── stream_claude_audit tests ──────────────────────────────────────
+
+
+def _make_readline_mock(lines: list[bytes]):
+    """Create an async readline that returns lines then b''."""
+    it = iter(lines + [b""])
+
+    async def readline():
+        return next(it)
+
+    return readline
+
+
+@pytest.mark.asyncio
+async def test_stream_claude_audit(mock_subprocess, sample_claude_report):
+    """Lines are delivered via on_line callback and result is returned."""
+    raw_lines = [line.encode() + b"\n" for line in sample_claude_report.split("\n")]
+    proc = AsyncMock()
+    proc.stdout.readline = _make_readline_mock(raw_lines)
+    proc.stderr.read = AsyncMock(return_value=b"")
+    proc.returncode = 0
+    proc.wait = AsyncMock()
+    mock_subprocess.return_value = proc
+
+    collected: list[str] = []
+    result = await stream_claude_audit(
+        "hello",
+        "2.12.1",
+        "source code",
+        on_line=collected.append,
+    )
+
+    assert len(collected) > 0
+    assert result["risk_level"] == "LOW"
+    assert "report_markdown" in result
+
+
+@pytest.mark.asyncio
+async def test_stream_claude_audit_error(mock_subprocess):
+    """Non-zero exit code raises RuntimeError."""
+    proc = AsyncMock()
+    proc.stdout.readline = _make_readline_mock([])
+    proc.stderr.read = AsyncMock(return_value=b"something went wrong")
+    proc.returncode = 1
+    proc.wait = AsyncMock()
+    mock_subprocess.return_value = proc
+
+    with pytest.raises(RuntimeError, match="claude audit failed"):
+        await stream_claude_audit("hello", "2.12.1", "source code")
+
+
+@pytest.mark.asyncio
+async def test_stream_claude_audit_timeout(mock_subprocess):
+    """Timeout raises RuntimeError."""
+    proc = AsyncMock()
+
+    async def slow_readline():
+        await asyncio.sleep(10)
+        return b""
+
+    proc.stdout.readline = slow_readline
+    proc.kill = lambda: None
+    proc.wait = AsyncMock()
+    mock_subprocess.return_value = proc
+
+    with patch("nix_audit.services.claude.AUDIT_TIMEOUT", 0.01):
+        with pytest.raises(RuntimeError, match="timed out"):
+            await stream_claude_audit("hello", "2.12.1", "source code")
+
+
+@pytest.mark.asyncio
+async def test_stream_claude_audit_invalid_json(mock_subprocess):
+    """Invalid JSON falls back gracefully."""
+    proc = AsyncMock()
+    proc.stdout.readline = _make_readline_mock([b"not json at all\n"])
+    proc.stderr.read = AsyncMock(return_value=b"")
+    proc.returncode = 0
+    proc.wait = AsyncMock()
+    mock_subprocess.return_value = proc
+
+    result = await stream_claude_audit("hello", "2.12.1", "source code")
+    assert result["risk_level"] == "UNKNOWN"
+    assert "raw_response" in result

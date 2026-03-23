@@ -8,13 +8,11 @@ from textual.screen import ModalScreen, Screen
 from textual.widgets import DataTable, Footer, Header, Static
 
 from nix_audit.screens.help import DETAIL_HELP, HelpScreen
-from nix_audit.services.claude import run_claude_audit
 from nix_audit.services.derivation import (
     get_saved_sources_dir,
     resolve_and_read_source,
     save_derivation_files,
 )
-from nix_audit.services.vulnix import format_vulnix_report, scan_package
 
 log = logging.getLogger(__name__)
 
@@ -93,10 +91,7 @@ class DetailScreen(Screen):
         info = self.query_one("#pkg-info", Static)
         if pkg:
             store = pkg.get("store_path") or "(not installed)"
-            info.update(
-                f"[bold]{self.package_name}[/bold] v{pkg['version']}\n"
-                f"Store: {store}"
-            )
+            info.update(f"[bold]{self.package_name}[/bold] v{pkg['version']}\nStore: {store}")
         else:
             info.update(f"[bold]{self.package_name}[/bold] (not installed)")
 
@@ -173,61 +168,31 @@ class DetailScreen(Screen):
         version = pkg["version"]
         store_path = pkg.get("store_path")
 
-        reports = []
-        self.loading = True
-
-        # Claude audit — use nixpkgs_attr for nix eval (handles nested attrs)
         status.update("[ansi_yellow]Fetching derivation source...[/]")
         source, _saved = await resolve_and_read_source(self.nixpkgs_attr)
-        if source:
-            status.update("[ansi_yellow]Running Claude audit...[/]")
-            try:
-                result = await run_claude_audit(self.package_name, version, source)
-                report_md = result["report_markdown"]
-                risk = result["risk_level"]
-                n_findings = len(result.get("findings", []))
-                summary = f"{risk} -- {n_findings} finding(s)"
-                db.save_audit(
-                    self.package_name, version, report_md, summary, "claude",
-                    findings=result.get("findings", []),
-                )
-                reports.append(report_md)
-            except Exception as e:
-                log.error("Claude audit failed for %s: %s", self.package_name, e)
-                self.notify(f"Claude audit failed: {e}", severity="error")
-        else:
+        if not source:
             self.notify(
-                "Could not fetch derivation source, skipping Claude audit",
+                "Could not fetch derivation source, skipping audit",
                 severity="warning",
             )
+            status.update("")
+            return
 
-        # Vulnix scan
-        if store_path:
-            status.update("[ansi_yellow]Running Vulnix CVE scan...[/]")
-            try:
-                cves = await scan_package(store_path)
-                report = format_vulnix_report(cves, self.package_name, version)
-                summary = f"{len(cves)} CVE(s) found" if cves else "No CVEs found"
-                db.save_audit(self.package_name, version, report, summary, "vulnix")
-                reports.append(report)
-            except Exception as e:
-                log.error("Vulnix scan failed for %s: %s", self.package_name, e)
-                self.notify(f"Vulnix scan failed: {e}", severity="error")
-        else:
-            self.notify(
-                "No store path available, skipping Vulnix scan",
-                severity="warning",
+        from nix_audit.screens.audit import AuditScreen
+
+        self.app.push_screen(
+            AuditScreen(
+                package_name=self.package_name,
+                version=version,
+                derivation_source=source,
+                store_path=store_path,
+                nixpkgs_attr=self.nixpkgs_attr,
             )
+        )
+        status.update("")
 
-        self.loading = False
+    def on_screen_resume(self) -> None:
         self._refresh_audits()
-        status.update("[ansi_green]Audit complete[/]")
-
-        if reports:
-            combined = "\n\n---\n\n".join(reports)
-            from nix_audit.screens.report import ReportScreen
-
-            self.app.push_screen(ReportScreen(combined))
 
     def action_save_source(self) -> None:
         self.run_worker(self._save_source_worker(), exclusive=True, exit_on_error=False)

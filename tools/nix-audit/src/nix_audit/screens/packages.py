@@ -6,9 +6,23 @@ from textual.screen import Screen
 from textual.widgets import DataTable, Footer, Header, Input, Static
 
 from nix_audit.screens.help import PACKAGES_HELP, HelpScreen
-from nix_audit.services.nix import get_installed_packages
+from nix_audit.services.nix import get_installed_packages, get_package_sizes
 
 log = logging.getLogger(__name__)
+
+
+def _format_size(size_bytes: int | None) -> str:
+    """Format byte count as human-readable string."""
+    if size_bytes is None or size_bytes == 0:
+        return "—"
+    value = float(size_bytes)
+    for unit in ("B", "KB", "MB", "GB"):
+        if value < 1024:
+            if unit == "B":
+                return f"{int(value)} B"
+            return f"{value:.1f} {unit}"
+        value /= 1024
+    return f"{value:.1f} TB"
 
 
 class PackagesScreen(Screen):
@@ -41,7 +55,7 @@ class PackagesScreen(Screen):
         filter_input.display = False
         table = self.query_one("#packages-table", DataTable)
         table.cursor_type = "row"
-        table.add_columns("Status", "Name", "Version", "Last Audited")
+        table.add_columns("Status", "Name", "Version", "Size", "Last Audited")
         self.load_packages()
 
     def on_screen_resume(self) -> None:
@@ -58,6 +72,7 @@ class PackagesScreen(Screen):
         for row in self._all_rows:
             name = row[1]
             version = row[2]
+            size = row[3]
             info = audit_info.get(name, {})
             audit_status = info.get("status", "none")
             last_audited = info.get("last_audited", "never")
@@ -67,7 +82,7 @@ class PackagesScreen(Screen):
                 indicator = "[ansi_yellow]\u25cf[/]"
             else:
                 indicator = "[ansi_red]\u25cb[/]"
-            new_rows.append((indicator, name, version, last_audited))
+            new_rows.append((indicator, name, version, size, last_audited))
         self._all_rows = new_rows
         # Re-apply current filter (or show all)
         filter_input = self.query_one("#filter-input", Input)
@@ -90,6 +105,8 @@ class PackagesScreen(Screen):
         table.clear()
         db.upsert_packages_batch(packages)
         audit_info = db.get_all_audit_info()
+        store_paths = [p["store_path"] for p in packages if p.get("store_path")]
+        sizes = await get_package_sizes(store_paths)
         self._all_rows = []
         for pkg in packages:
             info = audit_info.get(pkg["name"], {})
@@ -101,7 +118,8 @@ class PackagesScreen(Screen):
                 indicator = "[ansi_yellow]\u25cf[/]"
             else:
                 indicator = "[ansi_red]\u25cb[/]"
-            row = (indicator, pkg["name"], pkg["version"], last_audited)
+            size_str = _format_size(sizes.get(pkg.get("store_path")))
+            row = (indicator, pkg["name"], pkg["version"], size_str, last_audited)
             self._all_rows.append(row)
             table.add_row(*row)
         status.update(f"{len(packages)} packages loaded")
@@ -136,7 +154,7 @@ class PackagesScreen(Screen):
         table.focus()
         if filter_input.value:
             self.query_one("#status-bar", Static).update(
-                f"Filter: \"{filter_input.value}\" ({table.row_count} matches) — Escape to clear"
+                f'Filter: "{filter_input.value}" ({table.row_count} matches) — Escape to clear'
             )
 
     def _clear_filter(self) -> None:
@@ -145,9 +163,7 @@ class PackagesScreen(Screen):
         filter_input.value = ""
         filter_input.display = False
         self._apply_filter("")
-        self.query_one("#status-bar", Static).update(
-            f"{len(self._all_rows)} packages loaded"
-        )
+        self.query_one("#status-bar", Static).update(f"{len(self._all_rows)} packages loaded")
 
     def action_dismiss_filter(self) -> None:
         filter_input = self.query_one("#filter-input", Input)
