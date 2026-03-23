@@ -26,7 +26,7 @@ Screen {
     padding: 0 1;
 }
 
-#search-input {
+#search-input, #filter-input {
     dock: top;
     margin: 0 1;
 }
@@ -50,6 +50,14 @@ Header {
     color: ansi_white;
 }
 
-Footer {
-    background: ansi_default;
+ConfirmAuditScreen {
+    align: center middle;
+}
+
+#confirm-dialog {
+    width: 50;
+    height: auto;
+    padding: 1 2;
+    border: thick ansi_blue;
+    background: $background;
 }

@@ -113,6 +113,9 @@ async def get_installed_packages() -> list[dict]:
     packages = [
         p for p in _parse_store_paths(lines)
         if not p["name"].startswith("andrewos-")
+        and p["version"] != "unknown"
+        and not p["version"].endswith("-man")
+        and not p["version"].endswith("-terminfo")
     ]
     log.info("Loaded %d installed packages", len(packages))
     return sorted(packages, key=lambda p: p["name"])

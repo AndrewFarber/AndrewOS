@@ -2,7 +2,8 @@ import logging
 
 from textual.app import ComposeResult
 from textual.binding import Binding
-from textual.screen import Screen
+from textual.containers import Vertical
+from textual.screen import ModalScreen, Screen
 from textual.widgets import DataTable, Footer, Header, Static
 
 from nix_audit.services.claude import run_claude_audit
@@ -12,12 +13,39 @@ from nix_audit.services.vulnix import format_vulnix_report, scan_package
 log = logging.getLogger(__name__)
 
 
+class ConfirmAuditScreen(ModalScreen[bool]):
+    """Modal dialog to confirm running an audit."""
+
+    BINDINGS = [
+        Binding("y", "confirm", "Yes", priority=True),
+        Binding("n", "cancel", "No", priority=True),
+        Binding("escape", "cancel", "Cancel", priority=True),
+    ]
+
+    def __init__(self, package_name: str):
+        super().__init__()
+        self.package_name = package_name
+
+    def compose(self) -> ComposeResult:
+        with Vertical(id="confirm-dialog"):
+            yield Static(
+                f"Run security audit on [bold]{self.package_name}[/bold]?\n\n"
+                "This will run Claude and Vulnix scans.\n\n"
+                "[ansi_green]y[/] Yes  [ansi_red]n[/] No",
+            )
+
+    def action_confirm(self) -> None:
+        self.dismiss(True)
+
+    def action_cancel(self) -> None:
+        self.dismiss(False)
+
+
 class DetailScreen(Screen):
     BINDINGS = [
         Binding("j", "cursor_down", "Down", show=False, priority=True),
         Binding("k", "cursor_up", "Up", show=False, priority=True),
-        Binding("a", "run_claude_audit", "Audit Package", priority=True),
-        Binding("v", "run_vulnix", "Vulnix Scan", priority=True),
+        Binding("a", "run_audit", "Audit Package", priority=True),
         Binding("enter", "view_report", "View Report", priority=True),
         Binding("escape", "go_back", "Go Back", priority=True),
         Binding("q", "go_back", "Go Back", show=False, priority=True),
@@ -74,66 +102,85 @@ class DetailScreen(Screen):
     def action_cursor_up(self) -> None:
         self.query_one("#audit-table", DataTable).action_cursor_up()
 
-    def action_run_claude_audit(self) -> None:
-        self.run_worker(self._claude_audit_worker(), exclusive=True, exit_on_error=False)
+    def action_run_audit(self) -> None:
+        self.app.push_screen(
+            ConfirmAuditScreen(self.package_name),
+            self._on_confirm_audit,
+        )
 
-    async def _claude_audit_worker(self) -> None:
+    def _on_confirm_audit(self, confirmed: bool) -> None:
+        if confirmed:
+            self.run_worker(
+                self._audit_worker(), exclusive=True, exit_on_error=False
+            )
+
+    async def _audit_worker(self) -> None:
         status = self.query_one("#action-status", Static)
-        status.update("[ansi_yellow]Fetching derivation source...[/]")
-        source = await get_derivation_source(self.package_name)
-        if not source:
-            status.update("[ansi_red]Could not fetch derivation source[/]")
-            return
-        status.update("[ansi_yellow]Running Claude audit (this may take a minute)...[/]")
         db = self.app.db
         pkg = db.get_package(self.package_name)
         if not pkg:
             db.upsert_package(self.package_name, "unknown")
             pkg = db.get_package(self.package_name)
         version = pkg["version"]
-        try:
-            result = await run_claude_audit(self.package_name, version, source)
-        except Exception as e:
-            log.error("Claude audit failed for %s: %s", self.package_name, e)
-            status.update(f"[ansi_red]Audit failed: {e}[/]")
-            return
-        report_md = result["report_markdown"]
-        risk = result["risk_level"]
-        n_findings = len(result.get("findings", []))
-        summary = f"{risk} — {n_findings} finding(s)"
-        audit_id = db.save_audit(self.package_name, version, report_md, summary, "claude")
-        db.save_findings(audit_id, result.get("findings", []))
+        store_path = pkg.get("store_path")
+
+        reports = []
+        self.loading = True
+
+        # Claude audit
+        status.update("[ansi_yellow]Fetching derivation source...[/]")
+        source = await get_derivation_source(self.package_name)
+        if source:
+            status.update("[ansi_yellow]Running Claude audit...[/]")
+            try:
+                result = await run_claude_audit(self.package_name, version, source)
+                report_md = result["report_markdown"]
+                risk = result["risk_level"]
+                n_findings = len(result.get("findings", []))
+                summary = f"{risk} -- {n_findings} finding(s)"
+                audit_id = db.save_audit(
+                    self.package_name, version, report_md, summary, "claude"
+                )
+                db.save_findings(audit_id, result.get("findings", []))
+                reports.append(report_md)
+            except Exception as e:
+                log.error("Claude audit failed for %s: %s", self.package_name, e)
+                self.notify(f"Claude audit failed: {e}", severity="error")
+        else:
+            self.notify(
+                "Could not fetch derivation source, skipping Claude audit",
+                severity="warning",
+            )
+
+        # Vulnix scan
+        if store_path:
+            status.update("[ansi_yellow]Running Vulnix CVE scan...[/]")
+            try:
+                cves = await scan_package(store_path)
+                report = format_vulnix_report(cves, self.package_name, version)
+                summary = f"{len(cves)} CVE(s) found" if cves else "No CVEs found"
+                db.save_audit(
+                    self.package_name, version, report, summary, "vulnix"
+                )
+                reports.append(report)
+            except Exception as e:
+                log.error("Vulnix scan failed for %s: %s", self.package_name, e)
+                self.notify(f"Vulnix scan failed: {e}", severity="error")
+        else:
+            self.notify(
+                "No store path available, skipping Vulnix scan",
+                severity="warning",
+            )
+
+        self.loading = False
         self._refresh_audits()
-        status.update("[ansi_green]Claude audit complete[/]")
-        from nix_audit.screens.report import ReportScreen
+        status.update("[ansi_green]Audit complete[/]")
 
-        self.app.push_screen(ReportScreen(report_md))
+        if reports:
+            combined = "\n\n---\n\n".join(reports)
+            from nix_audit.screens.report import ReportScreen
 
-    def action_run_vulnix(self) -> None:
-        self.run_worker(self._vulnix_worker(), exclusive=True, exit_on_error=False)
-
-    async def _vulnix_worker(self) -> None:
-        status = self.query_one("#action-status", Static)
-        db = self.app.db
-        pkg = db.get_package(self.package_name)
-        if not pkg or not pkg.get("store_path"):
-            status.update("[ansi_red]No store path available for vulnix scan[/]")
-            return
-        status.update("[ansi_yellow]Running vulnix CVE scan...[/]")
-        try:
-            cves = await scan_package(pkg["store_path"])
-        except Exception as e:
-            log.error("Vulnix scan failed for %s: %s", self.package_name, e)
-            status.update(f"[ansi_red]Vulnix scan failed: {e}[/]")
-            return
-        report = format_vulnix_report(cves, self.package_name, pkg["version"])
-        summary = f"{len(cves)} CVE(s) found" if cves else "No CVEs found"
-        db.save_audit(self.package_name, pkg["version"], report, summary, "vulnix")
-        self._refresh_audits()
-        status.update(f"[ansi_green]Vulnix scan complete: {summary}[/]")
-        from nix_audit.screens.report import ReportScreen
-
-        self.app.push_screen(ReportScreen(report))
+            self.app.push_screen(ReportScreen(combined))
 
     def action_view_report(self) -> None:
         table = self.query_one("#audit-table", DataTable)
