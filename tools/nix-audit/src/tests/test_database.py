@@ -9,6 +9,7 @@ def test_schema_migration(tmp_db):
     names = [t["name"] for t in tables]
     assert "packages" in names
     assert "audits" in names
+    assert "findings" in names
 
 
 def test_upsert_package_insert(tmp_db):
@@ -118,3 +119,44 @@ def test_get_all_audit_info_outdated(tmp_db):
 
     info = tmp_db.get_all_audit_info()
     assert info["hello"]["status"] == "outdated"
+
+
+def test_save_and_get_findings(tmp_db):
+    tmp_db.upsert_package("hello", "2.12.1")
+    tmp_db.save_audit("hello", "2.12.1", "report", "summary", "claude")
+    findings = [
+        {
+            "category": "supply_chain",
+            "severity": "high",
+            "title": "No hash pinning",
+            "detail": "fetchurl missing sha256",
+            "recommendation": "Add sha256 hash",
+        },
+        {
+            "category": "runtime",
+            "severity": "low",
+            "title": "Large closure",
+            "detail": "Many runtime deps",
+            "recommendation": None,
+        },
+    ]
+    tmp_db.save_findings("hello", "2.12.1", findings)
+    audits = tmp_db.get_audits_for_package("hello")
+    saved = tmp_db.get_findings_for_audit(audits[0]["id"])
+    assert len(saved) == 2
+    assert saved[0]["category"] == "supply_chain"
+    assert saved[0]["severity"] == "high"
+    assert saved[1]["recommendation"] is None
+
+
+def test_save_findings_no_package(tmp_db):
+    """save_findings silently returns if package doesn't exist."""
+    tmp_db.save_findings("nonexistent", "1.0", [{"title": "x"}])
+    # No error raised
+
+
+def test_get_findings_empty(tmp_db):
+    tmp_db.upsert_package("hello", "2.12.1")
+    tmp_db.save_audit("hello", "2.12.1", "report", "summary")
+    audits = tmp_db.get_audits_for_package("hello")
+    assert tmp_db.get_findings_for_audit(audits[0]["id"]) == []

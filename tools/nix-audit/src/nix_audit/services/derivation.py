@@ -11,7 +11,9 @@ async def get_derivation_source(package_name: str) -> str | None:
     """Fetch the Nix derivation source for a package using meta.position."""
     try:
         proc = await asyncio.create_subprocess_exec(
-            "nix", "eval", f"nixpkgs#{package_name}.meta.position",
+            "nix",
+            "eval",
+            f"nixpkgs#{package_name}.meta.position",
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )

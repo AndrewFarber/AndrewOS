@@ -90,10 +90,12 @@ class PackagesScreen(Screen):
         # row is [status, name, version, last_audited]
         name = row[1]
         from nix_audit.screens.detail import DetailScreen
+
         self.app.push_screen(DetailScreen(package_name=str(name)))
 
     def action_open_search(self) -> None:
         from nix_audit.screens.search import SearchScreen
+
         self.app.push_screen(SearchScreen())
 
     def action_refresh(self) -> None:

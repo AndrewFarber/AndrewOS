@@ -42,6 +42,7 @@ async def test_packages_screen_loads(app):
             await pilot.pause()
             # Table should exist
             from nix_audit.screens.packages import PackagesScreen
+
             screen = app.screen
             assert isinstance(screen, PackagesScreen)
 

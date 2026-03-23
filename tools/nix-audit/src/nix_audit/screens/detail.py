@@ -92,19 +92,22 @@ class DetailScreen(Screen):
             pkg = db.get_package(self.package_name)
         version = pkg["version"]
         try:
-            report = await run_claude_audit(self.package_name, version, source)
+            result = await run_claude_audit(self.package_name, version, source)
         except Exception as e:
             log.error("Claude audit failed for %s: %s", self.package_name, e)
             status.update(f"[ansi_red]Audit failed: {e}[/]")
             return
-        # Extract first line as summary
-        first_line = report.strip().splitlines()[0] if report.strip() else ""
-        summary = first_line[:100]
-        db.save_audit(self.package_name, version, report, summary, "claude")
+        report_md = result["report_markdown"]
+        risk = result["risk_level"]
+        n_findings = len(result.get("findings", []))
+        summary = f"{risk} — {n_findings} finding(s)"
+        db.save_audit(self.package_name, version, report_md, summary, "claude")
+        db.save_findings(self.package_name, version, result.get("findings", []))
         self._refresh_audits()
         status.update("[ansi_green]Claude audit complete[/]")
         from nix_audit.screens.report import ReportScreen
-        self.app.push_screen(ReportScreen(report))
+
+        self.app.push_screen(ReportScreen(report_md))
 
     def action_run_vulnix(self) -> None:
         self.run_worker(self._vulnix_worker(), exclusive=True, exit_on_error=False)
@@ -129,6 +132,7 @@ class DetailScreen(Screen):
         self._refresh_audits()
         status.update(f"[ansi_green]Vulnix scan complete: {summary}[/]")
         from nix_audit.screens.report import ReportScreen
+
         self.app.push_screen(ReportScreen(report))
 
     def action_view_report(self) -> None:
@@ -141,6 +145,7 @@ class DetailScreen(Screen):
         if row_idx < len(audits):
             report = audits[row_idx]["report_markdown"]
             from nix_audit.screens.report import ReportScreen
+
             self.app.push_screen(ReportScreen(report))
 
     def action_go_back(self) -> None:

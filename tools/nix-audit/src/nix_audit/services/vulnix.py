@@ -9,7 +9,8 @@ async def scan_package(store_path: str) -> list[dict]:
     """Run vulnix on a store path and parse CVE results."""
     try:
         proc = await asyncio.create_subprocess_exec(
-            "vulnix", store_path,
+            "vulnix",
+            store_path,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE,
         )
@@ -46,10 +47,12 @@ def parse_vulnix_output(output: str) -> list[dict]:
         # CVE line
         cve_match = re.match(r"\s*(CVE-\d{4}-\d+)", line)
         if cve_match:
-            cves.append({
-                "cve_id": cve_match.group(1),
-                "package": current_pkg,
-            })
+            cves.append(
+                {
+                    "cve_id": cve_match.group(1),
+                    "package": current_pkg,
+                }
+            )
     return cves
 
 
@@ -66,7 +69,5 @@ def format_vulnix_report(cves: list[dict], package_name: str, version: str) -> s
     ]
     for cve in cves:
         lines.append(f"- **{cve['cve_id']}**")
-    lines.append(
-        "\nCheck https://nvd.nist.gov/ for details on each CVE."
-    )
+    lines.append("\nCheck https://nvd.nist.gov/ for details on each CVE.")
     return "\n".join(lines)

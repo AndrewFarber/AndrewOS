@@ -25,6 +25,16 @@ CREATE TABLE IF NOT EXISTS audits (
     findings_summary TEXT,
     audit_type TEXT NOT NULL DEFAULT 'claude'
 );
+
+CREATE TABLE IF NOT EXISTS findings (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    audit_id INTEGER NOT NULL REFERENCES audits(id),
+    category TEXT NOT NULL,
+    severity TEXT NOT NULL,
+    title TEXT NOT NULL,
+    detail TEXT,
+    recommendation TEXT
+);
 """
 
 
@@ -74,15 +84,11 @@ class AuditDatabase:
             )
 
     def get_package(self, name: str) -> dict | None:
-        row = self.conn.execute(
-            "SELECT * FROM packages WHERE name = ?", (name,)
-        ).fetchone()
+        row = self.conn.execute("SELECT * FROM packages WHERE name = ?", (name,)).fetchone()
         return dict(row) if row else None
 
     def get_all_packages(self) -> list[dict]:
-        rows = self.conn.execute(
-            "SELECT * FROM packages ORDER BY name"
-        ).fetchall()
+        rows = self.conn.execute("SELECT * FROM packages ORDER BY name").fetchall()
         return [dict(r) for r in rows]
 
     def get_audit_status(self, name: str) -> str:
@@ -135,6 +141,44 @@ class AuditDatabase:
             ORDER BY date DESC
             """,
             (pkg["id"],),
+        ).fetchall()
+        return [dict(r) for r in rows]
+
+    def save_findings(self, package_name: str, version: str, findings: list[dict]):
+        """Save structured findings linked to the latest audit for a package."""
+        pkg = self.get_package(package_name)
+        if not pkg:
+            return
+        audit = self.conn.execute(
+            "SELECT id FROM audits WHERE package_id = ? ORDER BY date DESC LIMIT 1",
+            (pkg["id"],),
+        ).fetchone()
+        if not audit:
+            return
+        audit_id = audit["id"]
+        with self.conn:
+            for f in findings:
+                self.conn.execute(
+                    """\
+                    INSERT INTO findings
+                        (audit_id, category, severity, title, detail, recommendation)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                    """,
+                    (
+                        audit_id,
+                        f.get("category", "unknown"),
+                        f.get("severity", "info"),
+                        f.get("title", ""),
+                        f.get("detail", ""),
+                        f.get("recommendation"),
+                    ),
+                )
+
+    def get_findings_for_audit(self, audit_id: int) -> list[dict]:
+        """Get all structured findings for a given audit."""
+        rows = self.conn.execute(
+            "SELECT * FROM findings WHERE audit_id = ? ORDER BY id",
+            (audit_id,),
         ).fetchall()
         return [dict(r) for r in rows]
 

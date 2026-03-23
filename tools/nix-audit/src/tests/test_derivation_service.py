@@ -7,9 +7,7 @@ from nix_audit.services.derivation import MAX_SOURCE_BYTES, get_derivation_sourc
 
 @pytest.fixture
 def mock_subprocess():
-    with patch(
-        "nix_audit.services.derivation.asyncio.create_subprocess_exec"
-    ) as mock:
+    with patch("nix_audit.services.derivation.asyncio.create_subprocess_exec") as mock:
         yield mock
 
 

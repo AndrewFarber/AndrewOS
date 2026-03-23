@@ -1,3 +1,4 @@
+import json
 
 import pytest
 
@@ -25,7 +26,7 @@ def sample_hm_output():
 @pytest.fixture
 def sample_nix_search_json():
     """Sample nix search --json output."""
-    return '''{
+    return """{
   "legacyPackages.x86_64-linux.hello": {
     "pname": "hello",
     "version": "2.12.1",
@@ -36,13 +37,13 @@ def sample_nix_search_json():
     "version": "0.1",
     "description": "Hello world Wayland client"
   }
-}'''
+}"""
 
 
 @pytest.fixture
 def sample_derivation_source():
     """Sample Nix derivation source."""
-    return '''\
+    return """\
 # default.nix
 { lib, stdenv, fetchurl }:
 
@@ -61,40 +62,27 @@ stdenv.mkDerivation rec {
     platforms = platforms.all;
   };
 }
-'''
+"""
 
 
 @pytest.fixture
 def sample_claude_report():
-    """Sample Claude audit report."""
-    return """\
-# Security Audit: hello 2.12.1
-
-## Risk Level: LOW
-
-## 1. Supply Chain Risks
-- Source fetched via HTTPS (mirror://gnu redirects to HTTPS mirrors)
-- SHA256 hash is pinned
-- Official GNU upstream source
-
-## 2. Build-Time Risks
-- Standard build dependencies only (stdenv)
-- No custom build phases
-- No network access during build
-
-## 3. Runtime Risks
-- No postInstall hooks
-- No elevated permissions
-- Minimal runtime dependencies
-
-## 4. NixOS-Specific Risks
-- No sandbox bypasses
-- No impure environment variables
-- Standard derivation pattern
-
-## Summary
-This is a minimal, well-packaged GNU utility with no security concerns.
-"""
+    """Sample Claude audit JSON response."""
+    return json.dumps(
+        {
+            "risk_level": "LOW",
+            "findings": [
+                {
+                    "category": "supply_chain",
+                    "severity": "info",
+                    "title": "Source fetched via HTTPS with pinned hash",
+                    "detail": "fetchurl uses mirror://gnu which redirects to HTTPS. SHA256 is pinned.",
+                    "recommendation": None,
+                }
+            ],
+            "summary": "This is a minimal, well-packaged GNU utility with no security concerns.",
+        }
+    )
 
 
 @pytest.fixture

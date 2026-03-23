@@ -7,9 +7,7 @@ from textual.app import App
 from nix_audit.models.database import AuditDatabase
 from nix_audit.screens.packages import PackagesScreen
 
-LOG_DIR = Path(
-    os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local" / "share"))
-) / "nix-audit"
+LOG_DIR = Path(os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local" / "share"))) / "nix-audit"
 LOG_FILE = LOG_DIR / "nix-audit.log"
 
 

@@ -57,6 +57,7 @@ class SearchScreen(Screen):
         row = table.get_row_at(row_idx)
         name = row[0]
         from nix_audit.screens.detail import DetailScreen
+
         self.app.push_screen(DetailScreen(package_name=str(name)))
 
     def action_go_back(self) -> None:
