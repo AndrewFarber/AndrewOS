@@ -1,0 +1,14 @@
+default:
+    @just --list
+
+test:
+    python -m pytest src/tests/ -v
+
+test-watch:
+    python -m pytest src/tests/ -v --watch
+
+run:
+    python -m nix_audit
+
+lint:
+    python -m py_compile src/nix_audit/app.py

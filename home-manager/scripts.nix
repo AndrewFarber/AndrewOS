@@ -60,6 +60,7 @@ in {
     (mkScript "andrewos-launch-claude" { file = ../bin/andrewos-launch-claude; runtimeInputs = [ pkgs.chromium ]; })
     (mkScript "andrewos-launch-disk" { file = ../bin/andrewos-launch-disk; runtimeInputs = [ pkgs.alacritty ]; })
     (mkScript "andrewos-launch-lazydocker" { file = ../bin/andrewos-launch-lazydocker; runtimeInputs = [ pkgs.alacritty pkgs.lazydocker ]; })
+    (mkScript "andrewos-launch-nix-audit" { file = ../bin/andrewos-launch-nix-audit; runtimeInputs = [ pkgs.alacritty ]; })
     (mkScript "andrewos-launch-editor" { file = ../bin/andrewos-launch-editor; runtimeInputs = [ pkgs.alacritty pkgs.neovim ]; })
     (mkScript "andrewos-launch-figma" { file = ../bin/andrewos-launch-figma; runtimeInputs = [ pkgs.chromium ]; })
     (mkScript "andrewos-launch-files" { file = ../bin/andrewos-launch-files; runtimeInputs = [ pkgs.alacritty pkgs.yazi ]; })

@@ -1,0 +1,55 @@
+Screen {
+    background: $background;
+}
+
+#status-bar {
+    dock: top;
+    height: 1;
+    padding: 0 1;
+    color: ansi_yellow;
+}
+
+.section-title {
+    padding: 1 1 0 1;
+    color: ansi_blue;
+    text-style: bold;
+}
+
+#pkg-info {
+    padding: 1;
+    color: ansi_default;
+}
+
+#action-status {
+    dock: bottom;
+    height: 1;
+    padding: 0 1;
+}
+
+#search-input {
+    dock: top;
+    margin: 0 1;
+}
+
+#packages-table, #search-results, #audit-table {
+    height: 1fr;
+}
+
+#report-content {
+    height: 1fr;
+    padding: 1;
+}
+
+DataTable > .datatable--cursor {
+    background: ansi_blue;
+    color: ansi_white;
+}
+
+Header {
+    background: ansi_blue;
+    color: ansi_white;
+}
+
+Footer {
+    background: ansi_default;
+}

@@ -44,6 +44,16 @@
 
       devShells.${system} = {
         jupyter = import ./shells/jupyter.nix { inherit pkgs; };
+        nix-audit = pkgs.mkShell {
+          packages = [
+            (pkgs.python3.withPackages (ps: [
+              ps.textual
+              ps.pytest
+              ps.pytest-asyncio
+            ]))
+            pkgs.just
+          ];
+        };
       };
 
     };

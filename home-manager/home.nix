@@ -23,6 +23,7 @@ in
 
   imports = [
     ./applications/claude-code.nix
+    ./applications/nix-audit.nix
     ./dev
     ./editor/lsps.nix
     ./editor/neovim.nix
@@ -38,6 +39,7 @@ in
 
   andrewos.applications = {
     claude-code.enable = true;
+    nix-audit.enable = true;
   };
 
   andrewos.dev = {
