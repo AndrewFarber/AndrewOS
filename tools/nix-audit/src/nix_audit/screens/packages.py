@@ -44,6 +44,35 @@ class PackagesScreen(Screen):
         table.add_columns("Status", "Name", "Version", "Last Audited")
         self.load_packages()
 
+    def on_screen_resume(self) -> None:
+        """Refresh audit status when returning from detail/report screens."""
+        self._refresh_audit_status()
+
+    def _refresh_audit_status(self) -> None:
+        """Re-read audit info from DB and update table rows without reloading packages."""
+        if not self._all_rows:
+            return
+        db = self.app.db
+        audit_info = db.get_all_audit_info()
+        new_rows = []
+        for row in self._all_rows:
+            name = row[1]
+            version = row[2]
+            info = audit_info.get(name, {})
+            audit_status = info.get("status", "none")
+            last_audited = info.get("last_audited", "never")
+            if audit_status == "current":
+                indicator = "[ansi_green]\u25cf[/]"
+            elif audit_status == "outdated":
+                indicator = "[ansi_yellow]\u25cf[/]"
+            else:
+                indicator = "[ansi_red]\u25cb[/]"
+            new_rows.append((indicator, name, version, last_audited))
+        self._all_rows = new_rows
+        # Re-apply current filter (or show all)
+        filter_input = self.query_one("#filter-input", Input)
+        self._apply_filter(filter_input.value if filter_input.value else "")
+
     def load_packages(self) -> None:
         self.run_worker(self._load_packages_worker(), exclusive=True, exit_on_error=False)
 
