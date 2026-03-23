@@ -8,6 +8,11 @@ let
     src = ../../tools/nix-audit;
     build-system = [ pkgs.python3Packages.setuptools ];
     dependencies = [ pkgs.python3Packages.textual ];
+    nativeBuildInputs = [ pkgs.makeWrapper ];
+    postFixup = ''
+      wrapProgram $out/bin/nix-audit \
+        --prefix PATH : ${lib.makeBinPath [ pkgs.home-manager pkgs.nix ]}
+    '';
     doCheck = false; # tests need mocked nix/claude
   };
 in
