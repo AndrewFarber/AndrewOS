@@ -70,11 +70,16 @@ async def run_claude_audit(
     prompt = AUDIT_PROMPT.format(
         name=name, version=version, source=derivation_source
     )
-    proc = await asyncio.create_subprocess_exec(
-        "claude", "-p", prompt,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "claude", "-p", prompt,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+    except FileNotFoundError:
+        msg = "claude not found in PATH"
+        log.error(msg)
+        raise RuntimeError(msg)
     stdout, stderr = await proc.communicate()
     if proc.returncode != 0:
         msg = f"claude audit failed (exit {proc.returncode}): {stderr.decode()}"

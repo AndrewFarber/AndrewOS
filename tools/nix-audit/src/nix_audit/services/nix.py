@@ -8,11 +8,16 @@ log = logging.getLogger(__name__)
 
 async def get_installed_packages() -> list[dict]:
     """Get installed Home Manager packages via `home-manager packages`."""
-    proc = await asyncio.create_subprocess_exec(
-        "home-manager", "packages",
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "home-manager", "packages",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+    except FileNotFoundError:
+        msg = "home-manager not found in PATH"
+        log.error(msg)
+        raise RuntimeError(msg)
     stdout, stderr = await proc.communicate()
     if proc.returncode != 0:
         msg = f"home-manager packages failed (exit {proc.returncode}): {stderr.decode()}"
@@ -57,11 +62,16 @@ async def get_installed_packages() -> list[dict]:
 
 async def search_packages(query: str) -> list[dict]:
     """Search nixpkgs via `nix search`."""
-    proc = await asyncio.create_subprocess_exec(
-        "nix", "search", "nixpkgs", query, "--json",
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "nix", "search", "nixpkgs", query, "--json",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+    except FileNotFoundError:
+        msg = "nix not found in PATH"
+        log.error(msg)
+        raise RuntimeError(msg)
     stdout, stderr = await proc.communicate()
     if proc.returncode != 0:
         msg = f"nix search failed (exit {proc.returncode}): {stderr.decode()}"

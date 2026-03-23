@@ -9,11 +9,15 @@ MAX_SOURCE_BYTES = 100_000  # 100KB cap to avoid huge prompts
 
 async def get_derivation_source(package_name: str) -> str | None:
     """Fetch the Nix derivation source for a package using meta.position."""
-    proc = await asyncio.create_subprocess_exec(
-        "nix", "eval", f"nixpkgs#{package_name}.meta.position",
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "nix", "eval", f"nixpkgs#{package_name}.meta.position",
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+    except FileNotFoundError:
+        log.error("nix not found in PATH")
+        return None
     stdout, stderr = await proc.communicate()
     if proc.returncode != 0:
         err = stderr.decode().strip()

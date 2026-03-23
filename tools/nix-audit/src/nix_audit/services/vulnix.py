@@ -7,11 +7,16 @@ log = logging.getLogger(__name__)
 
 async def scan_package(store_path: str) -> list[dict]:
     """Run vulnix on a store path and parse CVE results."""
-    proc = await asyncio.create_subprocess_exec(
-        "vulnix", store_path,
-        stdout=asyncio.subprocess.PIPE,
-        stderr=asyncio.subprocess.PIPE,
-    )
+    try:
+        proc = await asyncio.create_subprocess_exec(
+            "vulnix", store_path,
+            stdout=asyncio.subprocess.PIPE,
+            stderr=asyncio.subprocess.PIPE,
+        )
+    except FileNotFoundError:
+        msg = "vulnix not found in PATH"
+        log.error(msg)
+        raise RuntimeError(msg)
     stdout, stderr = await proc.communicate()
     output = stdout.decode()
     err = stderr.decode().strip()
