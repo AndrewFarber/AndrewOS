@@ -1,4 +1,4 @@
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import pytest
 
@@ -68,3 +68,59 @@ async def test_quit_key(app):
         async with app.run_test() as pilot:
             await pilot.pause()
             await pilot.press("q")
+
+
+@pytest.mark.asyncio
+async def test_detail_save_source(app):
+    """Press s on detail screen triggers save worker."""
+    with patch("nix_audit.screens.packages.get_installed_packages") as mock_get:
+        mock_get.return_value = [
+            {"name": "git", "version": "2.43.0", "store_path": "/nix/store/abc-git-2.43.0"},
+        ]
+        async with app.run_test() as pilot:
+            await pilot.pause()
+            # Navigate to detail screen
+            app.db.upsert_package("git", "2.43.0", "/nix/store/abc-git-2.43.0")
+            from nix_audit.screens.detail import DetailScreen
+
+            app.push_screen(DetailScreen("git"))
+            await pilot.pause()
+
+            # Mock save_derivation_files to return a fake list
+            with patch(
+                "nix_audit.screens.detail.save_derivation_files",
+                new_callable=AsyncMock,
+                return_value=None,
+            ):
+                await pilot.press("s")
+                await pilot.pause()
+                # Should not crash; status should update
+                from textual.widgets import Static
+
+                status = app.screen.query_one("#action-status", Static)
+                assert status is not None
+
+
+@pytest.mark.asyncio
+async def test_detail_open_editor_no_source(app):
+    """Press e without saved files shows notification, no crash."""
+    with patch("nix_audit.screens.packages.get_installed_packages") as mock_get:
+        mock_get.return_value = [
+            {"name": "git", "version": "2.43.0", "store_path": "/nix/store/abc-git-2.43.0"},
+        ]
+        async with app.run_test() as pilot:
+            await pilot.pause()
+            app.db.upsert_package("git", "2.43.0", "/nix/store/abc-git-2.43.0")
+            from nix_audit.screens.detail import DetailScreen
+
+            app.push_screen(DetailScreen("git"))
+            await pilot.pause()
+
+            # No saved files, so pressing e should show notification
+            with patch(
+                "nix_audit.screens.detail.get_saved_sources_dir",
+                return_value=None,
+            ):
+                await pilot.press("e")
+                await pilot.pause()
+                # Should not crash

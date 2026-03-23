@@ -1,14 +1,16 @@
 import asyncio
 import logging
+import shutil
 from pathlib import Path
 
 log = logging.getLogger(__name__)
 
 MAX_SOURCE_BYTES = 100_000  # 100KB cap to avoid huge prompts
+SOURCES_DIR = Path.home() / ".local" / "share" / "nix-audit" / "sources"
 
 
-async def get_derivation_source(package_name: str) -> str | None:
-    """Fetch the Nix derivation source for a package using meta.position."""
+async def _resolve_nix_files(package_name: str) -> list[Path] | None:
+    """Run nix eval meta.position and return list of .nix file paths."""
     try:
         proc = await asyncio.create_subprocess_exec(
             "nix",
@@ -33,26 +35,73 @@ async def get_derivation_source(package_name: str) -> str | None:
     path = Path(file_path)
     if not path.exists():
         return None
-    # Read the main file and any related files in the same directory
-    sources = []
-    total_size = 0
-    try:
-        content = path.read_text()
-        total_size += len(content)
-        sources.append(f"# {path.name}\n{content}")
-    except OSError:
-        log.error("Failed to read derivation file %s", path)
-        return None
-    # Also read other .nix files in the same directory (up to size cap)
+
+    # Collect the main file first, then siblings
+    files = [path]
+    total_size = path.stat().st_size
     for sibling in sorted(path.parent.glob("*.nix")):
         if sibling != path and sibling.is_file():
-            try:
-                content = sibling.read_text()
-                if total_size + len(content) > MAX_SOURCE_BYTES:
-                    break
-                total_size += len(content)
-                sources.append(f"# {sibling.name}\n{content}")
-            except OSError:
-                continue
+            size = sibling.stat().st_size
+            if total_size + size > MAX_SOURCE_BYTES:
+                break
+            total_size += size
+            files.append(sibling)
+
+    return files
+
+
+async def get_derivation_source(package_name: str) -> str | None:
+    """Fetch the Nix derivation source for a package using meta.position."""
+    files = await _resolve_nix_files(package_name)
+    if not files:
+        return None
+
+    sources = []
+    total_size = 0
+    for f in files:
+        try:
+            content = f.read_text()
+            total_size += len(content)
+            sources.append(f"# {f.name}\n{content}")
+        except OSError:
+            if not sources:
+                log.error("Failed to read derivation file %s", f)
+                return None
+            continue
+
     log.info("Fetched derivation source for %s (%d bytes)", package_name, total_size)
     return "\n\n".join(sources) if sources else None
+
+
+async def save_derivation_files(package_name: str) -> list[Path] | None:
+    """Copy derivation .nix files to ~/.local/share/nix-audit/sources/<package>/."""
+    files = await _resolve_nix_files(package_name)
+    if not files:
+        return None
+
+    dest_dir = SOURCES_DIR / package_name
+    dest_dir.mkdir(parents=True, exist_ok=True)
+
+    saved = []
+    for f in files:
+        try:
+            dest = dest_dir / f.name
+            shutil.copy2(f, dest)
+            saved.append(dest)
+        except OSError:
+            log.error("Failed to copy %s to %s", f, dest_dir)
+            continue
+
+    if not saved:
+        return None
+
+    log.info("Saved %d source file(s) for %s to %s", len(saved), package_name, dest_dir)
+    return saved
+
+
+def get_saved_sources_dir(package_name: str) -> Path | None:
+    """Check if saved source files exist for a package. Returns dir path or None."""
+    dest_dir = SOURCES_DIR / package_name
+    if dest_dir.is_dir() and any(dest_dir.iterdir()):
+        return dest_dir
+    return None

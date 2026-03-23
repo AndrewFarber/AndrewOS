@@ -1,4 +1,5 @@
 import logging
+import subprocess
 
 from textual.app import ComposeResult
 from textual.binding import Binding
@@ -7,7 +8,11 @@ from textual.screen import ModalScreen, Screen
 from textual.widgets import DataTable, Footer, Header, Static
 
 from nix_audit.services.claude import run_claude_audit
-from nix_audit.services.derivation import get_derivation_source
+from nix_audit.services.derivation import (
+    get_derivation_source,
+    get_saved_sources_dir,
+    save_derivation_files,
+)
 from nix_audit.services.vulnix import format_vulnix_report, scan_package
 
 log = logging.getLogger(__name__)
@@ -46,6 +51,8 @@ class DetailScreen(Screen):
         Binding("j", "cursor_down", "Down", show=False, priority=True),
         Binding("k", "cursor_up", "Up", show=False, priority=True),
         Binding("a", "run_audit", "Audit Package", priority=True),
+        Binding("s", "save_source", "Save Source", priority=True),
+        Binding("e", "open_editor", "Open in Neovim", priority=True),
         Binding("enter", "view_report", "View Report", priority=True),
         Binding("escape", "go_back", "Go Back", priority=True),
         Binding("q", "go_back", "Go Back", show=False, priority=True),
@@ -110,9 +117,7 @@ class DetailScreen(Screen):
 
     def _on_confirm_audit(self, confirmed: bool) -> None:
         if confirmed:
-            self.run_worker(
-                self._audit_worker(), exclusive=True, exit_on_error=False
-            )
+            self.run_worker(self._audit_worker(), exclusive=True, exit_on_error=False)
 
     async def _audit_worker(self) -> None:
         status = self.query_one("#action-status", Static)
@@ -131,6 +136,9 @@ class DetailScreen(Screen):
         status.update("[ansi_yellow]Fetching derivation source...[/]")
         source = await get_derivation_source(self.package_name)
         if source:
+            # Auto-save source files for later editor access
+            await save_derivation_files(self.package_name)
+
             status.update("[ansi_yellow]Running Claude audit...[/]")
             try:
                 result = await run_claude_audit(self.package_name, version, source)
@@ -138,9 +146,7 @@ class DetailScreen(Screen):
                 risk = result["risk_level"]
                 n_findings = len(result.get("findings", []))
                 summary = f"{risk} -- {n_findings} finding(s)"
-                audit_id = db.save_audit(
-                    self.package_name, version, report_md, summary, "claude"
-                )
+                audit_id = db.save_audit(self.package_name, version, report_md, summary, "claude")
                 db.save_findings(audit_id, result.get("findings", []))
                 reports.append(report_md)
             except Exception as e:
@@ -159,9 +165,7 @@ class DetailScreen(Screen):
                 cves = await scan_package(store_path)
                 report = format_vulnix_report(cves, self.package_name, version)
                 summary = f"{len(cves)} CVE(s) found" if cves else "No CVEs found"
-                db.save_audit(
-                    self.package_name, version, report, summary, "vulnix"
-                )
+                db.save_audit(self.package_name, version, report, summary, "vulnix")
                 reports.append(report)
             except Exception as e:
                 log.error("Vulnix scan failed for %s: %s", self.package_name, e)
@@ -181,6 +185,38 @@ class DetailScreen(Screen):
             from nix_audit.screens.report import ReportScreen
 
             self.app.push_screen(ReportScreen(combined))
+
+    def action_save_source(self) -> None:
+        self.run_worker(self._save_source_worker(), exclusive=True, exit_on_error=False)
+
+    async def _save_source_worker(self) -> None:
+        status = self.query_one("#action-status", Static)
+        status.update("[ansi_yellow]Saving source files...[/]")
+        saved = await save_derivation_files(self.package_name)
+        if saved:
+            status.update(
+                f"[ansi_green]Saved {len(saved)} file(s) to sources/{self.package_name}/[/]"
+            )
+        else:
+            status.update("[ansi_red]Could not fetch source files[/]")
+
+    def action_open_editor(self) -> None:
+        sources_dir = get_saved_sources_dir(self.package_name)
+        if not sources_dir:
+            self.notify(
+                "No saved source files. Press s to save first.",
+                severity="warning",
+            )
+            return
+        files = sorted(sources_dir.glob("*.nix"))
+        if not files:
+            self.notify(
+                "No saved source files. Press s to save first.",
+                severity="warning",
+            )
+            return
+        with self.app.suspend():
+            subprocess.run(["nvim", *[str(f) for f in files]])
 
     def action_view_report(self) -> None:
         table = self.query_one("#audit-table", DataTable)

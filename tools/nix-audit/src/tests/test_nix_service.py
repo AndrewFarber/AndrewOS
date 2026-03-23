@@ -40,9 +40,7 @@ async def test_get_installed_packages_versions(mock_subprocess, sample_hm_output
 
 
 @pytest.mark.asyncio
-async def test_get_installed_packages_gcroot_fallback(
-    mock_subprocess, sample_hm_output, tmp_path
-):
+async def test_get_installed_packages_gcroot_fallback(mock_subprocess, sample_hm_output, tmp_path):
     """When home-manager packages fails, fall back to gcroot."""
     # home-manager packages fails
     hm_proc = AsyncMock()

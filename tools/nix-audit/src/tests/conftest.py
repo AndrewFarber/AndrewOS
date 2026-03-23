@@ -76,7 +76,8 @@ def sample_claude_report():
                     "category": "supply_chain",
                     "severity": "info",
                     "title": "Source fetched via HTTPS with pinned hash",
-                    "detail": "fetchurl uses mirror://gnu which redirects to HTTPS. SHA256 is pinned.",
+                    "detail": "fetchurl uses mirror://gnu which redirects"
+                    " to HTTPS. SHA256 is pinned.",
                     "recommendation": None,
                 }
             ],

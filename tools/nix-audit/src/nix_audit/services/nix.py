@@ -56,9 +56,7 @@ async def _get_packages_via_gcroot() -> list[str]:
     Works when home-manager is used as a NixOS module (where
     ``home-manager packages`` cannot find the nix profile entry).
     """
-    state_dir = Path(
-        os.environ.get("XDG_STATE_HOME", str(Path.home() / ".local" / "state"))
-    )
+    state_dir = Path(os.environ.get("XDG_STATE_HOME", str(Path.home() / ".local" / "state")))
     gcroot = state_dir / "home-manager" / "gcroots" / "current-home"
     if not gcroot.exists():
         raise RuntimeError(f"home-manager gcroot not found at {gcroot}")
@@ -68,7 +66,10 @@ async def _get_packages_via_gcroot() -> list[str]:
         raise RuntimeError(f"home-path not found in {generation}")
     home_path = home_path.resolve()
     proc = await asyncio.create_subprocess_exec(
-        "nix-store", "-q", "--references", str(home_path),
+        "nix-store",
+        "-q",
+        "--references",
+        str(home_path),
         stdout=asyncio.subprocess.PIPE,
         stderr=asyncio.subprocess.PIPE,
     )
@@ -111,7 +112,8 @@ async def get_installed_packages() -> list[dict]:
         lines = await _get_packages_via_gcroot()
 
     packages = [
-        p for p in _parse_store_paths(lines)
+        p
+        for p in _parse_store_paths(lines)
         if not p["name"].startswith("andrewos-")
         and p["version"] != "unknown"
         and not p["version"].endswith("-man")
