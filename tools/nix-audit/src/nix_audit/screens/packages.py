@@ -36,14 +36,14 @@ class PackagesScreen(Screen):
         self.load_packages()
 
     def load_packages(self) -> None:
-        self.run_worker(self._load_packages_worker(), exclusive=True)
+        self.run_worker(self._load_packages_worker(), exclusive=True, exit_on_error=False)
 
     async def _load_packages_worker(self) -> None:
         status = self.query_one("#status-bar", Static)
         status.update("Loading packages...")
         try:
             packages = await get_installed_packages()
-        except RuntimeError as e:
+        except Exception as e:
             log.error("Failed to load packages: %s", e)
             status.update(f"Error: {e}")
             return

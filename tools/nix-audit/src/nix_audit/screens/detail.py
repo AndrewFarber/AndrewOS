@@ -75,7 +75,7 @@ class DetailScreen(Screen):
         self.query_one("#audit-table", DataTable).action_cursor_up()
 
     def action_run_claude_audit(self) -> None:
-        self.run_worker(self._claude_audit_worker(), exclusive=True)
+        self.run_worker(self._claude_audit_worker(), exclusive=True, exit_on_error=False)
 
     async def _claude_audit_worker(self) -> None:
         status = self.query_one("#action-status", Static)
@@ -93,7 +93,7 @@ class DetailScreen(Screen):
         version = pkg["version"]
         try:
             report = await run_claude_audit(self.package_name, version, source)
-        except RuntimeError as e:
+        except Exception as e:
             log.error("Claude audit failed for %s: %s", self.package_name, e)
             status.update(f"[ansi_red]Audit failed: {e}[/]")
             return
@@ -107,7 +107,7 @@ class DetailScreen(Screen):
         self.app.push_screen(ReportScreen(report))
 
     def action_run_vulnix(self) -> None:
-        self.run_worker(self._vulnix_worker(), exclusive=True)
+        self.run_worker(self._vulnix_worker(), exclusive=True, exit_on_error=False)
 
     async def _vulnix_worker(self) -> None:
         status = self.query_one("#action-status", Static)

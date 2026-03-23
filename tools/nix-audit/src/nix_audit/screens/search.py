@@ -32,14 +32,14 @@ class SearchScreen(Screen):
     def on_search_bar_submitted(self, event: SearchBar.Submitted) -> None:
         query = event.value.strip()
         if query:
-            self.run_worker(self._search_worker(query), exclusive=True)
+            self.run_worker(self._search_worker(query), exclusive=True, exit_on_error=False)
 
     async def _search_worker(self, query: str) -> None:
         table = self.query_one("#search-results", DataTable)
         table.clear()
         try:
             results = await search_packages(query)
-        except RuntimeError as e:
+        except Exception as e:
             log.error("Search failed for %r: %s", query, e)
             self.notify(f"Search failed: {e}", severity="error")
             return
