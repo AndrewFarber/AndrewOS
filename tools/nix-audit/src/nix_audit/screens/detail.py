@@ -101,8 +101,8 @@ class DetailScreen(Screen):
         risk = result["risk_level"]
         n_findings = len(result.get("findings", []))
         summary = f"{risk} — {n_findings} finding(s)"
-        db.save_audit(self.package_name, version, report_md, summary, "claude")
-        db.save_findings(self.package_name, version, result.get("findings", []))
+        audit_id = db.save_audit(self.package_name, version, report_md, summary, "claude")
+        db.save_findings(audit_id, result.get("findings", []))
         self._refresh_audits()
         status.update("[ansi_green]Claude audit complete[/]")
         from nix_audit.screens.report import ReportScreen

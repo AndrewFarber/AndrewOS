@@ -79,6 +79,8 @@ class PackagesScreen(Screen):
 
     def action_cursor_last(self) -> None:
         table = self.query_one("#packages-table", DataTable)
+        if table.row_count == 0:
+            return
         table.move_cursor(row=table.row_count - 1)
 
     def action_select_package(self) -> None:

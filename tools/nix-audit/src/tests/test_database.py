@@ -123,7 +123,7 @@ def test_get_all_audit_info_outdated(tmp_db):
 
 def test_save_and_get_findings(tmp_db):
     tmp_db.upsert_package("hello", "2.12.1")
-    tmp_db.save_audit("hello", "2.12.1", "report", "summary", "claude")
+    audit_id = tmp_db.save_audit("hello", "2.12.1", "report", "summary", "claude")
     findings = [
         {
             "category": "supply_chain",
@@ -140,23 +140,55 @@ def test_save_and_get_findings(tmp_db):
             "recommendation": None,
         },
     ]
-    tmp_db.save_findings("hello", "2.12.1", findings)
-    audits = tmp_db.get_audits_for_package("hello")
-    saved = tmp_db.get_findings_for_audit(audits[0]["id"])
+    tmp_db.save_findings(audit_id, findings)
+    saved = tmp_db.get_findings_for_audit(audit_id)
     assert len(saved) == 2
     assert saved[0]["category"] == "supply_chain"
     assert saved[0]["severity"] == "high"
     assert saved[1]["recommendation"] is None
 
 
-def test_save_findings_no_package(tmp_db):
-    """save_findings silently returns if package doesn't exist."""
-    tmp_db.save_findings("nonexistent", "1.0", [{"title": "x"}])
-    # No error raised
-
-
 def test_get_findings_empty(tmp_db):
     tmp_db.upsert_package("hello", "2.12.1")
-    tmp_db.save_audit("hello", "2.12.1", "report", "summary")
-    audits = tmp_db.get_audits_for_package("hello")
-    assert tmp_db.get_findings_for_audit(audits[0]["id"]) == []
+    audit_id = tmp_db.save_audit("hello", "2.12.1", "report", "summary")
+    assert tmp_db.get_findings_for_audit(audit_id) == []
+
+
+def test_upsert_package_preserves_store_path(tmp_db):
+    """Upserting without store_path should not wipe an existing one."""
+    tmp_db.upsert_package("hello", "2.12.1", "/nix/store/abc-hello-2.12.1")
+    tmp_db.upsert_package("hello", "unknown")
+    pkg = tmp_db.get_package("hello")
+    assert pkg["store_path"] == "/nix/store/abc-hello-2.12.1"
+
+
+def test_upsert_packages_batch_preserves_store_path(tmp_db):
+    """Batch upserting without store_path should not wipe an existing one."""
+    tmp_db.upsert_package("hello", "2.12.1", "/nix/store/abc-hello-2.12.1")
+    tmp_db.upsert_packages_batch([{"name": "hello", "version": "2.13.0", "store_path": None}])
+    pkg = tmp_db.get_package("hello")
+    assert pkg["version"] == "2.13.0"
+    assert pkg["store_path"] == "/nix/store/abc-hello-2.12.1"
+
+
+def test_save_audit_returns_id(tmp_db):
+    """save_audit should return the new audit's id."""
+    tmp_db.upsert_package("hello", "2.12.1")
+    audit_id = tmp_db.save_audit("hello", "2.12.1", "report", "summary")
+    assert isinstance(audit_id, int)
+    assert audit_id > 0
+
+
+def test_save_findings_with_audit_id(tmp_db):
+    """save_findings links findings to the correct audit via explicit id."""
+    tmp_db.upsert_package("hello", "2.12.1")
+    audit_id_1 = tmp_db.save_audit("hello", "2.12.1", "report1", "summary1", "claude")
+    audit_id_2 = tmp_db.save_audit("hello", "2.12.1", "report2", "summary2", "claude")
+    tmp_db.save_findings(audit_id_1, [{"category": "a", "severity": "high", "title": "first"}])
+    tmp_db.save_findings(audit_id_2, [{"category": "b", "severity": "low", "title": "second"}])
+    findings_1 = tmp_db.get_findings_for_audit(audit_id_1)
+    findings_2 = tmp_db.get_findings_for_audit(audit_id_2)
+    assert len(findings_1) == 1
+    assert findings_1[0]["title"] == "first"
+    assert len(findings_2) == 1
+    assert findings_2[0]["title"] == "second"

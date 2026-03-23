@@ -61,7 +61,7 @@ class AuditDatabase:
             VALUES (?, ?, ?)
             ON CONFLICT(name) DO UPDATE SET
                 version = excluded.version,
-                store_path = excluded.store_path,
+                store_path = COALESCE(excluded.store_path, packages.store_path),
                 last_seen = datetime('now')
             """,
             (name, version, store_path),
@@ -77,7 +77,7 @@ class AuditDatabase:
                 VALUES (:name, :version, :store_path)
                 ON CONFLICT(name) DO UPDATE SET
                     version = excluded.version,
-                    store_path = excluded.store_path,
+                    store_path = COALESCE(excluded.store_path, packages.store_path),
                     last_seen = datetime('now')
                 """,
                 packages,
@@ -115,12 +115,13 @@ class AuditDatabase:
         report_markdown: str,
         findings_summary: str | None = None,
         audit_type: str = "claude",
-    ):
+    ) -> int:
+        """Save an audit and return its id."""
         pkg = self.get_package(package_name)
         if not pkg:
             log.error("Attempted to save audit for unknown package %r", package_name)
             raise ValueError(f"Package {package_name!r} not found in database")
-        self.conn.execute(
+        cursor = self.conn.execute(
             """\
             INSERT INTO audits
                 (package_id, version_audited, report_markdown, findings_summary, audit_type)
@@ -129,6 +130,7 @@ class AuditDatabase:
             (pkg["id"], version, report_markdown, findings_summary, audit_type),
         )
         self.conn.commit()
+        return cursor.lastrowid
 
     def get_audits_for_package(self, package_name: str) -> list[dict]:
         pkg = self.get_package(package_name)
@@ -144,18 +146,8 @@ class AuditDatabase:
         ).fetchall()
         return [dict(r) for r in rows]
 
-    def save_findings(self, package_name: str, version: str, findings: list[dict]):
-        """Save structured findings linked to the latest audit for a package."""
-        pkg = self.get_package(package_name)
-        if not pkg:
-            return
-        audit = self.conn.execute(
-            "SELECT id FROM audits WHERE package_id = ? ORDER BY date DESC LIMIT 1",
-            (pkg["id"],),
-        ).fetchone()
-        if not audit:
-            return
-        audit_id = audit["id"]
+    def save_findings(self, audit_id: int, findings: list[dict]):
+        """Save structured findings linked to the given audit."""
         with self.conn:
             for f in findings:
                 self.conn.execute(
