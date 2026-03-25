@@ -33,9 +33,6 @@ require('gitsigns').setup({
     map('n', '<leader>hd', gs.diffthis, { desc = 'Diff this' })
     map('n', '<leader>hD', function() gs.diffthis('~') end, { desc = 'Diff this ~' })
 
-    -- Toggles
-    map('n', '<leader>tb', gs.toggle_current_line_blame, { desc = 'Toggle line blame' })
-    map('n', '<leader>td', gs.toggle_deleted, { desc = 'Toggle deleted' })
 
   end
 })

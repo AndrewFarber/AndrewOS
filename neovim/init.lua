@@ -5,6 +5,7 @@ require 'core.keymaps'  -- Load keymaps
 -- Plugins (downloaded using Nix Home-Manager)
 require 'plugins.comment'
 require 'plugins.dap'
+require 'plugins.diffview'
 require 'plugins.gitsigns'
 require 'plugins.harpoon'
 require 'plugins.lualine'
