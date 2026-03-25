@@ -53,6 +53,8 @@
     TTYVTDisallocate = true;
   };
 
+  services.upower.enable = true;
+
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;

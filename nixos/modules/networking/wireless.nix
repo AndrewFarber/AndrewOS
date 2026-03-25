@@ -17,6 +17,8 @@ in {
       General.EnableNetworkConfiguration = true;
       General.DNS = "systemd";
     };
+    networking.dhcpcd.enable = false;
+    boot.kernel.sysctl."net.ipv6.conf.default.use_tempaddr" = 2;
     hardware.enableRedistributableFirmware = true;
   };
 }
